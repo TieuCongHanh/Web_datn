@@ -14,7 +14,7 @@ exports.list = async (req, res, next) => {
     }
     let start=( page - 1 )*perPage; // vị trí 0
    
-    const by = req.query.by || 'user'; // Sắp xếp theo giá nếu không có giá trị by
+    const by = req.query.by || 'user'; // Sắp xếp theo user nếu không có giá trị by
     const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
 
     let list = await myMD.userModel.find(timkiemUser).skip(start).limit(perPage).sort({ [by] :order });
@@ -34,6 +34,7 @@ exports.in = async (req, res, next) => {
             { header: "_id", key: "_id", width: 50 },
             { header: "user", key: "user", width: 30 },
             { header: "vaitro", key: "vaitro", width: 10 },
+            { header: "isActive", key: "isActive", width: 10 },
             { header: "image", key: "image", width: 70 },
         ];
         const users = await myMD.userModel.find({}); 
@@ -43,6 +44,7 @@ exports.in = async (req, res, next) => {
                 _id: user._id,
                 user: user.user,
                 vaitro: user.vaitro,
+                isActive: user.isActive,
                 image: user.image || '', 
             });
         });
@@ -86,6 +88,7 @@ exports.print = async (req, res, next) => {
             doc.fontSize(14).text(`User ID: ${user._id}`);
             doc.fontSize(12).text(`UserName: ${user.user}`);
             doc.fontSize(12).text(`Role: ${user.vaitro}`);
+            doc.fontSize(12).text(`Status: ${user.isActive}`);
             doc.fontSize(12).text(`AVT: ${user.image || "N/A"}`);
             doc.moveDown(1);
         });
@@ -124,6 +127,8 @@ exports.add = async (req, res, next) => {
                 objUS.image = url_file;
                 objUS.vaitro = req.body.vaitro;
 
+                objUS.isActive = true;
+
                 const new_product = await objUS.save();
                 msg = "Thêm thành công";
                 console.log(new_product);
@@ -145,6 +150,9 @@ exports.edit = async (req, res, next) => {
         try {
             let objUS = new myMD.userModel();
             objUS.user = req.body.user;
+
+            objUS.isActive = objUser.isActive;
+
             if (req.body.password) {
                 const salt = await bcrypt.genSalt(10);
                 objUS.password = await bcrypt.hash(req.body.password, salt);
@@ -175,10 +183,24 @@ exports.edit = async (req, res, next) => {
 };
 
 // delete
-exports.deleteUser= async (req,res,next)=>{
-    await myMD.userModel.deleteOne({_id: req.body.IdDelete});
-    res.redirect('/user/1');
+exports.deleteUser = async (req, res, next) => {
+    const userId = req.body.IdDelete;
+    try {
+        const user = await myMD.userModel.findOne({ _id: userId });
+        if (!user) {
+            return res.status(404).json({ message: 'Người dùng không tồn tại' });
+        }
 
-}
+        // Nếu tài khoản đang hoạt động, tạm ngưng nó. Nếu không, kích hoạt nó.
+        user.isActive = !user.isActive;
+        await user.save();
+
+        res.redirect('/user/1');
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
+};
+
 
 

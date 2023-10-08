@@ -18,7 +18,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-
+<style>
+    .lock-icon{
+        width: 16px; /* Đặt kích thước hình ảnh dựa trên kích thước thích hợp */
+    height: 16px;
+    }
+</style>
 </head>
 
 <body onload="time()" class="app sidebar-mini rtl">
@@ -66,6 +71,7 @@
                                     <th scope="col" style="text-align: center"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên đăng nập</a></th>
                                  
                                     <th scope="col" style="text-align: center">Vai trò</th>
+                                    <th scope="col" style="text-align: center">Trạng thái</th>
                                     <th scope="col" style="text-align: center">Chức năng</th>
                                 </tr>
                             </thead>
@@ -87,6 +93,7 @@
                                         <td>
                                             <%= user.vaitro %>
                                         </td>
+                                        <td><%= user.isActive ? 'OK' : 'Không OK' %></td>
                                         <td>
 
                                             <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
@@ -95,8 +102,8 @@
 
                                             <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" type="button" data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal" data-user-id="<%= user._id %>">
-                                                <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
-                                            </button>
+                                            <img class="lock-icon" src="<%= user.isActive ? '/images/mo.png' : '/images/dong.png' %>" alt="Khóa">
+                                        </button>
 
                                         </td>
                                     </tr>
@@ -150,11 +157,11 @@
                 <form action="/user/delete" method="POST" id="formDelete">
                     <input type="hidden" name="IdDelete" id="IdDelete">
                         <div class="modal-body">
-                            Bạn có chắc muốn xoá User này không?
+                            Bạn có chắc muốn thay đổi trang thái User này không?
                         </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Xoá</button>
+                        <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Ok</button>
                     </div>
                 </form>
             </div>

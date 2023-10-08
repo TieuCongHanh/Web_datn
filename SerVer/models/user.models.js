@@ -5,7 +5,7 @@ const userSchema = new db.mongoose.Schema(
         password: { type: String, require: true },
         vaitro: { type: String, require: true },
         image: {type: String, require: false},
-      
+        isActive: { type: Boolean, default: true },
     },
     {
         collection: 'user'

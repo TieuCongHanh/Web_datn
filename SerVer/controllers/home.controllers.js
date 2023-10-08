@@ -15,11 +15,21 @@ exports.Login = async (req, res, next) => {
             if (!user1) {
                 return res.render('home/dn', { msg: 'Tài khoản không đúng vui lòng đăng nhập lại.', req: req });
             } else {
+                // Kiểm tra trường isActive của người dùng
+                if (!user1.isActive) {
+                    return res.render('home/dn', { msg: 'Tài khoản của bạn đã bị vô hiệu hóa.', req: req });
+                }
+
                 // So sánh mật khẩu đã băm
                 const passwordMatch = await bcrypt.compare(password, user1.password);
                 if (!passwordMatch) {
                     return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req });
                 } else {
+                    // Kiểm tra vaitro của người dùng
+                    if (user1.vaitro !== 'Admin') {
+                        return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req });
+                    }
+
                     console.log("Đăng nhập thành công.");
                     req.session.userLogin = user1;
                     return res.redirect('/');
@@ -31,7 +41,8 @@ exports.Login = async (req, res, next) => {
         }
     }
     return res.render('home/dn', { msg: msg, req: req });
-}
+};
+
 
 exports.Reg = async (req, res, next) => {
     let msg = '';
@@ -62,6 +73,8 @@ exports.Reg = async (req, res, next) => {
                 }
                 const salt = await bcrypt.genSalt(10);
                 objU.password = await bcrypt.hash(req.body.password, salt);
+                
+                objU.isActive = true;
 
                 await objU.save();
                 msg = 'Đăng ký thành công.';
