@@ -10,8 +10,8 @@ exports.Login = async (req, res, next) => {
     let msg = '';
     if (req.method == 'POST') {
         try {
-            const { user, password } = req.body;
-            const user1 = await md.userModel.findOne({ user });
+            const { username, password } = req.body;
+            const user1 = await md.userModel.findOne({ username });
             if (!user1) {
                 return res.render('home/dn', { msg: 'Tài khoản không đúng vui lòng đăng nhập lại.', req: req });
             } else {
@@ -26,7 +26,7 @@ exports.Login = async (req, res, next) => {
                     return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req });
                 } else {
                     // Kiểm tra vaitro của người dùng
-                    if (user1.vaitro !== 'Admin') {
+                    if (user1.role !== 'Admin') {
                         return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req });
                     }
 
@@ -43,14 +43,19 @@ exports.Login = async (req, res, next) => {
     return res.render('home/dn', { msg: msg, req: req });
 };
 
-
+const vietnamesePhoneNumberRegex = /(0[1-9][0-9]{8})\b/;
 exports.Reg = async (req, res, next) => {
     let msg = '';
-    const existingUser = await md.userModel.findOne({ user: req.body.user });
+    const existingUser = await md.userModel.findOne({ username: req.body.username });
     let countUser = await md.userModel.countDocuments({});
     if (req.method === 'POST') {
         console.log(req.body);
 
+       
+        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name || !req.body.email || !req.body.phone) {
+            msg = 'Vui lòng điền đầy đủ thông tin.';
+            return res.render('home/dk', { msg: msg });
+        }
         if (existingUser) {
             msg = 'Tài khoản đã tồn tại. Vui lòng chọn tên đăng nhập khác.';
             return res.render('home/dk', { msg: msg });
@@ -59,21 +64,27 @@ exports.Reg = async (req, res, next) => {
         if (req.body.password !== req.body.passwd2) {
             msg = 'Xác nhận mật khẩu không trùng khớp.';
             return res.render('home/dk', { msg: msg });
-        } else {
+        }  // Kiểm tra định dạng số điện thoại
+        if (!vietnamesePhoneNumberRegex.test(req.body.phone)) {
+            msg = 'Số điện thoại không hợp lệ. Vui lòng kiểm tra lại.';
+            return res.render('home/dk', { msg: msg });
+        }
             try {
                 let objU = new md.userModel();
-                objU.user = req.body.user;
+                objU.username = req.body.username;
                 objU.password = req.body.password;
-                objU.img = req.body.img;
+              
 
                 if (countUser === 0) {
-                    objU.vaitro = 'Admin';
+                    objU.role = 'Admin';
                 } else {
-                    objU.vaitro = 'User';
+                    objU.role = 'User';
                 }
                 const salt = await bcrypt.genSalt(10);
                 objU.password = await bcrypt.hash(req.body.password, salt);
+                objU.name = req.body.name;
                 
+                objU.phone = req.body.phone;
                 objU.isActive = true;
 
                 await objU.save();
@@ -83,7 +94,7 @@ exports.Reg = async (req, res, next) => {
                 msg = error.message;
             }
         }
-    }
+    
     res.render('home/dk', { msg: msg });
 };
 

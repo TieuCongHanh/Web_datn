@@ -18,7 +18,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-
+<style>
+       #displayImage {
+  display: block;
+  margin: 0 auto;
+}
+</style>
 </head>
 
 <body onload="time()" class="app sidebar-mini rtl">
@@ -31,16 +36,25 @@
             <span><%= msg %></span>
             <div id="clock"></div>
         </div>
+        <img src="<%= objUS.image %>" id="displayImage" alt="anh" style="width: 200px; height: 200px;border-radius: 30px; ">
        
-        <form action="" method="post" enctype="multipart/form-data">          
+        <form action="" method="post" enctype="multipart/form-data" style="margin-top: 50px;">          
             <div class="row">
                 <div class="form-group col-md-6">
                     <label class="control-label">Tên đăng nhập</label>
-                    <input readonly class="form-control" type="text" name="user" value="<%= objUS.user %>">
+                    <input readonly class="form-control" type="text" name="username" value="<%= objUS.username %>">
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Họ và tên</label>
+                    <input  class="form-control" type="text" name="name" value="<%= objUS.name %>">
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Số điện thoại</label>
+                    <input  class="form-control" type="text" name="phone" value="<%= objUS.phone %>">
                 </div>
                 <div class="form-group col-md-6 ">
                     <label for="exampleSelect1" class="control-label">Vai trò</label>
-                    <select class="form-control" id="exampleSelect1" name="vaitro" value="<%= objUS.vaitro %>">
+                    <select class="form-control" id="exampleSelect1" name="role" value="<%= objUS.role %>">
                         <option>Admin</option>
                         <option>User</option>
                     </select>
@@ -49,21 +63,25 @@
                     <label class="control-label">Mật khẩu</label>
                     <input class="form-control" type="password" name="password" placeholder="Nhập mật khẩu mới ( nếu như không nhập giữ nguyên giá trị cũ )">
                 </div>
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-6">
                     <label class="control-label">Hình ảnh</label>
-                    <input class="form-control" type="file" name="productImage" >
+                    <input class="form-control" type="file" id="newImage" name="productImage" >
                 </div>
             </div>
             <BR>
             <BR>
             <BR>
-            <button type="submit" action="/edit" class="btn btn-primary">Lưu</button>
-            <a class="btn btn-cancel" data-dismiss="modal" href="/user">Hủy bỏ</a>
+                <div style="float:right;">
+                    
+                    <!-- <a href="/user" class="btn btn-add" href="/user" type="submit">save</a> -->
+                    <a style=" width: 90px; height: 40px;" class="btn btn-cancel" data-dismiss="modal" href="/user">Hủy bỏ</a>
+                    <button style=" width: 90px; height: 40px;" type="submit" action="/edit" class="btn btn-primary">Lưu</button>
+                        </div>
         </form>
         
 
         <!-- đít -->
-        <footer class="text-center text-lg-start bg-white text-muted " style="margin-top: 220px;">
+        <footer class="text-center text-lg-start bg-white text-muted " style="margin-top: 100px;">
             <!-- Copyright -->
             <div class="text-center p-4" style="background-color: rgb(238, 127, 182);color: black;">
                 © 2023 Tác giả :
@@ -164,6 +182,22 @@
             e.stopImmediatePropagation();
         });
     </script>
+      </script>
+         
+      <script>
+         //bấm là ra ảnh
+         document.getElementById('newImage').addEventListener('change', function (event) {
+     const file = event.target.files[0];
+     if (file) {
+         const reader = new FileReader();
+         reader.onload = function (e) {
+             const displayImage = document.getElementById('displayImage');
+             displayImage.src = e.target.result;
+         };
+         reader.readAsDataURL(file);
+     }
+ });
+     </script>
 </body>
 
 </html>
