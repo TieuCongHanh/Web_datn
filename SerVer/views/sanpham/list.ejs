@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Người Dùng</title>
+    <title> Sản phẩm</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,7 +31,7 @@
     <main class="app-content">
         <div class="app-title">
             <ul class="app-breadcrumb breadcrumb side">
-                <li class="breadcrumb-item active"><a href="#"><b>Danh sách người dùng</b></a></li>
+                <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
             </ul>
            
             <div id="clock"></div>
@@ -44,22 +44,22 @@
                         <div class="row element-button">
                             <div class="col-sm-2">
                              
-                                <a class="btn btn-add btn-sm" href="/user/<%= countPage %>/add" title="Thêm" id="show-emp"><i
+                                <a class="btn btn-add btn-sm" href="/sanpham/<%= countPage %>/add" title="Thêm" id="show-emp"><i
                                         class="fas fa-plus"></i>
-                                    Tạo mới người dùng</a> 
+                                    Tạo mới sản phẩm</a> 
                             </div>
                             <div class="col-sm-2" id="btnExport">
-                                <a class="btn btn-excel btn-sm" href="/user/countPage/in"  title="In"><i class="fas fa-file-excel"></i>
+                                <a class="btn btn-excel btn-sm" href="/sanpham/countPage/in"  title="In"><i class="fas fa-file-excel"></i>
                                     Xuất Excel</a>
                             </div>
                             <div class="col-sm-2">
-                                <a class="btn btn-delete btn-sm print-file" href="/user/countPage/print"  type="button" title="In"
+                                <a class="btn btn-delete btn-sm print-file" href="/sanpham/countPage/print"  type="button" title="In"
                                     ><i class="fas fa-print"></i> In dữ liệu</a>
                             </div>
                         </div>
                         <!-- thanh tìm kiếm -->
                         <form role="search" style=" margin-top: 20px; margin-bottom: 30px; display: flex; float: right;">
-                            <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên đăng nhập..." aria-label="Search" name="username">
+                            <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên loại sản phẩm..." aria-label="Search" name="name">
                             <button class="btn btn-outline-info"  style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
                         </form>
                         <!-- thay đỏi -->
@@ -68,50 +68,38 @@
                                 <tr>
                                     <th scope="col" style="text-align: center">ID</th>
                                     <th scope="col" style="width: 150px;text-align: center">Ảnh đại diện </th>
-                                    <th scope="col" style="text-align: center"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên tài khoản</a></th>
-                                    <th scope="col" style="text-align: center">Họ và tên</th>
-                                    <th scope="col" style="text-align: center">SDT</th>
-                                    <th scope="col" style="text-align: center">Vai trò</th>
-                                    <th scope="col" style="text-align: center">Trạng thái</th>
+                                    <th scope="col" style="text-align: center">Tên sản phẩm</th> 
+                                    <th scope="col" style="text-align: center"><a  href="/sanpham?by=price&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Giá sản phẩm</a></th>                                                      
                                     <th scope="col" style="text-align: center">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <% listUS.forEach((user)=> { %>
+                                <% listL.forEach((sanpham)=> { %>
                                     <tr>
                                     <tr>
-                                        <td style="width: 200px;">
-                                            <%= user._id %>
+                                        <td style="width: 250px;">
+                                            <%= sanpham._id %>
                                         </td>
                                         <td style="text-align: center; vertical-align: middle;max-width: 100px;">
-                                            <img src="<%= user.image %>" alt="anh" style="width: 60px; height: 60px;border-radius: 30px;">
+                                            <img src="<%= sanpham.image %>" alt="anh" style="width: 60px; height: 60px;border-radius: 30px;">
                                         </td>
                                         <td style="text-align: center;">
                                             
-                                            <%= user.username %></td>
-                                        <td style="text-align: center;">
-                                            
-                                            <%= user.phone %></td>
-                                        <td style="text-align: center;">
-                                            
-                                             <%= user.name %></td>
-                                       
-                                        </td style="text-align: center;">
-                                
-                                        <td style="text-align: center;">
-                                            <%= user.role %>
+                                            <%= sanpham.name%>
                                         </td>
-                                        <td style="text-align: center;"><%= user.isActive ? 'Hoạt động' : 'KHóa' %></td>
-                                        <td style="text-align: center; width: 120px;">
-
+                                        <td style="text-align: center;">
+                                            
+                                            <%= sanpham.price%>
+                                        </td>
+                                                <td style="text-align: center; width: 150px;">             
                                             <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
-                                                <a href="/user/edit/<%= user._id %>"><i class="fas fa-edit"></i></a>
+                                                <a href="/sanpham/edit/<%= sanpham._id %>"><i class="fas fa-edit"></i></a>
                                             </button>
 
-                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" type="button" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal" data-user-id="<%= user._id %>">
-                                            <img class="lock-icon" src="<%= user.isActive ? '/images/mo.png' : '/images/dong.png' %>" alt="Khóa">
-                                        </button>
+                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Xóa" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal" data-user-id="<%= sanpham._id %>">
+                                        <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
+                                    </button>
 
                                         </td>
                                     </tr>
@@ -123,7 +111,7 @@
                         </table>
                         <!-- hết bảng -->
                         <div>
-                            Bạn đang xem <%= listUS.length %> trong tổng số <%= totalUsers %> người dùng
+                            Bạn đang xem <%= listL.length %> trong tổng số <%= totalSP %> sản phẩm
                         </div>
                         <!-- thông tin thông số của trang -->
                         <div class="row justify-content-end">
@@ -132,7 +120,7 @@
                                 <ul class="pagination justify-content-end">
                                   <% for (let i = 1; i <= countPage; i++) { %>
                                     <li class="page-item">
-                                      <a class="page-link" href="/user/<%= i %>"><%= i %></a>
+                                      <a class="page-link" href="/sanpham/<%= i %>"><%= i %></a>
                                     </li>
                                   <% } %>
                                 </ul>
@@ -165,7 +153,7 @@
                     <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xoá User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/user/delete" method="POST" id="formDelete">
+                <form action="/sanpham/delete" method="POST" id="formDelete">
                     <input type="hidden" name="IdDelete" id="IdDelete">
                         <div class="modal-body">
                             Bạn có chắc muốn thay đổi trang thái User này không?
@@ -197,53 +185,6 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
-<!-- <script type="text/javascript">
-    $(function(){
-        $('#btnExport').click(function(){
-      exportExcel("tableorder","","");
-        });
-    });
-    function exportExcel(tableName, headercolor, filename){
-        if(tableName.trim() === " "){
-            alert(" khoog có bảng");
-            return;
-        }
-        if(headercolor.trim() === ""){
-            headercolor ="#87AFC6";
-        }
-        if(filename.trim() === ""){
-            filename = "ExportData";
-        }
-        var export_data = "";
-        arrTableName = tableName.split(" | ");
-        if(arrTableName.length > 0){
-            // duyệt từng bagnr
-            for(var i = 0; i< arrTableName.length; i++){
-                export_data += "<table border ='2px'> <tr bgcolor='" +headercolor + "'>";
-                    var objectTable = document.getElementById(arrTableName[i]); // lấy id bảng thứ i
-                    if(objectTable === undefined){
-                        alert("bảng không tìm thấy");
-                        return;
-                    }
-                    // duyệt từng dòng lưu vào export_data
-                    for(var j =0; j < objectTable.rows.length; j++){
-                        export_data += objectTable.rows[j].innerHTML + "</tr>";
-                    }
-                    export_data += "</table>"
-            }
-            // kiểm tra trình duyệt là IE thì
-            if(window.navigator.userAgent.indexOf("MSIE") > 0 || !!window.navigator.userAgent.match(/Trient.*rv\:11\./)){
-                exportIF.document.open("txt/html", "replace");
-                exportIF.document.write(export_data);
-                exportIF.document.close();
-                exportIF.focus();
-                sa = exportIF.document.execCommand("SaveAs", true, filename + ".xls");
-            }else{ // các trình duyệt khác
-                sa = window.open("data:application/vnd.ms-excel,"+ encodeURIComponent(export_data))
-            }
-        }
-    }
-</script> -->
 
     <script type="text/javascript">
         $('#sampleTable').DataTable();

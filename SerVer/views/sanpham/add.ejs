@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Trang thêm Người Dùng</title>
+    <title>Trang thêm Sản Phẩm</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,13 +18,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-<style>
-    
+ <style>
     #displayImage {
   display: block;
   margin: 0 auto;
 }
-</style>
+ </style>
 </head>
 
 <body onload="time()" class="app sidebar-mini rtl">
@@ -32,41 +31,22 @@
     <main class="app-content">
         <div class="app-title">
             <ul class="app-breadcrumb breadcrumb side">
-                <li class="breadcrumb-item active"><a href="#"><b>Thêm người dùng</b></a></li>
+                <li class="breadcrumb-item active"><a href="#"><b>Thêm sản phẩm</b></a></li>
             </ul>
-            <span><%= msg %></span>
+            <span id="message"><%= msg %></span>
             <div id="clock"></div>
         </div>
         <!--MODAL add-->
-        <img src="/images/imglogo.png" id="displayImage" alt="anh" style="width: 150px; height: 150px;border-radius: 30px;">
+        <img src="/images/imglogo.png" id="displayImage" alt="anh" style="width: 200px; height: 200px;border-radius: 30px;">
         <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 50px;">
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label class="control-label">Tên đăng nhập </label>
-                    <input class="form-control" type="text" name="username">
-                </div>
-                <div class="form-group col-md-6">
-                    <label class="control-label">Họ và tên </label>
+                    <label class="control-label">Tên sản phẩm </label>
                     <input class="form-control" type="text" name="name">
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="control-label">Số điện thoại </label>
-                    <input class="form-control" type="text" name="phone">
-                </div>
-                <div class="form-group col-md-6">
-                    <label class="control-label">Tên đăng nhập </label>
-                    <input class="form-control" type="text" name="user">
-                </div>
-                <div class="form-group col-md-6 ">
-                    <label for="exampleSelect1" class="control-label">Vai trò</label>
-                    <select class="form-control" id="exampleSelect1" name="role">
-                        <option>Admin</option>
-                        <option>User</option>
-                    </select>
-                </div>
-                <div class="form-group  col-md-6">
-                    <label class="control-label">Mật khẩu</label>
-                    <input class="form-control" type="password" name="password">
+                    <label class="control-label">Giá sản phẩm </label>
+                    <input class="form-control" type="text" name="price">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="productImage" class="control-label">Hình ảnh</label>
@@ -78,11 +58,10 @@
             <BR>
                 <div style="float:right;">
                     
-            <!-- <a href="/user" class="btn btn-add" href="/user" type="submit">save</a> -->
-            <a style=" width: 90px; height: 40px;" class="btn btn-cancel" data-dismiss="modal" href="/user">Hủy bỏ</a>
-            <button style=" width: 90px; height: 40px;" type="submit" action="/user/add" class="btn btn-primary">Lưu</button>
-                </div>
-            
+                    <!-- <a href="/user" class="btn btn-add" href="/user" type="submit">save</a> -->
+                    <a style=" width: 90px; height: 40px;" class="btn btn-cancel" data-dismiss="modal" href="/sanpham">Hủy bỏ</a>
+                    <button style=" width: 90px; height: 40px;" type="submit" action="/sanpham/add" class="btn btn-primary">Lưu</button>
+                        </div>
         </form>
 
 
@@ -99,6 +78,11 @@
             <!-- Copyright -->
         </footer>
     </main>
+
+
+
+
+
 
 
     <!-- Essential javascripts for application to work-->
@@ -185,7 +169,20 @@
             e.stopImmediatePropagation();
         });
     </script>
-         
+     <script>
+        // Lấy phần tử span chứa thông báo
+        const messageElement = document.getElementById('message');
+      
+        // Kiểm tra xem có thông báo hay không
+        if (messageElement.innerText) {
+          // Đợi 2 giây sau khi có thay đổi rồi ẩn thông báo
+          setTimeout(function () {
+            messageElement.style.display = 'none';
+          }, 2000); // 2 giây
+        }
+
+      </script>
+      
          <script>
             //bấm là ra ảnh
             document.getElementById('newImage').addEventListener('change', function (event) {
