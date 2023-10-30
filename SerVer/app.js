@@ -8,7 +8,7 @@ var session = require('express-session')
 var usersRouter = require('./routes/user');
 var homeRouter=require('./routes/home');
 var sanphamRouter=require('./routes/sanpham');
-
+var apiUser = require('./routes/api/user.api');
 
 var app = express();
 
@@ -31,7 +31,7 @@ app.use('/', homeRouter);
 app.use('/user', usersRouter);
 app.use('/home', homeRouter);
 app.use('/sanpham', sanphamRouter);
-
+app.use('/api',apiUser);
 app.use(express.static("images"));
 
 

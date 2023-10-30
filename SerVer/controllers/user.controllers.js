@@ -20,13 +20,15 @@ exports.list = async (req, res, next) => {
     let list = await myMD.userModel.find(timkiemUser).skip(start).limit(perPage).sort({ [by] :order });
     // Tính tổng số người dùng
     let totalUsers = await myMD.userModel.find(timkiemUser).countDocuments();
-
+// Tính tổng số người dùng trên trang hiện tại
+   let currentPageTotal = start + list.length;
+   
     let countlist = await myMD.userModel.find(timkiemUser);
     let count = countlist.length / perPage;
     count = Math.ceil(count);
 
     console.log(list);
-    res.render('user/list', { listUS: list, countPage: count , req: req , msg: msg,by : by, order :order,totalUsers: totalUsers});
+    res.render('user/list', { listUS: list, countPage: count , req: req , msg: msg,by : by, order :order,totalUsers: totalUsers,currentPageTotal:currentPageTotal});
 }
 exports.in = async (req, res, next) => {
     try {

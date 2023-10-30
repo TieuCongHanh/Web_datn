@@ -23,6 +23,11 @@
         width: 16px; /* Đặt kích thước hình ảnh dựa trên kích thước thích hợp */
     height: 16px;
     }
+    .page-item.active .page-link {
+    background-color: #007bff; /* Màu nền khi nút được chọn */
+    color: #fff; /* Màu chữ khi nút được chọn */
+    border-color: #007bff; /* Màu viền khi nút được chọn */
+}
 </style>
 </head>
 
@@ -123,7 +128,7 @@
                         </table>
                         <!-- hết bảng -->
                         <div>
-                            Bạn đang xem <%= listUS.length %> trong tổng số <%= totalUsers %> người dùng
+                            Bạn đang xem <%= currentPageTotal %> trong tổng số <%= totalUsers %> người dùng
                         </div>
                         <!-- thông tin thông số của trang -->
                         <div class="row justify-content-end">
@@ -131,7 +136,7 @@
                               <nav aria-label="Page navigation">
                                 <ul class="pagination justify-content-end">
                                   <% for (let i = 1; i <= countPage; i++) { %>
-                                    <li class="page-item">
+                                    <li class="page-item<%= (i == req.params.i) ? ' active' : '' %>">
                                       <a class="page-link" href="/user/<%= i %>"><%= i %></a>
                                     </li>
                                   <% } %>
