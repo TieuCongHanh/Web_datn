@@ -26,7 +26,7 @@ exports.Login = async (req, res, next) => {
                     return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req });
                 } else {
                     // Kiểm tra vaitro của người dùng
-                    if (user1.vaitro !== 'Admin') {
+                    if (user1.role !== 'Admin') {
                         return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req });
                     }
 
@@ -50,9 +50,6 @@ exports.Reg = async (req, res, next) => {
     let countUser = await md.userModel.countDocuments({});
     if (req.method === 'POST') {
         console.log(req.body);
-
-       
-
         if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name  || !req.body.phone) {
 
             msg = 'Vui lòng điền đầy đủ thông tin.';

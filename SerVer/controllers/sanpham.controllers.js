@@ -39,15 +39,17 @@ exports.in = async (req, res, next) => {
             { header: "_id", key: "_id", width: 50 },
             { header: "name", key: "name", width: 30 },
             { header: "price", key: "price", width: 30 },
+            { header: "describe", key: "describe", width: 50 },
             { header: "image", key: "image", width: 70 },
         ];
-        const loaisp = await myMD.sanphamModel.find({}); 
+        const sanphams = await myMD.sanphamModel.find({}); 
         // Thêm dữ liệu người dùng vào bảng Excel
-        users.forEach((user) => {
+        sanphams.forEach((sanpham) => {
             sheet.addRow({
-                _id: user._id,
-                tenLoai: user.tenLoai,
-                image: user.image || '', 
+                _id: sanpham._id,
+                tenLoai: sanpham.tenLoai,
+                describe: sanpham.describe,
+                image: sanpham.image || '', 
             });
         });
         res.setHeader(
@@ -56,7 +58,7 @@ exports.in = async (req, res, next) => {
         );
         res.setHeader(
             "Content-Disposition",
-            "attachment;filename=" + "user.xlsx"
+            "attachment;filename=" + "sanpham.xlsx"
         );
         // Ghi workbook vào response để tải xuống
         await workbook.xlsx.write(res);
@@ -90,6 +92,7 @@ exports.print = async (req, res, next) => {
             doc.fontSize(14).text(`sp ID: ${Sanpham._id}`);
             doc.fontSize(12).text(`Name: ${Sanpham.name}`);
             doc.fontSize(12).text(`Price: ${Sanpham.price}`);
+            doc.fontSize(12).text(`describe: ${Sanpham.describe}`);
             doc.fontSize(12).text(`AVT: ${Sanpham.image || "N/A"}`);
             doc.moveDown(1);
         });
@@ -130,7 +133,8 @@ exports.add = async (req, res, next) => {
 
             const objSP = new myMD.sanphamModel();
             objSP.name = req.body.name;
-            objSP.price = price;
+            objSP.price = req.body.price;
+            objSP.describe = req.body.describe;
             objSP.image = url_file;
 
             const objloai = await objSP.save();
@@ -161,20 +165,19 @@ exports.edit = async (req, res, next) => {
                 return;
             }
 
-            let objsp = new myMD.sanphamModel();
-            objsp.name = req.body.name;
+            // Sử dụng cùng một biến `objSP` để cập nhật thông tin sản phẩm
+            objSP.name = req.body.name;
+            objSP.price = req.body.price;
+            objSP.describe = req.body.describe;
+
             if (req.file != undefined) {
                 fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
                 let url_file = '/uploads/' + req.file.originalname;
-                objsp.image = url_file;
-            } else {
-                objsp.image = objSP.image;
+                objSP.image = url_file;
             }
 
-            objsp.price = price;
-            objsp._id = idsp;
+            await objSP.save(); // Sử dụng .save() để lưu thông tin sản phẩm
 
-            await myMD.sanphamModel.findByIdAndUpdate(idsp, objsp);
             msg = 'Cập Nhật Thành Công';
         } catch (error) {
             msg = 'Lỗi Ghi CSDL: ' + error.message;
