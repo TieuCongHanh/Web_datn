@@ -23,6 +23,13 @@
         width: 16px; /* Đặt kích thước hình ảnh dựa trên kích thước thích hợp */
     height: 16px;
     }
+    /* CSS cho trang được chọn */
+.page-item.active .page-link {
+    background-color: #007bff; /* Màu nền khi nút được chọn */
+    color: #fff; /* Màu chữ khi nút được chọn */
+    border-color: #007bff; /* Màu viền khi nút được chọn */
+}
+
 </style>
 </head>
 
@@ -70,6 +77,7 @@
                                     <th scope="col" style="width: 150px;text-align: center">Ảnh đại diện </th>
                                     <th scope="col" style="text-align: center">Tên sản phẩm</th> 
                                     <th scope="col" style="text-align: center"><a  href="/sanpham?by=price&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Giá sản phẩm</a></th>                                                      
+                                    <th scope="col" style="text-align: center">Mô tả sản phẩm</th> 
                                     <th scope="col" style="text-align: center">Chức năng</th>
                                 </tr>
                             </thead>
@@ -91,15 +99,18 @@
                                             
                                             <%= sanpham.price%>
                                         </td>
-                                                <td style="text-align: center; width: 150px;">             
+                                        <td style="text-align: center;">
+                                            
+                                            <%= sanpham.describe%>
+                                        </td>
+                                        <td style="text-align: center; width: 150px;">             
                                             <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
                                                 <a href="/sanpham/edit/<%= sanpham._id %>"><i class="fas fa-edit"></i></a>
                                             </button>
 
-                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Xóa" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal" data-user-id="<%= sanpham._id %>">
-                                        <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
-                                    </button>
+                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Xóa" type="button" data-bs-toggle="modal"data-bs-target="#deleteModal" data-user-id="<%= sanpham._id %>">
+                                                 <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
+                                            </button>
 
                                         </td>
                                     </tr>
@@ -111,22 +122,23 @@
                         </table>
                         <!-- hết bảng -->
                         <div>
-                            Bạn đang xem <%= listL.length %> trong tổng số <%= totalSP %> sản phẩm
+                            Bạn đang xem <%= currentPageTotal %> trong tổng số <%= totalSP %> sản phẩm
                         </div>
                         <!-- thông tin thông số của trang -->
                         <div class="row justify-content-end">
                             <div class="col-auto">
-                              <nav aria-label="Page navigation">
-                                <ul class="pagination justify-content-end">
-                                  <% for (let i = 1; i <= countPage; i++) { %>
-                                    <li class="page-item">
-                                      <a class="page-link" href="/sanpham/<%= i %>"><%= i %></a>
-                                    </li>
-                                  <% } %>
-                                </ul>
-                              </nav>
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-end">
+                                        <% for (let i = 1; i <= countPage; i++) { %>
+                                            <li class="page-item<%= (i == req.params.i) ? ' active' : '' %>">
+                                                <a class="page-link" href="/sanpham/<%= i %>"><%= i %></a>
+                                            </li>
+                                        <% } %>
+                                    </ul>
+                                </nav>
                             </div>
-                          </div>
+                        </div>
+                        
                         <!-- hết  thông tin thông số của trang -->
                     </div>
                 </div>

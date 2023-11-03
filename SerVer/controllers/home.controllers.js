@@ -52,7 +52,7 @@ exports.Reg = async (req, res, next) => {
         console.log(req.body);
 
        
-        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name || !req.body.phone) {
+        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name || !req.body.email || !req.body.phone) {
             msg = 'Vui lòng điền đầy đủ thông tin.';
             return res.render('home/dk', { msg: msg });
         }

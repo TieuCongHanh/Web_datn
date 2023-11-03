@@ -8,7 +8,6 @@ var session = require('express-session')
 var usersRouter = require('./routes/user');
 var homeRouter=require('./routes/home');
 var sanphamRouter=require('./routes/sanpham');
-var doanhthuRoter = require('./routes/doanhthu');
 
 
 var app = express();
@@ -32,7 +31,6 @@ app.use('/', homeRouter);
 app.use('/user', usersRouter);
 app.use('/home', homeRouter);
 app.use('/sanpham', sanphamRouter);
-app.use('/doanhth', doanhthuRoter);
 
 app.use(express.static("images"));
 
