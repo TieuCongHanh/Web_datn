@@ -26,9 +26,9 @@ exports.Login = async (req, res, next) => {
                     return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req });
                 } else {
                     // Kiểm tra vaitro của người dùng
-                    // if (user1.vaitro !== 'Admin') {
-                    //     return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req });
-                    // }
+                    if (user1.vaitro !== 'Admin') {
+                        return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req });
+                    }
 
                     console.log("Đăng nhập thành công.");
                     req.session.userLogin = user1;
@@ -52,9 +52,7 @@ exports.Reg = async (req, res, next) => {
         console.log(req.body);
 
        
-
-        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name  || !req.body.phone) {
-
+        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name || !req.body.email || !req.body.phone) {
             msg = 'Vui lòng điền đầy đủ thông tin.';
             return res.render('home/dk', { msg: msg });
         }
