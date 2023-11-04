@@ -71,14 +71,14 @@
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="text-align: center">ID</th>
-                                    <th scope="col" style="width: 150px;text-align: center">Ảnh đại diện </th>
-                                    <th scope="col" style="text-align: center"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên tài khoản</a></th>
-                                    <th scope="col" style="text-align: center">Họ và tên</th>
-                                    <th scope="col" style="text-align: center">SDT</th>
-                                    <th scope="col" style="text-align: center">Vai trò</th>
-                                    <th scope="col" style="text-align: center">Trạng thái</th>
-                                    <th scope="col" style="text-align: center">Chức năng</th>
+                                    <th scope="col" style="text-align: center; width: 13%">ID</th>
+                                    <th scope="col" style="width: 150px;text-align: center; width: 15%">Ảnh đại diện </th>
+                                    <th scope="col" style="text-align: center; width: 15%"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên tài khoản</a></th>
+                                    <th scope="col" style="text-align: center; width: 15%">Họ và tên</th>
+                                    <th scope="col" style="text-align: center; width: 10%">SDT</th>
+                                    <th scope="col" style="text-align: center; width: 7%">Vai trò</th>
+                                    <th scope="col" style="text-align: center; width: 10%">Trạng thái</th>
+                                    <th scope="col" style="text-align: center; width: 15%">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -94,29 +94,35 @@
                                         <td style="text-align: center;">
                                             
                                             <%= user.username %></td>
-                                        <td style="text-align: center;">
-                                            
-                                            <%= user.phone %></td>
+                                        
                                         <td style="text-align: center;">
                                             
                                              <%= user.name %></td>
+
+                                        <td style="text-align: center;">
+                                            
+                                            <%= user.phone %></td>
                                        
                                         </td style="text-align: center;">
                                 
                                         <td style="text-align: center;">
                                             <%= user.role %>
                                         </td>
-                                        <td style="text-align: center;"><%= user.isActive ? 'Hoạt động' : 'KHóa' %></td>
-                                        <td style="text-align: center; width: 120px;">
+                                        <td style="text-align: center;"><%= user.isActive ? 'Hoạt động' : 'Khóa' %></td>
+                                        <td style="text-align: center">
 
-                                            <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
+                                            <button class="btn bg-warning-subtle btn-sm edit"  type="button" title="Sửa" id="show-emp">
                                                 <a href="/user/edit/<%= user._id %>"><i class="fas fa-edit"></i></a>
                                             </button>
 
-                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" type="button" data-bs-toggle="modal"
+                                            <button class="btn bg-warning-subtle btn-sm"  type="button" data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal" data-user-id="<%= user._id %>">
                                             <img class="lock-icon" src="<%= user.isActive ? '/images/mo.png' : '/images/dong.png' %>" alt="Khóa">
-                                        </button>
+                                            </button>
+                                            
+                                            <button class="btn bg-warning-subtle btn-sm"  type="button" title="Chi tiết" id="show-emp">
+                                                <a href="/user/edit/<%= user._id %>"><i class="fa fa-info"></i></a>
+                                            </button>
 
                                         </td>
                                     </tr>

@@ -26,9 +26,9 @@ exports.Login = async (req, res, next) => {
                     return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req });
                 } else {
                     // Kiểm tra vaitro của người dùng
-                    if (user1.role !== 'Admin') {
-                        return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req });
-                    }
+                    // if (user1.vaitro !== 'Admin') {
+                    //     return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req });
+                    // }
 
                     console.log("Đăng nhập thành công.");
                     req.session.userLogin = user1;

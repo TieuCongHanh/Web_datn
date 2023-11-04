@@ -1,5 +1,5 @@
 var db = require('./db');
-const deliverySchema = new db.mongoose.Schema(
+const deliverSchema = new db.mongoose.Schema(
     {
         name: { type: String, require: true },
         phone: { type: Number, require: true },
@@ -7,9 +7,9 @@ const deliverySchema = new db.mongoose.Schema(
         email: {type: String, require: true},
     },
     {
-        collection: 'delivery'
+        collection: 'deliver'
     }
 )
-let deliveryModel = db.mongoose.model('deliveryModel', deliverySchema);
+let deliverModel = db.mongoose.model('deliverModel', deliverSchema);
 
-module.exports = { deliveryModel };
+module.exports = { deliverModel };
