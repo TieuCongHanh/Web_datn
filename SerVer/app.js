@@ -9,6 +9,7 @@ var usersRouter = require('./routes/user');
 var homeRouter=require('./routes/home');
 var sanphamRouter=require('./routes/sanpham');
 var doanhthuRouter=require('./routes/doanhthu');
+var ratingRouter = require('./routes/danhgia');
 
 
 var app = express();
@@ -33,6 +34,7 @@ app.use('/user', usersRouter);
 app.use('/home', homeRouter);
 app.use('/sanpham', sanphamRouter);
 app.use('/doanhth', doanhthuRouter);
+app.use('/danhgia', ratingRouter);
 
 app.use(express.static("images"));
 
