@@ -1,30 +1,31 @@
 var db = require('./db');
-const userSchema = new db.mongoose.Schema(
+const staffSchema = new db.mongoose.Schema(
     {
         _id: {type: db.mongoose.Schema.Types.Number},
-        username: { type: String, require: true },
-        name: { type: String, require: true },
-        password: { type: String, require: true },
         role: { type: String, require: true },
-        userEmail: { type: String, require: true },
+        name: { type: String, require: true },
         image: {type: String, require: false},
+        address: {type: String, require: false},
         phone: {type: String, require: true},
-        isActive: { type: Boolean, default: true },
+        date: {type: String, require: true},
+        gender: {type: String, require: true},
+        email: {type: String, require: false}
     },
     {
-        collection: 'user'
+        collection: 'staff'
     }
 )
 
+
 // Middleware "pre" để tự động tăng giá trị _id lên 1 khi có người dùng mới
-userSchema.pre('save', function (next) {
+staffSchema.pre('save', function (next) {
     const doc = this;
     if (doc.isNew) {
         // Tìm người dùng có giá trị ID lớn nhất
-        userModel.findOne({}, { _id: 1 }, { sort: { _id: -1 } })
-            .then((maxUser) => {
+        staffModel.findOne({}, { _id: 1 }, { sort: { _id: -1 } })
+            .then((maxOrders) => {
                 // Tăng giá trị ID lên 1
-                const nextId = maxUser ? maxUser._id + 1 : 1;
+                const nextId = maxOrders ? maxOrders._id + 1 : 1;
                 doc._id = nextId;
                 next();
             })
@@ -36,6 +37,6 @@ userSchema.pre('save', function (next) {
     }
 });
 
-let userModel = db.mongoose.model('userModel', userSchema);
+let staffModel = db.mongoose.model('staffModel', staffSchema);
 
-module.exports = { userModel };
+module.exports = { staffModel };

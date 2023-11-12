@@ -1,12 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const ordersController = require('../controllers/ordersController');
+const bodyParser = require('body-parser');
+const ordersController = require('../controllers/orders.controller');
 
 
-router.get('/orders', ordersController.getAllOrders);
+router.use(bodyParser.urlencoded({extended:false}));
 
-router.post('/orders', ordersController.createOrder);
+router.get('/:i',ordersController.list);
+router.get('/',ordersController.list);
 
-router.get('/orders/:id', ordersController.getOrderById);
+router.get('/:i/in', ordersController.in);
+router.post('/:i/in',  ordersController.in);
+
+router.get('/:i/print', ordersController.print);
+router.post('/:i/print',  ordersController.print);
+
+router.get('/detail/order', ordersController.detail);
 
 module.exports = router;

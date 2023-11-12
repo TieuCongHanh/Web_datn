@@ -1,25 +1,24 @@
 var db = require('./db');
-const ordersSchema = new db.mongoose.Schema(
+const paymentSchema = new db.mongoose.Schema(
     {
         _id: {type: db.mongoose.Schema.Types.Number},
-        id_user: { type: db.mongoose.Schema.Types.Number, ref: 'userModel' },
-        total_price: { type: db.mongoose.Schema.Types.Number, ref: 'paymentModel' },
-        delivery_status: { type: String, require: true },
-        id_deliver: {type: db.mongoose.Schema.Types.Number, ref: 'deliverModel'},
-        date: { type: String, default: true },
+        id_order: { type: db.mongoose.Schema.Types.Number, ref: 'orderModel' },
+        method: { type: String, require: true },
+        amount: {type: String, require: false},
+        describle: {type: String, require: false},
     },
     {
-        collection: 'orders'
+        collection: 'payment'
     }
 )
 
 
 // Middleware "pre" để tự động tăng giá trị _id lên 1 khi có người dùng mới
-ordersSchema.pre('save', function (next) {
+paymentSchema.pre('save', function (next) {
     const doc = this;
     if (doc.isNew) {
         // Tìm người dùng có giá trị ID lớn nhất
-        ordersModel.findOne({}, { _id: 1 }, { sort: { _id: -1 } })
+        paymentModel.findOne({}, { _id: 1 }, { sort: { _id: -1 } })
             .then((maxOrders) => {
                 // Tăng giá trị ID lên 1
                 const nextId = maxOrders ? maxOrders._id + 1 : 1;
@@ -34,6 +33,6 @@ ordersSchema.pre('save', function (next) {
     }
 });
 
-let ordersModel = db.mongoose.model('ordersModel', ordersSchema);
+let paymentModel = db.mongoose.model('paymentModel', paymentSchema);
 
-module.exports = { ordersModel };
+module.exports = { paymentModel };

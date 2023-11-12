@@ -31,6 +31,7 @@ let currentPageTotal = start + list.length;
     console.log(list);
     res.render('sanpham/list', { listL: list, countPage: count , req: req , msg: msg,by : by, order :order,totalSP: totalSP,currentPageTotal:currentPageTotal});
 }
+
 exports.in = async (req, res, next) => {
     try {
         let workbook = new excelJs.Workbook();
