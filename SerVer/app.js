@@ -12,6 +12,7 @@ var sanphamRouter=require('./routes/sanpham');
 var orderRouter=require('./routes/orders');
 var staffRouter=require('./routes/staff');
 var doanhthuRouter=require('./routes/doanhthu');
+var addressRouter=require('./routes/address');
 
 
 var app = express();
@@ -38,6 +39,7 @@ app.use('/sanpham', sanphamRouter);
 app.use('/order',check_login.yeu_cau_dang_nhap, orderRouter);
 app.use('/staff',check_login.yeu_cau_dang_nhap, staffRouter);
 app.use('/doanhth', doanhthuRouter);
+app.use('/address', addressRouter);
 
 app.use(express.static("images"));
 
