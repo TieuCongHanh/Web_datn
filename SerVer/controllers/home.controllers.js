@@ -1,10 +1,13 @@
 const md = require('../models/user.models');
+const md1 = require('../models/sanpham.models');
 const bcrypt = require('bcrypt');
 var msg = '';
 exports.home = async (req, res, next) => {
     let countUser = await md.userModel.countDocuments({});
     console.log(`Tổng số user: ${countUser}`);
-    res.render('home/home', {req : req , msg: msg, countUser: countUser});
+    let countProduct = await md1.sanphamModel.countDocuments({});
+    console.log(`Tổng số product: ${countProduct}`);
+    res.render('home/home', {req : req , msg: msg, countProduct: countProduct, countUser:countUser});
 }
 exports.Login = async (req, res, next) => {
     let msg = '';

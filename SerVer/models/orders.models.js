@@ -6,6 +6,7 @@ const ordersSchema = new db.mongoose.Schema(
         delivery_status: { type: String, require: true },
         id_deliver: {type: db.mongoose.Schema.Types.ObjectId, ref: 'deliverModel'},
         date: { type: String, default: true },
+        quantity:{type:Number, default:true}
     },
     {
         collection: 'orders'

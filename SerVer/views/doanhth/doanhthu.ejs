@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Doanh thu</title>
+    <title>Thống kê</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +32,7 @@
         <main class="app-content">
             <div class="app-title">
                 <ul class="app-breadcrumb breadcrumb side">
-                    <li class="breadcrumb-item active"><a href="#"><b>Doanh thu</b></a></li>
+                    <li class="breadcrumb-item active"><a href="#"><b>Thống kê</b></a></li>
                 </ul>
 
                 <div id="clock"></div>
@@ -49,7 +49,7 @@
                                         Xuất Excel</a>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-delete btn-sm print-file" href="/sanpham/countPage/print"
+                                    <a class="btn btn-delete btn-sm print-file" href="/doanhth/countPage/print"
                                         type="button" title="In"><i class="fas fa-print"></i> In dữ liệu</a>
                                 </div>
                             </div>
@@ -96,9 +96,51 @@
 
                                                 <%= sanpham.price%>
                                             </td>
+                                            <% listod.forEach((order)=> { %>
+                                                <td style="text-align: center;">
+                                                    <%= order.quantity%>
+                                                </td>
+                                            <% }); %>
+                                            <td style="text-align: center;">
+
+
+                                            </td>
                                         </tr>
                                         </tr>
                                         <% }); %>
+                                        <!-- <% listod.forEach((order)=> { %>
+                                            <tr>
+                                            <tr>
+                                                <td style="width: 250px;">
+                                                    <%= order._id %>
+                                                </td>
+                                                <td style="text-align: center;">
+    
+                                                    <%= order.id_user%>
+                                                </td>
+                                                <td style="text-align: center;">
+    
+                                                    <%= order.total_price%>
+                                                </td>
+                                                <td style="text-align: center;">
+    
+                                                    <%= order.delivery_status%>
+                                                </td>
+                                                <td style="text-align: center;">
+    
+                                                    <%= order.id_deliver%>
+                                                </td>
+                                                <td style="text-align: center;">
+    
+                                                    <%= order.date%>
+                                                </td>
+                                                <td style="text-align: center;">
+    
+                                                    <%= order.quantity%>
+                                                </td>
+                                            </tr>
+                                            </tr>
+                                            <% }); %> -->
 
 
                                 </tbody>
@@ -112,11 +154,13 @@
                                 <div class="col-auto">
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination justify-content-end">
-                                            <% for (let i = 1; i <= countPage; i++) { %>
+                                            <% for (let i=1; i <=countPage; i++) { %>
                                                 <li class="page-item<%= (i == req.params.i) ? ' active' : '' %>">
-                                                    <a class="page-link" href="/doanhth/<%= i %>"><%= i %></a>
+                                                    <a class="page-link" href="/doanhth/<%= i %>">
+                                                        <%= i %>
+                                                    </a>
                                                 </li>
-                                            <% } %>
+                                                <% } %>
                                         </ul>
                                     </nav>
                                 </div>
@@ -163,66 +207,20 @@
                                 <tbody>
                                     <a href="" style="text-align: center;">Đang hoàn thiện</a>
                                     <tr>
-                                        <tr>
-                                            <td scope="col" style="text-align: center">
-                                                <%= listL.length %>
-                                            </td>
-                                            <!-- <td>
-
-                                            </td>
-                                            <td>
-
-                                            </td> -->
-                                        </tr>
+                                    <tr>
+                                        <td scope="col" style="text-align: center">
+                                            <%= totalSP %>
+                                        </td>
+                                        <td scope="col" style="text-align: center">
+                                            <%= totalSales%>
+                                        </td>
+                                        <td scope="col" style="text-align: center">
+                                            <%= ordersp%>
+                                        </td>
                                     </tr>
-                                    <!-- <% listL.forEach((sanpham)=> { %> -->
-                                        
-                                        <!-- đang chuẩn bị làm -->
-                                        <!-- <tr>
-                                        <tr>
-                                            <td style="width: 250px;">
-                                                <%= sanpham._id %>
-                                            </td>
-                                            <td style="text-align: center; vertical-align: middle;max-width: 100px;">
-                                                <img src="<%= sanpham.image %>" alt="anh"
-                                                    style="width: 60px; height: 60px;border-radius: 30px;">
-                                            </td>
-                                            <td style="text-align: center;">
-
-                                                <%= sanpham.name%>
-                                            </td>
-                                            <td style="text-align: center;">
-
-                                                <%= sanpham.price%>
-                                            </td>
-                                        </tr>
-                                        </tr> -->
-                                        <!-- <% }); %> -->
-
-
+                                    </tr>
                                 </tbody>
                             </table>
-                            <!-- hết bảng -->
-                            <!-- <div>
-                                Bạn đang xem <%= listL.length %> trong tổng số <%= totalSP %> sản phẩm
-                            </div> -->
-                            <!-- thông tin thông số của trang -->
-                            <!-- <div class="row justify-content-end">
-                                <div class="col-auto">
-                                    <nav aria-label="Page navigation">
-                                        <ul class="pagination justify-content-end">
-                                            <% for (let i=1; i <=countPage; i++) { %>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="/sanpham/<%= i %>">
-                                                        <%= i %>
-                                                    </a>
-                                                </li>
-                                                <% } %>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div> -->
-                            <!-- hết  thông tin thông số của trang -->
                         </div>
                     </div>
                 </div>
@@ -240,28 +238,6 @@
         </main>
 
         <!-- modal delete -->
-        <!-- form xoá -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xoá User</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form action="/sanpham/delete" method="POST" id="formDelete">
-                        <input type="hidden" name="IdDelete" id="IdDelete">
-                        <div class="modal-body">
-                            Bạn có chắc muốn thay đổi trang thái User này không?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                            <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Ok</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
 
 
 
