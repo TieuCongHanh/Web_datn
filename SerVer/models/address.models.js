@@ -10,4 +10,5 @@ const addressSchema = new db.mongoose.Schema(
 )
 let addressModel = db.mongoose.model('addressModel', addressSchema);
 
-module.exports = { addressModel };
+module.exports = addressModel;
+
