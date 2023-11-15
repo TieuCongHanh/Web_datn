@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title> Sản phẩm</title>
+    <title>Đơn Hàng</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,7 +38,7 @@
     <main class="app-content">
         <div class="app-title">
             <ul class="app-breadcrumb breadcrumb side">
-                <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
+                <li class="breadcrumb-item active"><a href="#"><b>Danh sách hóa đơn</b></a></li>
             </ul>
            
             <div id="clock"></div>
@@ -49,70 +49,68 @@
                     <div class="tile-body">
                         <!-- thanh chức năng đầu tiên -->
                         <div class="row element-button">
-                            <div class="col-sm-2">
-                             
-                                <a class="btn btn-add btn-sm" href="/sanpham/<%= countPage %>/add" title="Thêm" id="show-emp"><i
-                                        class="fas fa-plus"></i>
-                                    Tạo mới sản phẩm</a> 
-                            </div>
                             <div class="col-sm-2" id="btnExport">
-                                <a class="btn btn-excel btn-sm" href="/sanpham/countPage/in"  title="In"><i class="fas fa-file-excel"></i>
+                                <a class="btn btn-excel btn-sm" href="/order/countPage/in"  title="In"><i class="fas fa-file-excel"></i>
                                     Xuất Excel</a>
                             </div>
                             <div class="col-sm-2">
-                                <a class="btn btn-delete btn-sm print-file" href="/sanpham/countPage/print"  type="button" title="In"
+                                <a class="btn btn-delete btn-sm print-file" href="/order/countPage/print"  type="button" title="In"
                                     ><i class="fas fa-print"></i> In dữ liệu</a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a id="reloadButton" class="btn btn-danger btn-sm refresh" href="#" type="button" title="In">
+                                    <i class="fas fa-refresh"></i> Tải lại
+                                </a>
                             </div>
                         </div>
                         <!-- thanh tìm kiếm -->
                         <form role="search" style=" margin-top: 20px; margin-bottom: 30px; display: flex; float: right;">
-                            <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên loại sản phẩm..." aria-label="Search" name="name">
+                            <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm kiếm..." aria-label="Search" name="name">
                             <button class="btn btn-outline-info"  style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
                         </form>
                         <!-- thay đỏi -->
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="text-align: center; width: 10%;">Mã sản phẩm</th>
-                                    <th scope="col" style="width: 150px;text-align: center; width: 10%;">Ảnh đại diện </th>
-                                    <th scope="col" style="text-align: center; width: 10%;">Tên sản phẩm</th> 
-                                    <th scope="col" style="text-align: center; width: 10%;"><a  href="/sanpham?by=price&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Giá sản phẩm</a></th>                                                      
-                                    <th scope="col" style="text-align: center; width: 10%;">Mô tả sản phẩm</th> 
+                                    <th scope="col" style="text-align: center; width: 10%;">Mã đơn hàng</th>
+                                    <th scope="col" style="text-align: center; width: 10%;">Mã khách hàng</th>
+                                    <th scope="col" style="text-align: center; width: 10%;">Tổng giá</th> 
+                                    <th scope="col" style="text-align: center; width: 10%;">Trạng thái giao</th> 
+                                    <th scope="col" style="text-align: center; width: 10%;">Ngày đặt</th>
                                     <th scope="col" style="text-align: center; width: 10%;">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <% listL.forEach((sanpham)=> { %>
+                                <% listL.forEach((order)=> { %>
                                     <tr>
                                     <tr>
-                                        <td style="width: 250px;">
-                                            <%= sanpham._id %>
+                                        <td style="text-align: center;">
+                                            <%= order._id %>
                                         </td>
-                                        <td style="text-align: center; vertical-align: middle;max-width: 100px;">
-                                            <img src="<%= sanpham.image %>" alt="anh" style="width: 60px; height: 60px;border-radius: 30px;">
+                                    
+                                        <td style="text-align: center;">
+                                            
+                                            <%= order.id_user%>
                                         </td>
                                         <td style="text-align: center;">
                                             
-                                            <%= sanpham.name%>
+                                            <%= order.total_price%>
                                         </td>
                                         <td style="text-align: center;">
                                             
-                                            <%= sanpham.price%>
+                                            <%= order.delivery_status%>
                                         </td>
                                         <td style="text-align: center;">
                                             
-                                            <%= sanpham.describe%>
+                                            <%= order.date%>
                                         </td>
+
                                         <td style="text-align: center; width: 150px;">             
-                                            <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
-                                                <a href="/sanpham/edit/<%= sanpham._id %>"><i class="fas fa-edit"></i></a>
+                                            <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Chi tiết" id="show-emp">
+                                                <i class="fas fa-detail"></i>
                                             </button>
-
-                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Xóa" type="button" data-bs-toggle="modal"data-bs-target="#deleteModal" data-user-id="<%= sanpham._id %>">
-                                                 <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
-                                            </button>
-
                                         </td>
+
                                     </tr>
                                     </tr>
                                     <% }); %>
@@ -122,7 +120,7 @@
                         </table>
                         <!-- hết bảng -->
                         <div>
-                            Bạn đang xem <%= currentPageTotal %> trong tổng số <%= totalSP %> sản phẩm
+                            Bạn đang xem <%= currentPageTotal %> trong tổng số <%= totalSP %> đơn hàng
                         </div>
                         <!-- thông tin thông số của trang -->
                         <div class="row justify-content-end">
@@ -131,7 +129,7 @@
                                     <ul class="pagination justify-content-end">
                                         <% for (let i = 1; i <= countPage; i++) { %>
                                             <li class="page-item<%= (i == req.params.i) ? ' active' : '' %>">
-                                                <a class="page-link" href="/sanpham/<%= i %>"><%= i %></a>
+                                                <a class="page-link" href="/order/<%= i %>"><%= i %></a>
                                             </li>
                                         <% } %>
                                     </ul>
@@ -145,15 +143,6 @@
             </div>
         </div>
         <!-- đít -->
-        <footer class="text-center text-lg-start bg-white text-muted ">
-            <!-- Copyright -->
-            <div class="text-center p-4" style="background-color: rgb(238, 127, 182);color: black;">
-                © 2023 Tác giả :
-                <a class="text-reset fw-bold" style="text-decoration: none;"
-                href="https://zalo.me/g/rtzyfx009">Boy nhà nghèo</a>
-            </div>
-            <!-- Copyright -->
-        </footer>
     </main>
 
     <!-- modal delete -->
@@ -165,11 +154,94 @@
                     <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xoá User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/sanpham/delete" method="POST" id="formDelete">
+                <form action="/order/delete" method="POST" id="formDelete">
                     <input type="hidden" name="IdDelete" id="IdDelete">
                         <div class="modal-body">
                             Bạn có chắc muốn thay đổi trang thái User này không?
                         </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Ok</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- modal detail -->
+    <!-- form detail -->
+    <div class=" modal fade modal-dialog modal-xl" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="confirmDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Chi tiết</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form>
+                    
+                    <div class="row">
+                        <div class="form-group col-md-6" >
+                            <label class="control-label">Khách hàng</label>
+                            <span type="text" name="name">12121</span>
+                                <div style="margin-left: 20px;">
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Họ tên</label>
+                                        <span type="text" name="name">Hoàng Văn Hệ</span>
+                                    </div>
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Số điện thoại</label>
+                                        <span type="text" name="name">0987654321</span>
+                                    </div>
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Email</label>
+                                        <span type="text" name="name">hehvph21007@gmail.com</span>
+                                    </div>
+                                </div>
+                        </div>
+        
+                        <div class="form-group col-md-6" >
+                            <label class="control-label">Vận chuyển</label>
+                            <span type="text" name="name">12121</span>
+                                <div style="margin-left: 20px;">
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Họ tên</label>
+                                        <span type="text" name="name">Hoàng Văn Hệ</span>
+                                    </div>
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Số điện thoại</label>
+                                        <span type="text" name="name">0987654321</span>
+                                    </div>
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Email</label>
+                                        <span type="text" name="name">hehvph21007@gmail.com</span>
+                                    </div>
+                                </div>
+                        </div>
+        
+                        <div class="form-group col-md-6" >
+                            <label class="control-label">Khách hàng</label>
+                            <span type="text" name="name">12121</span>
+                                <div style="margin-left: 20px;">
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Họ tên</label>
+                                        <span type="text" name="name">Hoàng Văn Hệ</span>
+                                    </div>
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Số điện thoại</label>
+                                        <span type="text" name="name">0987654321</span>
+                                    </div>
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Email</label>
+                                        <span type="text" name="name">hehvph21007@gmail.com</span>
+                                    </div>
+                                </div>
+                        </div>
+                        
+                    
+                    </div>
+
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Ok</button>
@@ -241,23 +313,16 @@
             }
         }
 
+
     </script>
     <script>
-        $('#deleteModal').on('show.bs.modal', function (event) {
-          var button = $(event.relatedTarget) // Nút mở modal
-          console.log('da clickkkkkkkk'+button);
-          var userId = button.data('user-id') // Lấy giá trị của thuộc tính data-product-id
-          var deleteModal = document.querySelector("#deleteModal");
-          var formDelete = deleteModal.querySelector("#formDelete");
-          formDelete.querySelector("#IdDelete").value = userId;
-          $("#confirmDeleteBtn").click(function () {
-            // Xử lý xoá sản phẩm ở đây
-      
-            // Sau khi xoá thành công, ẩn dialog
-            $('#deleteModal').modal('hide');
-          });
-        })
-      </script>
+        const reloadButton = document.getElementById('reloadButton');
+        reloadButton.addEventListener('click', function (event) {
+            event.preventDefault(); // Ngăn chặn hành vi mặc định khi nhấp vào liên kết
+    
+            location.reload(); // Tải lại trang
+        });
+    </script>
 
 </body>
 

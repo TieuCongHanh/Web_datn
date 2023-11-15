@@ -5,10 +5,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session')
 
+var check_login = require('./middlewares/check_login');
 var usersRouter = require('./routes/user');
 var homeRouter=require('./routes/home');
 var sanphamRouter=require('./routes/sanpham');
+var orderRouter=require('./routes/orders');
+var staffRouter=require('./routes/staff');
 var doanhthuRouter=require('./routes/doanhthu');
+var addressRouter=require('./routes/address');
 
 
 var app = express();
@@ -32,7 +36,10 @@ app.use('/', homeRouter);
 app.use('/user', usersRouter);
 app.use('/home', homeRouter);
 app.use('/sanpham', sanphamRouter);
+app.use('/order',check_login.yeu_cau_dang_nhap, orderRouter);
+app.use('/staff',check_login.yeu_cau_dang_nhap, staffRouter);
 app.use('/doanhth', doanhthuRouter);
+app.use('/address', addressRouter);
 
 app.use(express.static("images"));
 
