@@ -19,24 +19,25 @@ exports.list = async (req, res, next) => {
     let list = await myMD.sanphamModel.find(timkiemSP).skip(start).limit(perPage).sort({ [by]: order });
     let listod = await ordermd.ordersModel.find(timkiemSP);
     // đang làm số lương sản phẩm bán ra
-    // Truy vấn cơ sở dữ liệu để tính tổng số sản phẩm bán ra
-    let totalSales = await ordermd.ordersModel.aggregate([{
-        $group: {
-            _id: "$_id",
-            quantity: { $sum: "$quantity" } 
-        } 
-    }]);
+    let totalRevenue = 0;
+    let totalQuantitySold = 0;
+    let dthuproduct = await ordermd.ordersModel.find();
+    dthuproduct.forEach((order) => {
+        totalRevenue += order.quantity;
+        //totalQuantitySold += order.price;
+        // Sử dụng hàm
+        totalQuantitySold += order.price * order.quantity;
+    });
+
+
     // Tính tổng số người dùng
     let totalSP = await myMD.sanphamModel.find(timkiemSP).countDocuments();
 
     let countlist = await myMD.sanphamModel.find(timkiemSP);
     let count = countlist.length / perPage;
     count = Math.ceil(count);
-    let ordersp = await ordermd.ordersModel.length;
-    console.log(`Tổng số sản phẩm bán ra: ${ordersp}`);
-
     console.log(list);
-    res.render('doanhth/doanhthu', { listL: list,listod:listod, totalSales: totalSales[0].totalSales, ordersp: ordersp, countPage: count, req: req, msg: msg, by: by, order: order, totalSP: totalSP });
+    res.render('doanhth/doanhthu', { listL: list, listod: listod, totalQuantitySold: totalQuantitySold, totalRevenue: totalRevenue, countPage: count, req: req, msg: msg, by: by, order: order, totalSP: totalSP });
 }
 exports.in = async (req, res, next) => {
     try {

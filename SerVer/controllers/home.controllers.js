@@ -1,5 +1,6 @@
 const md = require('../models/user.models');
 const md1 = require('../models/sanpham.models');
+const md2 = require('../models/orders.models');
 const bcrypt = require('bcrypt');
 var msg = '';
 exports.home = async (req, res, next) => {
@@ -7,7 +8,13 @@ exports.home = async (req, res, next) => {
     console.log(`Tổng số user: ${countUser}`);
     let countProduct = await md1.sanphamModel.countDocuments({});
     console.log(`Tổng số product: ${countProduct}`);
-    res.render('home/home', {req : req , msg: msg, countProduct: countProduct, countUser:countUser});
+    let totalQuantitySold = 0;
+    let dthuproduct = await md2.ordersModel.find();
+    dthuproduct.forEach((order) => {
+        totalQuantitySold += order.price * order.quantity;
+    });
+    console.log(`Tổng số doanh thu: ${totalQuantitySold}`);
+    res.render('home/home', {req : req , msg: msg, countProduct: countProduct, countUser:countUser, totalQuantitySold:totalQuantitySold});
 }
 exports.Login = async (req, res, next) => {
     let msg = '';

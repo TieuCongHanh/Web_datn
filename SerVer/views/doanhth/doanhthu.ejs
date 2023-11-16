@@ -66,7 +66,7 @@
                             <table class="table table-bordered col" id="tableorder">
                                 <thead style="width: auto;">
                                     <tr>
-                                        <th scope="col" style="text-align: center">ID</th>
+                                        <th scope="col" style="text-align: center">Mã sản phẩm</th>
                                         <th scope="col" style="width: 150px;text-align: center">Ảnh đại diện </th>
                                         <th scope="col" style="text-align: center">Tên sản phẩm</th>
                                         <th scope="col" style="text-align: center"><a
@@ -78,79 +78,45 @@
                                 </thead>
                                 <tbody>
                                     <a href="" style="text-align: center;">Đang hoàn thiện</a>
-                                    <% listL.forEach((sanpham)=> { %>
+                                    <% listod.forEach((order)=> { %>
                                         <tr>
                                         <tr>
                                             <td style="width: 250px;">
-                                                <%= sanpham._id %>
+                                                <%= order._id %>
                                             </td>
                                             <td style="text-align: center; vertical-align: middle;max-width: 100px;">
-                                                <img src="<%= sanpham.image %>" alt="anh"
+                                                <img src="<%= order.image %>" alt="anh"
                                                     style="width: 60px; height: 60px;border-radius: 30px;">
                                             </td>
                                             <td style="text-align: center;">
 
-                                                <%= sanpham.name%>
+                                                <%= order.name%>
                                             </td>
                                             <td style="text-align: center;">
 
-                                                <%= sanpham.price%>
+                                                <%= order.price%>
                                             </td>
-                                            <% listod.forEach((order)=> { %>
-                                                <td style="text-align: center;">
-                                                    <%= order.quantity%>
-                                                </td>
-                                            <% }); %>
                                             <td style="text-align: center;">
 
+                                                <%= order.quantity%>
+                                            </td>
+                                            <td style="text-align: center;">
 
+                                                <%= order.price * order.quantity %>
                                             </td>
                                         </tr>
                                         </tr>
                                         <% }); %>
-                                        <!-- <% listod.forEach((order)=> { %>
-                                            <tr>
-                                            <tr>
-                                                <td style="width: 250px;">
-                                                    <%= order._id %>
-                                                </td>
-                                                <td style="text-align: center;">
-    
-                                                    <%= order.id_user%>
-                                                </td>
-                                                <td style="text-align: center;">
-    
-                                                    <%= order.total_price%>
-                                                </td>
-                                                <td style="text-align: center;">
-    
-                                                    <%= order.delivery_status%>
-                                                </td>
-                                                <td style="text-align: center;">
-    
-                                                    <%= order.id_deliver%>
-                                                </td>
-                                                <td style="text-align: center;">
-    
-                                                    <%= order.date%>
-                                                </td>
-                                                <td style="text-align: center;">
-    
-                                                    <%= order.quantity%>
-                                                </td>
-                                            </tr>
-                                            </tr>
-                                            <% }); %> -->
 
 
                                 </tbody>
                             </table>
                             <!-- hết bảng -->
-                            <div>
+                            <!-- <div>
                                 Bạn đang xem <%= listL.length %> trong tổng số <%= totalSP %> sản phẩm
-                            </div>
+                            </div> -->
                             <!-- thông tin thông số của trang -->
-                            <div class="row justify-content-end">
+                            <!-- <div class="row justify-content-end">
                                 <div class="col-auto">
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination justify-content-end">
@@ -164,7 +130,7 @@
                                         </ul>
                                     </nav>
                                 </div>
-                            </div>
+                            </div> -->
                             <!-- hết  thông tin thông số của trang -->
                         </div>
                     </div>
@@ -212,10 +178,10 @@
                                             <%= totalSP %>
                                         </td>
                                         <td scope="col" style="text-align: center">
-                                            <%= totalSales%>
+                                            <%= totalRevenue %>
                                         </td>
                                         <td scope="col" style="text-align: center">
-                                            <%= ordersp%>
+                                            <%= totalQuantitySold %>
                                         </td>
                                     </tr>
                                     </tr>
@@ -225,16 +191,6 @@
                     </div>
                 </div>
             </div>
-            <!-- đít -->
-            <footer class="text-center text-lg-start bg-white text-muted ">
-                <!-- Copyright -->
-                <div class="text-center p-4" style="background-color: rgb(238, 127, 182);color: black;">
-                    © 2023 Tác giả :
-                    <a class="text-reset fw-bold" style="text-decoration: none;" href="https://zalo.me/g/rtzyfx009">Boy
-                        nhà nghèo</a>
-                </div>
-                <!-- Copyright -->
-            </footer>
         </main>
 
         <!-- modal delete -->
