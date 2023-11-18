@@ -50,13 +50,9 @@ exports.Reg = async (req, res, next) => {
     let countUser = await md.userModel.countDocuments({});
     if (req.method === 'POST') {
         console.log(req.body);
+   
+        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name ||  !req.body.phone) {
 
-       
-<<<<<<< Updated upstream
-        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name  || !req.body.phone) {
-=======
-        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name || !req.body.phone) {
->>>>>>> Stashed changes
             msg = 'Vui lòng điền đầy đủ thông tin.';
             return res.render('home/dk', { msg: msg });
         }
