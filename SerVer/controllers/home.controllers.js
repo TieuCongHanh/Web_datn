@@ -20,7 +20,7 @@ exports.Login = async (req, res, next) => {
                     return res.render('home/dn', { msg: 'Tài khoản của bạn đã bị vô hiệu hóa.', req: req });
                 }
 
-                // So sánh mật khẩu đã băm //
+                // So sánh mật khẩu đã băm
                 const passwordMatch = await bcrypt.compare(password, user1.password);
                 if (!passwordMatch) {
                     return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req });
