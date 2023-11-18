@@ -51,13 +51,16 @@ exports.in = async (req, res, next) => {
             { header: "quantity", key: "quantity", width: 30 },
             { header: "revenue", key: "revenue", width: 30 },
         ];
-        const loaisp = await myMD.sanphamModel.find({});
+        const inorder = await ordermd.ordersModel.find({});
         // Thêm dữ liệu người dùng vào bảng Excel
-        users.forEach((user) => {
+        inorder.forEach((order) => {
             sheet.addRow({
-                _id: user._id,
-                image: user.image || '',
-                tenLoai: user.tenLoai,
+                _id: order._id,
+                image: order.image || '',
+                name: order.name,
+                price: order.price,
+                quantity: order.quantity,
+                revenue: order.price * order.quantity,
             });
         });
         res.setHeader(
@@ -66,7 +69,7 @@ exports.in = async (req, res, next) => {
         );
         res.setHeader(
             "Content-Disposition",
-            "attachment;filename=" + "user.xlsx"
+            "attachment;filename=" + "order.xlsx"
         );
         // Ghi workbook vào response để tải xuống
         await workbook.xlsx.write(res);
@@ -78,7 +81,7 @@ const PDFDocument = require("pdfkit");
 
 exports.print = async (req, res, next) => {
     try {
-        const Sanpham = await myMD.sanphamModel.find({});
+        const ordersp = await ordermd.ordersModel.find({});
         // Tạo một tệp PDF mới
         const doc = new PDFDocument();
         const pdfFileName = "Thongke.pdf";
@@ -91,18 +94,17 @@ exports.print = async (req, res, next) => {
 
         // Ghi dữ liệu người dùng vào tệp PDF
         doc.pipe(res);
-
         doc.fontSize(20).text("Thongke", { align: "center" });
         doc.moveDown(1);
 
         // Xuất danh sách người dùng
-        Sanpham.forEach((Sanpham) => {
-            doc.fontSize(14).text(`sp ID: ${Sanpham._id}`);
-            doc.fontSize(12).text(`AVT: ${Sanpham.image || "N/A"}`);
-            doc.fontSize(12).text(`Name: ${Sanpham.name}`);
-            doc.fontSize(12).text(`Price: ${Sanpham.price}`);
-            doc.fontSize(12).text(`Quantity: ${Sanpham.quantity}`);
-            doc.fontSize(12).text(`Revenue: ${Sanpham.revenue}`);
+        ordersp.forEach((order) => {
+            doc.fontSize(14).text(`sp ID: ${order._id}`);
+            doc.fontSize(12).text(`AVT: ${order.image || "N/A"}`);
+            doc.fontSize(12).text(`Name: ${order.name}`);
+            doc.fontSize(12).text(`Price: ${order.price}`);
+            doc.fontSize(12).text(`Quantity: ${order.quantity}`);
+            doc.fontSize(12).text(`Revenue: ${order.price * order.quantity}`);
             doc.moveDown(1);
         });
 
@@ -115,5 +117,3 @@ exports.print = async (req, res, next) => {
         return;
     }
 };
-
-
