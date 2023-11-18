@@ -71,21 +71,21 @@
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="text-align: center">ID</th>
-                                    <th scope="col" style="width: 150px;text-align: center">Ảnh đại diện </th>
-                                    <th scope="col" style="text-align: center"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên tài khoản</a></th>
-                                    <th scope="col" style="text-align: center">Họ và tên</th>
-                                    <th scope="col" style="text-align: center">SDT</th>
-                                    <th scope="col" style="text-align: center">Vai trò</th>
-                                    <th scope="col" style="text-align: center">Trạng thái</th>
-                                    <th scope="col" style="text-align: center">Chức năng</th>
+                                    <th scope="col" style="text-align: center; width: 12%">Mã người dùng</th>
+                                    <th scope="col" style="width: 150px;text-align: center; width: 16%">Ảnh đại diện </th>
+                                    <th scope="col" style="text-align: center; width: 15%"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên tài khoản</a></th>
+                                    <th scope="col" style="text-align: center; width: 15%">Họ và tên</th>
+                                    <th scope="col" style="text-align: center; width: 10%">SDT</th>
+                                    <th scope="col" style="text-align: center; width: 7%">Vai trò</th>
+                                    <th scope="col" style="text-align: center; width: 10%">Trạng thái</th>
+                                    <th scope="col" style="text-align: center; width: 15%">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <% listUS.forEach((user)=> { %>
                                     <tr>
                                     <tr>
-                                        <td style="width: 200px;">
+                                        <td style="text-align: center;">
                                             <%= user._id %>
                                         </td>
                                         <td style="text-align: center; vertical-align: middle;max-width: 100px;">
@@ -94,29 +94,35 @@
                                         <td style="text-align: center;">
                                             
                                             <%= user.username %></td>
-                                        <td style="text-align: center;">
-                                            
-                                            <%= user.phone %></td>
+                                        
                                         <td style="text-align: center;">
                                             
                                              <%= user.name %></td>
+
+                                        <td style="text-align: center;">
+                                            
+                                            <%= user.phone %></td>
                                        
                                         </td style="text-align: center;">
                                 
                                         <td style="text-align: center;">
                                             <%= user.role %>
                                         </td>
-                                        <td style="text-align: center;"><%= user.isActive ? 'Hoạt động' : 'KHóa' %></td>
-                                        <td style="text-align: center; width: 120px;">
+                                        <td style="text-align: center;"><%= user.isActive ? 'Hoạt động' : 'Khóa' %></td>
+                                        <td style="text-align: center">
 
-                                            <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
+                                            <button class="btn bg-warning-subtle btn-sm edit"  type="button" title="Sửa" id="show-emp">
                                                 <a href="/user/edit/<%= user._id %>"><i class="fas fa-edit"></i></a>
                                             </button>
 
-                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" type="button" data-bs-toggle="modal"
+                                            <button class="btn bg-warning-subtle btn-sm"  type="button" data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal" data-user-id="<%= user._id %>">
                                             <img class="lock-icon" src="<%= user.isActive ? '/images/mo.png' : '/images/dong.png' %>" alt="Khóa">
-                                        </button>
+                                            </button>
+                                            
+                                            <button class="btn bg-warning-subtle btn-sm"  type="button" title="Chi tiết" id="show-emp">
+                                                <a href="/user/edit/<%= user._id %>"><i class="fa fa-info"></i></a>
+                                            </button>
 
                                         </td>
                                     </tr>
@@ -202,53 +208,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
-<!-- <script type="text/javascript">
-    $(function(){
-        $('#btnExport').click(function(){
-      exportExcel("tableorder","","");
-        });
-    });
-    function exportExcel(tableName, headercolor, filename){
-        if(tableName.trim() === " "){
-            alert(" khoog có bảng");
-            return;
-        }
-        if(headercolor.trim() === ""){
-            headercolor ="#87AFC6";
-        }
-        if(filename.trim() === ""){
-            filename = "ExportData";
-        }
-        var export_data = "";
-        arrTableName = tableName.split(" | ");
-        if(arrTableName.length > 0){
-            // duyệt từng bagnr
-            for(var i = 0; i< arrTableName.length; i++){
-                export_data += "<table border ='2px'> <tr bgcolor='" +headercolor + "'>";
-                    var objectTable = document.getElementById(arrTableName[i]); // lấy id bảng thứ i
-                    if(objectTable === undefined){
-                        alert("bảng không tìm thấy");
-                        return;
-                    }
-                    // duyệt từng dòng lưu vào export_data
-                    for(var j =0; j < objectTable.rows.length; j++){
-                        export_data += objectTable.rows[j].innerHTML + "</tr>";
-                    }
-                    export_data += "</table>"
-            }
-            // kiểm tra trình duyệt là IE thì
-            if(window.navigator.userAgent.indexOf("MSIE") > 0 || !!window.navigator.userAgent.match(/Trient.*rv\:11\./)){
-                exportIF.document.open("txt/html", "replace");
-                exportIF.document.write(export_data);
-                exportIF.document.close();
-                exportIF.focus();
-                sa = exportIF.document.execCommand("SaveAs", true, filename + ".xls");
-            }else{ // các trình duyệt khác
-                sa = window.open("data:application/vnd.ms-excel,"+ encodeURIComponent(export_data))
-            }
-        }
-    }
-</script> -->
+
 
     <script type="text/javascript">
         $('#sampleTable').DataTable();

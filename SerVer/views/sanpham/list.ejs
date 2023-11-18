@@ -73,11 +73,13 @@
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="text-align: center">ID</th>
-                                    <th scope="col" style="width: 150px;text-align: center">Ảnh đại diện </th>
-                                    <th scope="col" style="text-align: center">Tên sản phẩm</th> 
-                                    <th scope="col" style="text-align: center"><a  href="/sanpham?by=price&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Giá sản phẩm</a></th>                                                      
-                                    <th scope="col" style="text-align: center">Chức năng</th>
+                                    <th scope="col" style="text-align: center; width: 10%;">Mã sản phẩm</th>
+                                    <th scope="col" style="width: 150px;text-align: center; width: 10%;">Ảnh đại diện </th>
+                                    <th scope="col" style="text-align: center; width: 10%;">Tên sản phẩm</th> 
+                                    <th scope="col" style="text-align: center; width: 10%;"><a  href="/sanpham?by=price&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Giá sản phẩm</a></th>                                                      
+                                    <th scope="col" style="text-align: center; width: 10%;">Số lượng</th> 
+                                    <th scope="col" style="text-align: center; width: 10%;">Mô tả sản phẩm</th> 
+                                    <th scope="col" style="text-align: center; width: 10%;">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,15 +100,22 @@
                                             
                                             <%= sanpham.price%>
                                         </td>
-                                                <td style="text-align: center; width: 150px;">             
+                                        <td style="text-align: center;">
+                                            
+                                            <%= sanpham.quantity%>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            
+                                            <%= sanpham.describe%>
+                                        </td>
+                                        <td style="text-align: center; width: 150px;">             
                                             <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
                                                 <a href="/sanpham/edit/<%= sanpham._id %>"><i class="fas fa-edit"></i></a>
                                             </button>
 
-                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Xóa" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal" data-user-id="<%= sanpham._id %>">
-                                        <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
-                                    </button>
+                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Xóa" type="button" data-bs-toggle="modal"data-bs-target="#deleteModal" data-user-id="<%= sanpham._id %>">
+                                                 <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
+                                            </button>
 
                                         </td>
                                     </tr>
