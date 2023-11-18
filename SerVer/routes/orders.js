@@ -15,6 +15,6 @@ router.post('/:i/in',  ordersController.in);
 router.get('/:i/print', ordersController.print);
 router.post('/:i/print',  ordersController.print);
 
-router.get('/detail/order', ordersController.detail);
+router.get('/detail', ordersController.detail);
 
 module.exports = router;

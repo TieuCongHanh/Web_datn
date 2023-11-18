@@ -3,15 +3,11 @@ const ordersSchema = new db.mongoose.Schema(
     {
         _id: {type: db.mongoose.Schema.Types.Number},
         id_user: { type: db.mongoose.Schema.Types.Number, ref: 'userModel' },
+        id_staff: { type: db.mongoose.Schema.Types.Number, ref: 'staffModel' },
         total_price: { type: db.mongoose.Schema.Types.Number, ref: 'paymentModel' },
         delivery_status: { type: String, require: true },
-        id_deliver: {type: db.mongoose.Schema.Types.Number, ref: 'deliverModel'},
-        date: { type: String, default: true },
-        quantity:{type:Number, default:true},
-        id_product:{type: db.mongoose.Schema.Types.Number, ref: 'sanpham'},
-        name: {type: String, require: true},
-        price: {type: String, require: true},
-        image: {type: String, require: false},
+        id_address: {type: db.mongoose.Schema.Types.Number, ref: 'addressModel'},
+        date: { type: String, require : true },
     },
     {
         collection: 'orders'

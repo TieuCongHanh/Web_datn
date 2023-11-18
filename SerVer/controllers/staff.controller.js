@@ -164,16 +164,16 @@ exports.add = async (req, res, next) => {
         const existingStaff = await myMD.staffModel.find({ name: req.body.nameStaff });
       
         if (!existingStaff) {
-            const errorMsg = "Nhân viên đã tồn tại.";
-            return res.render('staff/add', { req: req, msg: errorMsg });
+            msg = "Nhân viên đã tồn tại.";
+            return res.end();
         }
 
         if (!req.body.nameStaff || !req.body.role ||
              !req.body.address || !req.body.phone ||
               !req.body.date || !req.body.gender || !req.body.email ) {
 
-            const errorMsg = "Vui lòng điền đầy đủ thông tin.";
-            return res.render('user/add', { req: req, msg: errorMsg });
+            msg = "Vui lòng điền đầy đủ thông tin.";
+            return res.end();
         }
             try {
                 let url_file = ''; 
@@ -198,7 +198,6 @@ exports.add = async (req, res, next) => {
             } catch (err) {
                 console.log(err);
             }
-        
     }
     res.render('staff/add', { req: req, msg: msg });
 };
