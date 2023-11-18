@@ -1,4 +1,5 @@
 const OrderModel = require("../models/orders.models");
+const paymentModel = require("../models/payment.models");
 const excelJs = require("exceljs");
 const PDFDocument = require("pdfkit");
 
@@ -23,7 +24,7 @@ exports.list = async (req, res) => {
     .sort({ [by]: order })
     .populate("id_user")
     .populate("total_price")
-    .populate("id_deliver");
+    .populate("id_address");
 
   // Tính tổng số người dùng
   let totalSP = await OrderModel.ordersModel.find(timkiemSP).countDocuments();
@@ -153,29 +154,19 @@ exports.print = async (req, res, next) => {
 };
 
 exports.detail = async (req, res) => {
-  // try {
-  //   const orderId = req.params.id;
-  //   const order = await OrderModel.ordersModel.findById(orderId)
-  //     .populate("id_user")
-  //     .populate("total_price")
-  //     .populate("id_deliver");
-  //   if (order) {
-
-  //     res.render("order/detail", {
-  //       order: order,
-  //       req: req,
-  //       msg: msg,
-  //     });
-
-  //   } else {
-  //     res.status(404).json({ error: "Đơn hàng không tồn tại" });
-  //   }
-
-  // } catch (error) {
-  //   res.status(500).json({ error: "Lỗi server" });
-  // }
-  res.render("order/detail", {
-    req: req,
-    msg: msg,
-  });
+  try {
+    const orderId = req.query.orderId;
+    let objOrder = await OrderModel.ordersModel
+      .findById(orderId)
+      .populate("id_user")
+      .populate("id_staff")
+      .populate("total_price")
+      .populate("id_address");
+  } catch (error) {
+    console.log(error);
+    msg = "Lỗi server."
+    res.status(500).send("Lỗi server.");
+    return;
+  }
+  res.end();
 };
