@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <!-- or -->
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
-
+    <!-- Icon web -->
+    <link rel="icon" href="/images/logo.jpg" type="image/png">
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css"
         href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -72,42 +73,73 @@
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="text-align: center; width: 10%;">Mã đơn hàng</th>
-                                    <th scope="col" style="text-align: center; width: 10%;">Mã khách hàng</th>
-                                    <th scope="col" style="text-align: center; width: 10%;">Tổng giá</th> 
-                                    <th scope="col" style="text-align: center; width: 10%;">Trạng thái giao</th> 
-                                    <th scope="col" style="text-align: center; width: 10%;">Ngày đặt</th>
-                                    <th scope="col" style="text-align: center; width: 10%;">Chức năng</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Mã đơn hàng</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Mã khách hàng</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;">Tên khách hàng</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 8%;">Tổng sản phẩm</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 10%;">Tổng giá</th> 
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Ngày đặt</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;">Địa chỉ</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 7%;">Trạng thái giao</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Thanh toán</th> 
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <% listL.forEach((order)=> { %>
                                     <tr>
                                     <tr>
-                                        <td style="text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center;">
                                             <%= order._id %>
                                         </td>
                                     
-                                        <td style="text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center;">
                                             
-                                            <%= order.id_user%>
+                                            <%= order.id_user._id%>
                                         </td>
-                                        <td style="text-align: center;">
+
+                                        <td style="vertical-align: middle; text-align: center;">
                                             
-                                            <%= order.total_price%>
+                                            <%= order.id_user.name%>
                                         </td>
-                                        <td style="text-align: center;">
+
+                                        <td style="vertical-align: middle; text-align: center;">
                                             
-                                            <%= order.delivery_status%>
+                                            <%= order.total_price._id%>
                                         </td>
-                                        <td style="text-align: center;">
+
+                                        <td style="vertical-align: middle; text-align: center;">
+                                            
+                                            <%= order.total_price.method%>
+                                        </td>
+
+                                        <td style="vertical-align: middle; text-align: center;">
                                             
                                             <%= order.date%>
                                         </td>
 
-                                        <td style="text-align: center; width: 150px;">             
-                                            <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Chi tiết" id="show-emp">
-                                                <i class="fas fa-detail"></i>
+                                        <td style="vertical-align: middle; text-align: center;">
+                                            
+                                            <%= order.id_address.address%>
+                                        </td>
+
+                                        <td style="vertical-align: middle; text-align: center;">
+                                            
+                                            <%= order.delivery_status%>
+                                        </td>
+
+                                        <td style="vertical-align: middle; text-align: center;">
+                                            
+                                            <%= order.delivery_status%>
+                                        </td>
+                                       
+
+                                        <td style="vertical-align: middle; text-align: center; width: 150px;">             
+                                            <button class="btn bg-warning-subtle btn-sm edit" 
+                                            style="font-size: 12px;" type="button" title="Chi tiết" id="show-emp"
+                                             data-order-id="<%= order._id %>" data-img-url-user="<%= order.id_user.image %>"
+                                             data-img-url-staff="<%= order.id_staff.image %>">
+                                                <i class="fa fa-info"></i>
                                             </button>
                                         </td>
 
@@ -147,7 +179,7 @@
 
     <!-- modal delete -->
     <!-- form xoá -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -166,69 +198,77 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
     <!-- modal detail -->
     <!-- form detail -->
-    <div class=" modal fade modal-dialog modal-xl" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="confirmDetailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
+    <div class=" modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="confirmDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen-lg-down" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmDeleteModalLabel">Chi tiết</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form>
+
+                <div class=" modal-header row justify-content-evenly">
+                    
+                    <img class=" col-4 align-self-center" name="imageUser" src="" alt="anh" style="vertical-align: middle; width: 60px; height: 60px;border-radius: 30px;">
+                    <img class=" col-4 align-self-center" name="imageStaff" src="" alt="anh" style="vertical-align: middle; width: 60px; height: 60px;border-radius: 30px;">
+                    
+                </div>
+
+                <form style="padding-left: 5px; padding-right: 5px;">
                     
                     <div class="row">
                         <div class="form-group col-md-6" >
                             <label class="control-label">Khách hàng</label>
-                            <span type="text" name="name">12121</span>
+
                                 <div style="margin-left: 20px;">
                                     <div>
                                         <label style="width: 20%;" class="control-label">Họ tên</label>
-                                        <span type="text" name="name">Hoàng Văn Hệ</span>
+                                        <span type="text" name="name"></span>
                                     </div>
                                     <div>
-                                        <label style="width: 20%;" class="control-label">Số điện thoại</label>
-                                        <span type="text" name="name">0987654321</span>
+                                        <label style="width: 20%;" class="control-label">SĐT</label>
+                                        <span type="text" name="phone"></span>
                                     </div>
                                     <div>
                                         <label style="width: 20%;" class="control-label">Email</label>
-                                        <span type="text" name="name">hehvph21007@gmail.com</span>
+                                        <span type="text" name="userEmail"></span>
                                     </div>
                                 </div>
                         </div>
         
                         <div class="form-group col-md-6" >
                             <label class="control-label">Vận chuyển</label>
-                            <span type="text" name="name">12121</span>
+                            <span type="text" name="userName"></span>
                                 <div style="margin-left: 20px;">
                                     <div>
                                         <label style="width: 20%;" class="control-label">Họ tên</label>
-                                        <span type="text" name="name">Hoàng Văn Hệ</span>
+                                        <span type="text" name="staffName"></span>
                                     </div>
                                     <div>
-                                        <label style="width: 20%;" class="control-label">Số điện thoại</label>
-                                        <span type="text" name="name">0987654321</span>
+                                        <label style="width: 20%;" class="control-label">SĐT</label>
+                                        <span type="text" name="staffPhone"></span>
                                     </div>
                                     <div>
                                         <label style="width: 20%;" class="control-label">Email</label>
-                                        <span type="text" name="name">hehvph21007@gmail.com</span>
+                                        <span type="text" name="staffEmail"></span>
                                     </div>
                                 </div>
                         </div>
         
                         <div class="form-group col-md-6" >
                             <label class="control-label">Khách hàng</label>
-                            <span type="text" name="name">12121</span>
+                        
                                 <div style="margin-left: 20px;">
                                     <div>
                                         <label style="width: 20%;" class="control-label">Họ tên</label>
                                         <span type="text" name="name">Hoàng Văn Hệ</span>
                                     </div>
                                     <div>
-                                        <label style="width: 20%;" class="control-label">Số điện thoại</label>
+                                        <label style="width: 20%;" class="control-label">SĐT</label>
                                         <span type="text" name="name">0987654321</span>
                                     </div>
                                     <div>
@@ -323,6 +363,35 @@
             location.reload(); // Tải lại trang
         });
     </script>
+
+<script>
+    $(document).on('click', '.edit', function () {
+        var orderId = $(this).data('order-id');
+
+        var imgUserUrl = $(this).data('img-url-user');
+
+        var imgStaffUrl = $(this).data('img-url-staff');
+
+        $('#detailModal img[name="imageUser"]').attr('src', imgUserUrl);
+        $('#detailModal img[name="imgStaffUrl]').attr('src', imgStaffUrl);
+
+        $.ajax({
+            url: '/order/' + orderId,
+            method: 'GET',
+            success: function (response) {
+                $('#detailModal').find('span[name="name"]').eq(0).text(response.customerName);
+                $('#detailModal').find('span[name="name"]').eq(1).text(response.customerPhone);
+                $('#detailModal').find('span[name="name"]').eq(2).text(response.customerEmail);
+               
+
+                $('#detailModal').modal('show');
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+</script>
 
 </body>
 

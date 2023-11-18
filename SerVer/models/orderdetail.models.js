@@ -1,9 +1,11 @@
 var db = require('./db');
-const addressSchema = new db.mongoose.Schema(
+const orderDetailSchema = new db.mongoose.Schema(
     {
         _id: {type: db.mongoose.Schema.Types.Number},
-        id_user: {type: db.mongoose.Schema.Types.Number, ref: 'userModel'},
-        address: {type: String, require: false}
+        id_order: {type: db.mongoose.Schema.Types.Number, ref: 'orderModel'},
+        id_product: {type: db.mongoose.Schema.Types.Number, ref: 'sanphamModel'},
+        quantity: {type: Number , require: true},
+        total_price: {type: Number, require: true},
     },
     {
         collection: 'address'
