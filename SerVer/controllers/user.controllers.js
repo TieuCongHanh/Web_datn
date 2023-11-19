@@ -142,6 +142,7 @@ exports.add = async (req, res, next) => {
                 objUS.image = url_file;
                 objUS.role = req.body.role;
                 objUS.phone = req.body.phone;
+                objUS.userEmail = req.body.userEmail;
 
                 objUS.isActive = true;
 
@@ -170,6 +171,7 @@ exports.edit = async (req, res, next) => {
         try {
             let objUS = new myMD.userModel();
             objUS.username = req.body.username;
+            objUS.userEmail = req.body.userEmail;
 
             objUS.isActive = objUser.isActive;
 

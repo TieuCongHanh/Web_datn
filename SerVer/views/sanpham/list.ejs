@@ -12,7 +12,7 @@
     <!-- or -->
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
     <!-- Icon web -->
-    <link rel="icon" href="/images/logo.jpg" type="image/png">
+    <link rel="icon" href="/images/logo_app.png" type="image/png">
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css"
         href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -74,37 +74,37 @@
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="text-align: center; width: 10%;">Mã sản phẩm</th>
-                                    <th scope="col" style="width: 150px;text-align: center; width: 10%;">Ảnh đại diện </th>
-                                    <th scope="col" style="text-align: center; width: 10%;">Tên sản phẩm</th> 
-                                    <th scope="col" style="text-align: center; width: 10%;"><a  href="/sanpham?by=price&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Giá sản phẩm</a></th>                                                      
-                                    <th scope="col" style="text-align: center; width: 10%;">Mô tả sản phẩm</th> 
-                                    <th scope="col" style="text-align: center; width: 10%;">Chức năng</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 10%;">Mã sản phẩm</th>
+                                    <th scope="col" style="vertical-align: middle; width: 150px;text-align: center; width: 10%;">Ảnh đại diện </th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;">Tên sản phẩm</th> 
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 10%;"><a  href="/sanpham?by=price&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Giá sản phẩm</a></th>                                                      
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 35%;">Mô tả sản phẩm</th> 
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <% listL.forEach((sanpham)=> { %>
                                     <tr>
                                     <tr>
-                                        <td style="width: 250px;">
+                                        <td style="text-align: center; vertical-align: middle; ">
                                             <%= sanpham._id %>
                                         </td>
-                                        <td style="text-align: center; vertical-align: middle;max-width: 100px;">
+                                        <td style="vertical-align: middle; text-align: center; vertical-align: middle;max-width: 100px;">
                                             <img src="<%= sanpham.image %>" alt="anh" style="width: 60px; height: 60px;border-radius: 30px;">
                                         </td>
-                                        <td style="text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center;">
                                             
                                             <%= sanpham.name%>
                                         </td>
-                                        <td style="text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center;">
                                             
                                             <%= sanpham.price%>
                                         </td>
-                                        <td style="text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center;">
                                             
                                             <%= sanpham.describe%>
                                         </td>
-                                        <td style="text-align: center; width: 150px;">             
+                                        <td style="vertical-align: middle; text-align: center; width: 150px;">             
                                             <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
                                                 <a href="/sanpham/edit/<%= sanpham._id %>"><i class="fas fa-edit"></i></a>
                                             </button>

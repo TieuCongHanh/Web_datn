@@ -12,7 +12,7 @@
     <!-- or -->
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
     <!-- Icon web -->
-    <link rel="icon" href="/images/logo.jpg" type="image/png">
+    <link rel="icon" href="/images/logo_app.png" type="image/png">
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css"
         href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -37,9 +37,9 @@
             <span><%= msg %></span>
             <div id="clock"></div>
         </div>
-        <img src="<%= objUS.image %>" id="displayImage" alt="anh" style="width: 200px; height: 200px;border-radius: 30px; ">
+        <img src="<%= objUS.image %>" id="displayImage" alt="anh" style="width: 130px; height: 130px;border-radius: 30px; ">
        
-        <form action="" method="post" enctype="multipart/form-data" style="margin-top: 50px;">          
+        <form action="" method="post" enctype="multipart/form-data" style="margin-top: 20px;margin-bottom: 100px;">          
             <div class="row">
                 <div class="form-group col-md-6">
                     <label class="control-label">Tên đăng nhập</label>
@@ -52,6 +52,10 @@
                 <div class="form-group col-md-6">
                     <label class="control-label">Số điện thoại</label>
                     <input  class="form-control" type="text" name="phone" value="<%= objUS.phone %>">
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Email</label>
+                    <input  class="form-control" type="text" name="userEmail" value="<%= objUS.userEmail %>">
                 </div>
                 <div class="form-group col-md-6 ">
                     <label for="exampleSelect1" class="control-label">Vai trò</label>
@@ -79,18 +83,6 @@
                     <button style=" width: 90px; height: 40px;" type="submit" action="/edit" class="btn btn-primary">Lưu</button>
                         </div>
         </form>
-        
-
-        <!-- đít -->
-        <footer class="text-center text-lg-start bg-white text-muted " style="margin-top: 100px;">
-            <!-- Copyright -->
-            <div class="text-center p-4" style="background-color: rgb(238, 127, 182);color: black;">
-                © 2023 Tác giả :
-                <a class="text-reset fw-bold" style="text-decoration: none;"
-                href="https://zalo.me/g/rtzyfx009">Boy nhà nghèo</a>
-            </div>
-            <!-- Copyright -->
-        </footer>
     </main>
 
 
