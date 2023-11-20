@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="/bootstrap-5.2.3-dist/css/main.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <!-- or -->
+        <!-- Icon web -->
+        <link rel="icon" href="/images/logo_app.png" type="image/png">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css"
@@ -37,111 +39,55 @@
         </div>
         <div class="row">
             <!--Left-->
-            <div class="col-md-12 col-lg-6">
+            <div class="col-md-12">
                 <div class="row">
                     <!-- col-6 -->
-                    <div class="col-md-6">
+                    <div class="col-xl">
                         <div class="widget-small primary coloured-icon"><i class='icon bx bxs-user-account fa-3x'></i>
                             <div class="info">
-                                <h4>Tổng tài khoản</h4>
+                                <a href="/user"><h4>Tổng số tài khoản</h4></a>
                                 <p><b><%= countUser %> tài khoản</b></p>
                                 <p class="info-tong">Tổng số tài khoản được quản lý.</p>
                             </div>
                         </div>
                     </div>
                     <!-- col-6 -->
-                    <div class="col-md-6">
-                        <div class="widget-small info coloured-icon"><svg xmlns="http://www.w3.org/2000/svg" width="60" height="80" fill="currentColor" class="bi bi-person-vcard" viewBox="0 0 16 16">
-                            <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5ZM9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8Zm1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Z"/>
-                            <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2ZM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96c.026-.163.04-.33.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1.006 1.006 0 0 1 1 12V4Z"/>
-                          </svg></i>
+                    <div class="col-xl">
+                        <div class="widget-small primary coloured-icon"><i class='icon bx bxs-user-account fa-3x'></i>
                             <div class="info">
-                               
+                                <a href="/doanhth"><h4>Tổng số doanh thu</h4></a>
+                                <p><b><%= countUser %> vnd</b></p>
+                                <p class="info-tong">Tổng số doanh thu được quản lý.</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="col-md-12">
-                        <div class="tile">
-                            
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="tile">
-                            <h3 class="tile-title">Tài khoản mới tham gia</h3>
-                            <div>
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Tên sinh viên</th>
-                                            <th>Ngày sinh</th>
-                                            <th>Số điện thoại</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>#183</td>
-                                            <td>Hột vịt muối</td>
-                                            <td>21/7/1992</td>
-                                            <td><span class="tag tag-success">0921387221</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>#219</td>
-                                            <td>Bánh tráng trộn</td>
-                                            <td>30/4/1975</td>
-                                            <td><span class="tag tag-warning">0912376352</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>#627</td>
-                                            <td>Cút rang bơ</td>
-                                            <td>12/3/1999</td>
-                                            <td><span class="tag tag-primary">01287326654</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>#175</td>
-                                            <td>Hủ tiếu nam vang</td>
-                                            <td>4/12/20000</td>
-                                            <td><span class="tag tag-danger">0912376763</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                    <!-- col-6 -->
+                    <div class="col-xl">
+                        <div class="widget-small primary coloured-icon"><i class='icon bx bxs-user-account fa-3x'></i>
+                            <div class="info">
+                                <a href="/sanpham"><h4>Tổng số sản phẩm</h4></a>
+                                <p><b><%= countUser %> sản phẩm</b></p>
+                                <p class="info-tong">Tổng số sản phẩm được quản lý.</p>
                             </div>
-
                         </div>
                     </div>
-                    <!-- / col-12 -->
                 </div>
             </div>
             <!--END left-->
-            <!--Right-->
-            <div class="col-md-12 col-lg-6">
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="tile">
-                            <h3 class="tile-title">Thông tin mới nhất</h3>
-                            <div class="embed-responsive embed-responsive-16by9">
-                                <canvas class="embed-responsive-item" id="lineChartDemo"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="tile">
-                            <h3 class="tile-title">Thông tin về trường</h3>
-                            <div class="embed-responsive embed-responsive-16by9">
-                                <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
-                            </div>
-                        </div>
+                    <div class="col-xl">
+                        <div id="chartContainer" style="height: 300px; width: 100%;"></div> 
                     </div>
                 </div>
-
             </div>
-            <!--END right-->
         </div>
 
 
         <!-- đít -->
-        <footer class="text-center text-lg-start bg-white text-muted ">
+        <footer class="text-center text-lg-start bg-white text-muted mt-4">
             <!-- Copyright -->
             <div class="text-center p-4" style="background-color: rgb(238, 127, 182);color: black;">
                 © 2023 Tác giả :
@@ -238,6 +184,43 @@
             }
         }
     </script>
+    <script>
+        window.onload = function () {
+        var chart = new CanvasJS.Chart("chartContainer", {
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            animationEnabled: true,
+            title: {
+                text: "Tổng doanh thu"
+            },
+            axisY: {
+                title: "Giá(vnd)",
+                prefix: "vnd"
+            },
+            data: [{
+                type: "rangeColumn",
+                yValueFormatString: "$#,##0.00",
+                xValueFormatString: "MMM YYYY",
+                toolTipContent: "{x}<br>High: {y[0]}<br>Low: {y[1]}",
+                dataPoints: [		
+                    { x: new Date(2023, 0), y: [27.10, 38.99] },
+                    { x: new Date(2023, 1), y: [29.92, 37.00] },
+                    { x: new Date(2023, 2), y: [35.95, 42.54] },
+                    { x: new Date(2023, 3), y: [37.27, 48.50] },
+                    { x: new Date(2023, 4), y: [43.33, 50.51] },
+                    { x: new Date(2023, 5), y: [46.69, 52.86] },
+                    { x: new Date(2023, 6), y: [41.80, 50.75] },
+                    { x: new Date(2023, 7), y: [41.51, 51.22] },
+                    { x: new Date(2023, 8), y: [45.09, 50.14] },
+                    { x: new Date(2023, 9), y: [47.98, 53.73] },
+                    { x: new Date(2023, 10), y: [43.57, 50.49] },
+                    { x: new Date(2023, 11), y: [51.51, 57.89] }
+                ]
+            }]
+        });
+        chart.render();
+        }
+        </script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </body>
 
 </html>

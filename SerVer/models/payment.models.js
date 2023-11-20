@@ -1,28 +1,27 @@
 var db = require('./db');
-const addressSchema = new db.mongoose.Schema(
+const paymentSchema = new db.mongoose.Schema(
     {
         _id: {type: db.mongoose.Schema.Types.String},
-        id_user: {type: db.mongoose.Schema.Types.String, ref: 'userModel'},
-        address: {type: String, require: false}
+        method: { type: String, require: true },
+        amount: {type: String, require: false},
+        describle: {type: String, require: false},
     },
     {
-        collection: 'address'
+        collection: 'payment'
     }
 )
 
-
-// Middleware "pre" để tự động tăng giá trị _id lên 1 
-addressSchema.pre('save', function (next) {
+paymentSchema.pre('save', function (next) {
     const doc = this;
     if (doc.isNew) {
         // Tìm người dùng có giá trị ID lớn nhất
-        addressModel.findOne({}, { _id: 1 }, { sort: { _id: -1 } })
+        paymentModel.findOne({}, { _id: 1 }, { sort: { _id: -1 } })
             .then((maxStaff) => {
                 // Tăng giá trị ID lên 1
-                const regex = /^DC(\d+)$/;
+                const regex = /^TT(\d+)$/;
                 const maxIdMatch = regex.exec(maxStaff?._id || '');
                 const nextId = maxIdMatch ? parseInt(maxIdMatch[1]) + 1 : 1;
-                const formattedId = "DC" + String(nextId).padStart(3, '0');
+                const formattedId = "TT" + String(nextId).padStart(3, '0');
                 doc._id = formattedId;
                 next();
             })
@@ -34,6 +33,6 @@ addressSchema.pre('save', function (next) {
     }
 });
 
-let addressModel = db.mongoose.model('addressModel', addressSchema);
+let paymentModel = db.mongoose.model('paymentModel', paymentSchema);
 
-module.exports = { addressModel };
+module.exports = { paymentModel };

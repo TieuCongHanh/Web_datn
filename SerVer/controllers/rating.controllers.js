@@ -14,8 +14,9 @@ exports.listRating = async (req, res, next) => {
     const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
     let list = await rM.ratingModel.find().populate('id_user');
     let count = list.length / perPage;
-    let start=( page - 1 )*perPage; 
+    let start=( page - 1 )*perPage;
     let currentPageTotal = start + list.length;
+    console.log(list);
     res.render('danhgia/danhgia', {list: list,  req: req, countPage: count, msg: msg,by : by, order :order,totalRating: totalRating, currentPageTotal:currentPageTotal});
 }
 

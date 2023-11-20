@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Cập nhật người dùng</title>
+    <title>Cập nhật nhân viên</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,8 +11,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <!-- or -->
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    
     <!-- Icon web -->
     <link rel="icon" href="/images/logo_app.png" type="image/png">
+    
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css"
         href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -32,57 +34,72 @@
     <main class="app-content">
         <div class="app-title">
             <ul class="app-breadcrumb breadcrumb side">
-                <li class="breadcrumb-item active"><a href="#"><b>Cập nhật người dùng</b></a></li>
+                <li class="breadcrumb-item active"><a href="#"><b>Cập nhật nhân viên</b></a></li>
             </ul>
             <span><%= msg %></span>
             <div id="clock"></div>
         </div>
-        <img src="<%= objUS.image %>" id="displayImage" alt="anh" style="width: 130px; height: 130px;border-radius: 30px; ">
+        <img src="<%= objStaff.image %>" id="displayImage" alt="anh" style="width: 130px; height: 130px;border-radius: 30px; ">
        
         <form action="" method="post" enctype="multipart/form-data" style="margin-top: 20px;margin-bottom: 100px;">          
             <div class="row">
+
                 <div class="form-group col-md-6">
-                    <label class="control-label">Tên đăng nhập</label>
-                    <input readonly class="form-control" type="text" name="username" value="<%= objUS.username %>">
+                    <label class="control-label">Họ và Tên</label>
+                    <input class="form-control" type="text" name="nameStaff" value="<%= objStaff.name %>" required>
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="control-label">Họ và tên</label>
-                    <input  class="form-control" type="text" name="name" value="<%= objUS.name %>">
+                    <label class="control-label">Địa chỉ</label>
+                    <input class="form-control" type="text" name="address" value="<%= objStaff.address %>" required>
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="control-label">Số điện thoại</label>
-                    <input  class="form-control" type="text" name="phone" value="<%= objUS.phone %>">
+                    <label class="control-label">Số điện thoại </label>
+                    <input class="form-control" type="text" name="phone" value="<%= objStaff.phone %>" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Ngày sinh</label>
+                    <input class="form-control" type="text" name="date" value="<%= objStaff.date %>" required>
+                </div>
+                <div class="form-group col-md-6 ">
+                    <label for="genderSelect" class="control-label">Giới tính</label>
+                    <select class="form-control" id="genderSelect" name="gender" value="<%= objStaff.gender %>" required>
+                        <option></option>
+                        <option>Nam</option>
+                        <option>Nữ</option>
+                    </select>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="control-label">Email</label>
-                    <input  class="form-control" type="text" name="userEmail" value="<%= objUS.userEmail %>">
+                    <input class="form-control" type="text" name="email" value="<%= objStaff.email %>" required>
                 </div>
+                
                 <div class="form-group col-md-6 ">
-                    <label for="exampleSelect1" class="control-label">Vai trò</label>
-                    <select class="form-control" id="exampleSelect1" name="role" value="<%= objUS.role %>">
-                        <option>Admin</option>
-                        <option>User</option>
+                    <label for="roleSelect" class="control-label">Chức vụ</label>
+                    <select class="form-control" id="roleSelect" name="role" value="<%= objStaff.email %>" required>
+                        <option></option>
+                        <option>Quản lý</option>
+                        <option>Thu ngân</option>
+                        <option>Bán hàng</option>
+                        <option>Giao hàng</option>
                     </select>
                 </div>
-                <div class="form-group  col-md-6">
-                    <label class="control-label">Mật khẩu</label>
-                    <input class="form-control" type="password" name="password" placeholder="Nhập mật khẩu mới ( nếu như không nhập giữ nguyên giá trị cũ )">
-                </div>
+            
                 <div class="form-group col-md-6">
-                    <label class="control-label">Hình ảnh</label>
-                    <input class="form-control" type="file" id="newImage" name="productImage" >
+                    <label for="staffImage" class="control-label">Ảnh Thẻ</label>
+                    <input type="file" class="form-control" id="newImage" name="staffImage" >
                 </div>
+
             </div>
             <BR>
             <BR>
             <BR>
                 <div style="float:right;">
                     
-                    <!-- <a href="/user" class="btn btn-add" href="/user" type="submit">save</a> -->
-                    <a style=" width: 90px; height: 40px;" class="btn btn-cancel" data-dismiss="modal" href="/user/1">Hủy bỏ</a>
+                    <a style=" width: 90px; height: 40px;" class="btn btn-cancel" data-dismiss="modal" href="/staff/1">Hủy bỏ</a>
                     <button style=" width: 90px; height: 40px;" type="submit" action="/edit" class="btn btn-primary">Lưu</button>
-                        </div>
+                </div>
         </form>
+        
     </main>
 
 
@@ -191,6 +208,32 @@
      }
  });
      </script>
+
+<script>
+    var genderFromDatabase = '<%= objStaff.gender %>';
+
+    var selectElement = document.getElementById("genderSelect");
+    for (var i = 0; i < selectElement.options.length; i++) {
+        if (selectElement.options[i].value === genderFromDatabase) {
+            selectElement.options[i].selected = true;
+            break;
+        }
+    }
+</script>
+
+<script>
+    var roleFromDatabase = '<%= objStaff.role %>';
+
+    var selectElement = document.getElementById("roleSelect");
+    for (var i = 0; i < selectElement.options.length; i++) {
+        if (selectElement.options[i].value === roleFromDatabase) {
+            selectElement.options[i].selected = true;
+            break;
+        }
+    }
+</script>
+
+
 </body>
 
 </html>
