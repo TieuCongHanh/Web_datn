@@ -25,7 +25,7 @@ exports.list = async (req, res) => {
     .sort({ [by]: order })
     .populate("id_user")
     .populate("id_staff")
-    .populate("total_price")
+    .populate("id_payment")
     .populate("id_address");
 
   // Tính tổng số người dùng
@@ -163,7 +163,7 @@ exports.details = async (req, res) => {
       .findById(orderId)
       .populate("id_user")
       .populate("id_staff")
-      .populate("total_price")
+      .populate("id_payment")
       .populate("id_address");
 
     if (!order) {

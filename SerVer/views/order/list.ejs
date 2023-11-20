@@ -31,6 +31,12 @@
     border-color: #007bff; /* Màu viền khi nút được chọn */
 }
 
+.modal-open .modal {
+        display: flex !important;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 0px;
+    }
 </style>
 </head>
 
@@ -76,7 +82,6 @@
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Mã đơn hàng</th>
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Mã khách hàng</th>
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;">Tên khách hàng</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 8%;">Tổng sản phẩm</th>
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 10%;">Tổng giá</th> 
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Ngày đặt</th>
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;">Địa chỉ</th>
@@ -105,12 +110,7 @@
 
                                         <td style="vertical-align: middle; text-align: center;">
                                             
-                                            <%= order.total_price._id%>
-                                        </td>
-
-                                        <td style="vertical-align: middle; text-align: center;">
-                                            
-                                            <%= order.total_price.method%>
+                                            <%= order.total_price%>
                                         </td>
 
                                         <td style="vertical-align: middle; text-align: center;">
@@ -130,7 +130,7 @@
 
                                         <td style="vertical-align: middle; text-align: center;">
                                             
-                                            <%= order.delivery_status%>
+                                            <img title="Đã thanh toán" style="width: 24px; height: 24px;" class="lock-icon" src="<%= order.pay_status ? '/images/da_thanh_toan.png' : '/images/chua_thanh_toan.png' %>" alt="Khóa">
                                         </td>
                                        
                                         <td style="vertical-align: middle; text-align: center; width: 150px;">             
@@ -214,6 +214,10 @@
                                         <label style="width: 20%;" class="control-label">Email</label>
                                         <span type="text" name="userEmail"></span>
                                     </div>
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Địa chỉ</label>
+                                        <span type="text" name="address"></span>
+                                    </div>
                                 </div>
                         </div>
         
@@ -233,6 +237,10 @@
                                         <label style="width: 20%;" class="control-label">Email</label>
                                         <span type="text" name="staffEmail"></span>
                                     </div>
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">Trạng thái</label>
+                                        <span type="text" name="deliverStatus"></span>
+                                    </div>
                                 </div>
                         </div>
 
@@ -240,19 +248,35 @@
                             <label class="control-label">Sản phẩm</label>
                         
                                 <table class="table table-bordered col" id="tableorder">
-                            <thead style="width: auto;">
-                                <tr>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 30%;">Tên sản phẩm</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 30%;">Giá sản phẩm</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 20%;">Số lượng</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 20%;">Tổng</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            
+                                    <thead style="width: auto;">
+                                        <tr>
+                                            <th scope="col" style="vertical-align: middle; text-align: center; width: 30%;">Tên sản phẩm</th>
+                                            <th scope="col" style="vertical-align: middle; text-align: center; width: 30%;">Giá sản phẩm</th>
+                                            <th scope="col" style="vertical-align: middle; text-align: center; width: 20%;">Số lượng</th>
+                                            <th scope="col" style="vertical-align: middle; text-align: center; width: 20%;">Tổng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                        </div>
 
-                            </tbody>
-                        </table>
+                        <div class="form-group col-md-12" >
+                            <label class="control-label">Thanh toán</label>
+                            <div style="margin-left: 20px;">
+                                <div>
+                                    <label style="width: 20%;" class="control-label">Phương thức thanh toán</label>
+                                    <span type="phone" name="method"></span>
+                                </div>
+                                <div>
+                                    <label style="width: 20%;" class="control-label">Số tiền</label>
+                                    <span type="text" name="amount"></span>
+                                </div>
+                                <div>
+                                    <label style="width: 20%;" class="control-label">Trạng thái</label>
+                                    <span type="text" name="payStatus"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -353,17 +377,24 @@
             $('#detailModal').find('span[name="name"]').eq(0).text(order.id_user.name);
             $('#detailModal').find('span[name="phone"]').eq(0).text(order.id_user.phone);
             $('#detailModal').find('span[name="userEmail"]').eq(0).text(order.id_user.userEmail);
+            $('#detailModal').find('span[name="address"]').eq(0).text(order.id_address.address);
 
             $('#detailModal').find('span[name="staffName"]').eq(0).text(order.id_staff.name);
             $('#detailModal').find('span[name="staffPhone"]').eq(0).text(order.id_staff.phone);
             $('#detailModal').find('span[name="staffEmail"]').eq(0).text(order.id_staff.email);
+            $('#detailModal').find('span[name="deliverStatus"]').eq(0).text(order.delivery_status);
+
+            $('#detailModal').find('span[name="method"]').eq(0).text(order.id_payment.method);
+            $('#detailModal').find('span[name="amount"]').eq(0).text(order.total_price);
+            $('#detailModal').find('span[name="payStatus"]').eq(0).text(order.pay_status ? "Đã thanh toán" : "Chưa thanh toán");
+
                
             var tableBody = $('#detailModal').find('table#tableorder tbody');
             tableBody.empty();
 
             listOrderDetail.forEach(function (orderDetail) {
                 var productName = orderDetail.id_product.name;
-                var productPrice = orderDetail.id_product.price;
+                var productPrice = orderDetail.price;
                 var quantity = orderDetail.quantity;
                 var total = orderDetail.total_price;
 
