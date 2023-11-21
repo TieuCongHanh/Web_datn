@@ -1,7 +1,7 @@
 var db = require('./db');
 const userSchema = new db.mongoose.Schema(
     {
-        _id: {type: db.mongoose.Schema.Types.Number},
+        _id: {type: db.mongoose.Schema.Types.String},
         username: { type: String, require: true },
         name: { type: String, require: true },
         password: { type: String, require: true },
@@ -16,16 +16,20 @@ const userSchema = new db.mongoose.Schema(
     }
 )
 
-// Middleware "pre" để tự động tăng giá trị _id lên 1 khi có người dùng mới
+
+// Middleware "pre" để tự động tăng giá trị _id lên 1 
 userSchema.pre('save', function (next) {
     const doc = this;
     if (doc.isNew) {
         // Tìm người dùng có giá trị ID lớn nhất
         userModel.findOne({}, { _id: 1 }, { sort: { _id: -1 } })
-            .then((maxUser) => {
+            .then((maxStaff) => {
                 // Tăng giá trị ID lên 1
-                const nextId = maxUser ? maxUser._id + 1 : 1;
-                doc._id = nextId;
+                const regex = /^KH(\d+)$/;
+                const maxIdMatch = regex.exec(maxStaff?._id || '');
+                const nextId = maxIdMatch ? parseInt(maxIdMatch[1]) + 1 : 1;
+                const formattedId = "KH" + String(nextId).padStart(3, '0');
+                doc._id = formattedId;
                 next();
             })
             .catch((error) => {

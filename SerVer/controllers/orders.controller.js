@@ -1,5 +1,6 @@
 const OrderModel = require("../models/orders.models");
 const paymentModel = require("../models/payment.models");
+const detailModel = require("../models/orderdetail.models");
 const excelJs = require("exceljs");
 const PDFDocument = require("pdfkit");
 
@@ -23,7 +24,8 @@ exports.list = async (req, res) => {
     .limit(perPage)
     .sort({ [by]: order })
     .populate("id_user")
-    .populate("total_price")
+    .populate("id_staff")
+    .populate("id_payment")
     .populate("id_address");
 
   // Tính tổng số người dùng
@@ -153,20 +155,29 @@ exports.print = async (req, res, next) => {
   }
 };
 
-exports.detail = async (req, res) => {
+
+exports.details = async (req, res) => {
+  const orderId = req.params.orderId;
   try {
-    const orderId = req.query.orderId;
-    let objOrder = await OrderModel.ordersModel
+    const order = await OrderModel.ordersModel
       .findById(orderId)
       .populate("id_user")
       .populate("id_staff")
-      .populate("total_price")
+      .populate("id_payment")
       .populate("id_address");
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    const listOrderDetail = await detailModel.orderDetailModel.find({ id_order : orderId })
+    .populate("id_order")
+    .populate("id_product");
+
+    console.log({order, listOrderDetail});
+    res.json({order, listOrderDetail});
   } catch (error) {
     console.log(error);
-    msg = "Lỗi server."
-    res.status(500).send("Lỗi server.");
-    return;
+    res.status(500).json({ error: "Server error" });
   }
-  res.end();
 };

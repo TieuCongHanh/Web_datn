@@ -83,7 +83,7 @@ exports.Reg = async (req, res, next) => {
                 let objU = new md.userModel();
                 objU.username = req.body.username;
                 objU.password = req.body.password;
-              
+                objU.userEmail = req.body.userEmail;
 
                 if (countUser === 0) {
                     objU.role = 'Admin';

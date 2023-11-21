@@ -1,27 +1,28 @@
 var db = require('./db');
 const ratingSchema = new db.mongoose.Schema(
     {
-        _id: {type: db.mongoose.Schema.Types.Number},
-        id_user: {type: db.mongoose.Schema.Types.ObjectId, ref: 'userModel'},
+        _id: {type: db.mongoose.Schema.Types.String},
+        id_user: {type: db.mongoose.Schema.Types.String, ref: 'userModel'},
         rating: {type: String, require: false}
     },
     {
         collection: 'rating'
     }
 )
-let ratingModel = db.mongoose.model('ratingModel', ratingSchema);
-
 
 // Middleware "pre" để tự động tăng giá trị _id lên 1 
 ratingSchema.pre('save', function (next) {
     const doc = this;
     if (doc.isNew) {
-    
+        // Tìm người dùng có giá trị ID lớn nhất
         ratingModel.findOne({}, { _id: 1 }, { sort: { _id: -1 } })
-            .then((maxOrders) => {
+            .then((maxStaff) => {
                 // Tăng giá trị ID lên 1
-                const nextId = maxOrders ? maxOrders._id + 1 : 1;
-                doc._id = nextId;
+                const regex = /^DG(\d+)$/;
+                const maxIdMatch = regex.exec(maxStaff?._id || '');
+                const nextId = maxIdMatch ? parseInt(maxIdMatch[1]) + 1 : 1;
+                const formattedId = "DG" + String(nextId).padStart(3, '0');
+                doc._id = formattedId;
                 next();
             })
             .catch((error) => {
@@ -31,5 +32,8 @@ ratingSchema.pre('save', function (next) {
         next();
     }
 });
+
+let ratingModel = db.mongoose.model('ratingModel', ratingSchema);
+
 
 module.exports = { ratingModel };
