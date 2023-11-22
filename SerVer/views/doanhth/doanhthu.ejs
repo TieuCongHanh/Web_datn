@@ -67,42 +67,42 @@
                             <table class="table table-bordered col" id="tableorder">
                                 <thead style="width: auto;">
                                     <tr>
-                                        <th scope="col" style="text-align: center">Mã sản phẩm</th>
-                                        <th scope="col" style="width: 150px;text-align: center">Ảnh đại diện </th>
-                                        <th scope="col" style="text-align: center">Tên sản phẩm</th>
-                                        <th scope="col" style="text-align: center"><a
+                                        <th scope="col" style="vertical-align: middle; text-align: center;">Mã sản phẩm</th>
+                                        <th scope="col" style="vertical-align: middle; width: 150px;text-align: center">Ảnh đại diện </th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center">Tên sản phẩm</th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center"><a
                                                 href="/sanpham?by=price&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Giá
                                                 sản phẩm</a></th>
-                                        <th scope="col" style="text-align: center">SL bán ra</th>
-                                        <th scope="col" style="text-align: center">Doanh thu</th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center">SL bán ra</th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center">Doanh thu</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% listod.forEach((order)=> { %>
                                         <tr>
                                         <tr>
-                                            <td style="width: 250px;">
-                                                <%= order._id %>
+                                            <td style="vertical-align: middle; text-align: center; width: 250px;">
+                                                <%= order._id.id_product %>
                                             </td>
                                             <td style="text-align: center; vertical-align: middle;max-width: 100px;">
-                                                <img src="<%= order.image %>" alt="anh"
+                                                <img src="<%= order.product.image %>" alt="anh"
                                                     style="width: 60px; height: 60px;border-radius: 30px;">
                                             </td>
-                                            <td style="text-align: center;">
+                                            <td style="vertical-align: middle; text-align: center;">
 
-                                                <%= order.name%>
+                                                <%= order.product.name%>
                                             </td>
-                                            <td style="text-align: center;">
+                                            <td style="vertical-align: middle; text-align: center;">
 
-                                                <%= order.price%>
+                                                <%= order._id.price%>
                                             </td>
-                                            <td style="text-align: center;">
+                                            <td style="vertical-align: middle; text-align: center;">
 
                                                 <%= order.quantity%>
                                             </td>
-                                            <td style="text-align: center;">
+                                            <td style="vertical-align: middle; text-align: center;">
 
-                                                <%= order.price * order.quantity %>
+                                                <%= order.total_price %>
                                             </td>
                                         </tr>
                                         </tr>

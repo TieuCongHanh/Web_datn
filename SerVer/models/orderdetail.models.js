@@ -6,7 +6,7 @@ const orderDetailSchema = new db.mongoose.Schema(
     _id: { type: db.mongoose.Schema.Types.String },
     id_order: { type: db.mongoose.Schema.Types.String, ref: "ordersModel" },
     id_product: { type: db.mongoose.Schema.Types.String, ref: "sanphamModel" },
-    price: {type : Number, riquire : true},
+    price: { type: Number, require: true },
     quantity: { type: Number, require: true },
     total_price: { type: Number, require: true },
   },
