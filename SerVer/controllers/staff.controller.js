@@ -5,31 +5,30 @@ const bcrypt = require('bcrypt');
 var msg = '';
 
 exports.list = async (req, res, next) => {
-    let page=req.params.i;  // trang
-    let perPage=4; 
-    let searchStaff = null;
-    if (req.query.staffName != '' && String(req.query.staffName) != 'undefined') {
-        searchStaff = { name: req.query.staffName }
-    }
-    let start=( page - 1 )*perPage; // vị trí 0
-   
-    const by = req.query.by || 'staffId'; // Sắp xếp theo user nếu không có giá trị by
-    const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
+  let page = parseInt(req.params.i);
+  let perPage = parseInt(req.query.data_tables_leght) || 5;
+  let searchStaff = null;
+  
+  if (req.query.staffName != '' && String(req.query.staffName) != 'undefined') {
+    searchStaff = { name: req.query.staffName };
+  }
+  
+  let start = (page - 1) * perPage;
 
-    let list = await myMD.staffModel.find(searchStaff).skip(start).limit(perPage).sort({ [by] :order });
-    // Tính tổng số người dùng
-    let totalStaff = await myMD.staffModel.find(searchStaff).countDocuments();
-// Tính tổng số người dùng trên trang hiện tại
-   let currentPageTotal = start + list.length;
-   
-    let countlist = await myMD.staffModel.find(searchStaff);
-    let count = countlist.length / perPage;
-    count = Math.ceil(count);
+  const by = req.query.by || '_id name';
+  const order = req.query.order || 'asc';
 
-    console.log(list);
-    res.render('staff/list', { listStaff: list, countPage: count , req: req , msg: msg,by : by, order :order, totalStaff: totalStaff, currentPageTotal:currentPageTotal});
-}
+  let list = await myMD.staffModel.find(searchStaff).skip(start).limit(perPage).sort({ [by]: order });
+  let totalStaff = await myMD.staffModel.find(searchStaff).countDocuments();
+  let currentPageTotal = start + list.length;
 
+  let countlist = await myMD.staffModel.find(searchStaff);
+  let count = countlist.length / perPage;
+  count = Math.ceil(count);
+
+  console.log(list);
+  res.render('staff/list', {perPage : perPage, listStaff: list, countPage: count, req: req, msg: msg, by: by, order: order, totalStaff: totalStaff, currentPageTotal: currentPageTotal, start : start });
+};
 
 exports.in = async (req, res, next) => {
     try {
@@ -160,6 +159,7 @@ exports.in = async (req, res, next) => {
   };
 
 exports.add = async (req, res, next) => {
+    msg = "";
     if (req.method == 'POST') {
         const existingStaff = await myMD.staffModel.find({ name: req.body.nameStaff });
       

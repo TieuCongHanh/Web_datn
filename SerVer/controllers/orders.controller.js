@@ -7,15 +7,17 @@ const PDFDocument = require("pdfkit");
 var msg = "";
 
 exports.list = async (req, res) => {
-  let page = req.params.i; // trang
-  let perPage = 4;
+  let page = parseInt(req.params.i);
+  let perPage = parseInt(req.query.data_tables_leght) || 5; // Lấy số mục từ query parameter
   let timkiemSP = null;
+
   if (req.query.name != "" && String(req.query.name) != "undefined") {
     timkiemSP = { name: req.query.name };
   }
-  let start = (page - 1) * perPage; // vị trí 0
 
-  const by = req.query.by || "price"; // Sắp xếp theo price nếu không có giá trị by
+  let start = (page - 1) * perPage; 
+
+  const by = req.query.by || "_id id_user nameUser price date"; // Sắp xếp theo price nếu không có giá trị by
   const order = req.query.order || "asc"; // Sắp xếp tăng dần nếu không có giá trị order
 
   let list = await OrderModel.ordersModel
@@ -28,10 +30,7 @@ exports.list = async (req, res) => {
     .populate("id_payment")
     .populate("id_address");
 
-  // Tính tổng số người dùng
   let totalSP = await OrderModel.ordersModel.find(timkiemSP).countDocuments();
-
-  // Tính tổng số người dùng trên trang hiện tại
   let currentPageTotal = start + list.length;
 
   let countlist = await OrderModel.ordersModel.find(timkiemSP);
@@ -40,6 +39,8 @@ exports.list = async (req, res) => {
 
   console.log(list);
   res.render("order/list", {
+    start : start,
+    perPage : perPage,
     listL: list,
     countPage: count,
     req: req,
