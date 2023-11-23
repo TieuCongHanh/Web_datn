@@ -6,21 +6,21 @@ const bcrypt = require('bcrypt');
 var msg = '';
 
 exports.list = async (req, res, next) => {
-    let page=req.params.i;  // trang
-    let perPage=4; 
+    let page = parseInt(req.params.i);
+    let perPage=parseInt(req.query.data_tables_leght) || 5; 
     let timkiemUser = null;
+
     if (req.query.username != '' && String(req.query.username) != 'undefined') {
         timkiemUser = { username: req.query.username }
     }
-    let start=( page - 1 )*perPage; // vị trí 0
+
+    let start=( page - 1 )*perPage;
    
-    const by = req.query.by || 'user'; // Sắp xếp theo user nếu không có giá trị by
+    const by = req.query.by || '_id username name'; // Sắp xếp theo user nếu không có giá trị by
     const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
 
     let list = await myMD.userModel.find(timkiemUser).skip(start).limit(perPage).sort({ [by] :order });
-    // Tính tổng số người dùng
     let totalUsers = await myMD.userModel.find(timkiemUser).countDocuments();
-// Tính tổng số người dùng trên trang hiện tại
    let currentPageTotal = start + list.length;
    
     let countlist = await myMD.userModel.find(timkiemUser);
@@ -28,8 +28,10 @@ exports.list = async (req, res, next) => {
     count = Math.ceil(count);
 
     console.log(list);
-    res.render('user/list', { listUS: list, countPage: count , req: req , msg: msg,by : by, order :order,totalUsers: totalUsers,currentPageTotal:currentPageTotal});
+    res.render('user/list', {perPage : perPage, start : start, listUS: list, countPage: count , req: req , msg: msg,by : by, order :order,totalUsers: totalUsers,currentPageTotal:currentPageTotal});
 }
+
+
 exports.in = async (req, res, next) => {
     try {
         let workbook = new excelJs.Workbook();

@@ -6,30 +6,29 @@ const bcrypt = require('bcrypt');
 var msg = '';
 
 exports.list = async (req, res, next) => {
-    let page=req.params.i;  // trang
-    let perPage=4; 
+    let page = parseInt(req.params.i);
+    let perPage = parseInt(req.query.data_tables_leght) || 5;
     let timkiemSP = null;
+
     if (req.query.name != '' && String(req.query.name) != 'undefined') {
         timkiemSP = { name: req.query.name }
     }
+
     let start=( page - 1 )*perPage; // vị trí 0
    
-    const by = req.query.by || 'price'; // Sắp xếp theo price nếu không có giá trị by
+    const by = req.query.by || '_id name price'; // Sắp xếp theo price nếu không có giá trị by
     const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
 
     let list = await myMD.sanphamModel.find(timkiemSP).skip(start).limit(perPage).sort({ [by] :order });
-// Tính tổng số người dùng
-let totalSP = await myMD.sanphamModel.find(timkiemSP).countDocuments();
-
-// Tính tổng số người dùng trên trang hiện tại
-let currentPageTotal = start + list.length;
+    let totalSP = await myMD.sanphamModel.find(timkiemSP).countDocuments();
+    let currentPageTotal = start + list.length;
 
     let countlist = await myMD.sanphamModel.find(timkiemSP);
     let count = countlist.length / perPage;
     count = Math.ceil(count);
 
     console.log(list);
-    res.render('sanpham/list', { listL: list, countPage: count , req: req , msg: msg,by : by, order :order,totalSP: totalSP,currentPageTotal:currentPageTotal});
+    res.render('sanpham/list', {perPage : perPage,  start : start, listL: list, countPage: count , req: req , msg: msg,by : by, order :order,totalSP: totalSP,currentPageTotal:currentPageTotal});
 }
 
 exports.in = async (req, res, next) => {

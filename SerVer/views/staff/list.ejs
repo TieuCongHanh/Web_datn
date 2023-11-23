@@ -63,27 +63,47 @@
                                     ><i class="fas fa-print"></i> In dữ liệu</a>
                             </div>
                         </div>
-                        <!-- thanh tìm kiếm -->
-                        <form role="search" style=" margin-top: 20px; margin-bottom: 30px; display: flex; float: right;">
-                            <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên đăng nhập..." aria-label="Search" name="staffName">
-                            <button class="btn btn-outline-info"  style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
-                        </form>
+                        <div class="d-flex justify-content-between" style="margin-top: 20px; margin-bottom: 30px;">
+                            <div class="dataTables_length d-flex align-items-center">
+                                <label class="mr-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px;">Xem</label>
+                                <select name="data_tables_leght" style="width: 60px;" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm" onchange="changePerPage(this)">
+                                    <option value="5" <%= perPage === 5 ? 'selected' : '' %>>5</option>
+                                    <option value="10" <%= perPage === 10 ? 'selected' : '' %>>10</option>
+                                    <option value="25" <%= perPage === 25 ? 'selected' : '' %>>25</option>
+                                    <option value="50" <%= perPage === 50 ? 'selected' : '' %>>50</option>
+                                    <option value="100" <%= perPage === 100 ? 'selected' : '' %>>100</option>
+                                </select>
+                                <label class="ml-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px">mục</label>
+                            </div>
+                            <form role="search" class="d-flex" style="margin-left: auto;">
+                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên đăng nhập..." aria-label="Search" name="staffName">
+                                <button class="btn btn-outline-info" style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
+                            </form>
+                        </div>
                         <!-- thay đỏi -->
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%"><a  href="/staffId?by=staffId&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Mã</a></th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 12%">Họ tên</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 8%">Ảnh thẻ</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 22%">Địa chỉ</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 8%">SDT</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 8%">Ngày sinh</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 4%">Giới tính</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%">Email</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%">Chức vụ</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 13%">Chức năng</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%">
+                                    <a href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      Mã
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 12%">
+                                    <a href="<%= req.params.i %>?by=name&order=<%= (by === 'name' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      Họ tên
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8%">Ảnh thẻ</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 22%">Địa chỉ</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8%">SDT</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8%">Ngày sinh</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 4%">Giới tính</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 15%">Email</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%">Chức vụ</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 13%">Chức năng</th>
                                 </tr>
-                            </thead>
+                              </thead>
                             <tbody>
                                 <% listStaff.forEach((staff)=> { %>
                                     <tr>
@@ -152,11 +172,10 @@
                             </tbody>
                         </table>
                         <!-- hết bảng -->
-                        <div>
-                            Bạn đang xem <%= currentPageTotal %> trong tổng số <%= totalStaff %> nhân viên
-                        </div>
-                        <!-- thông tin thông số của trang -->
-                        <div class="row justify-content-end">
+                        <div class="row justify-content-between" style="vertical-align: middle; align-items: center">
+                            <div class="col-auto">
+                              Bạn đang xem <%=(listStaff.length == 0) ? start : start + 1 %> đến <%= start + listStaff.length %> trong tổng số <%= totalStaff %> nhân viên
+                            </div>
                             <div class="col-auto">
                               <nav aria-label="Page navigation">
                                 <ul class="pagination justify-content-end">
@@ -168,13 +187,11 @@
                                 </ul>
                               </nav>
                             </div>
-                          </div>
-                        <!-- hết  thông tin thông số của trang -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    
     </main>
 
     <!-- modal delete -->
@@ -283,6 +300,16 @@
             }, 1000);
           });
         })
+      </script>
+
+      <script>
+        function changePerPage(selectElement) {
+        const perPage = parseInt(selectElement.value);
+        const currentPage = parseInt('<%= req.params.i %>'); // Lấy trang hiện tại từ dữ liệu động
+        const url = `/staff/${currentPage}?data_tables_leght=${perPage}`;
+
+        window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
+        }
       </script>
 
 </body>
