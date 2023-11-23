@@ -20,6 +20,15 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <style>
+        .th-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    }
     .lock-icon{
         width: 16px; /* Đặt kích thước hình ảnh dựa trên kích thước thích hợp */
     height: 16px;
@@ -91,61 +100,91 @@
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;"><a href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">Mã</a></th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;"><a href="<%= req.params.i %>?by=id_user&order=<%= (by === 'id_user' && order === 'asc') ? 'desc' : 'asc' %>">Mã khách hàng</a></th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;"><a href="<%= req.params.i %>?by=nameUser&order=<%= (by === 'nameUser' && order === 'asc') ? 'desc' : 'asc' %>">Tên khách hàng</a></th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 10%;"><a href="<%= req.params.i %>?by=price&order=<%= (by === 'price' && order === 'asc') ? 'desc' : 'asc' %>">Tổng giá</a></th> 
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;"><a href="<%= req.params.i %>?by=date&order=<%= (by === 'date' && order === 'asc') ? 'desc' : 'asc' %>">Ngày đặt</a></th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;">Địa chỉ</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 7%;">Trạng thái giao</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Thanh toán</th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;">Chức năng</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Mã
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=id_user&order=<%= (by === 'id_user' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Mã khách hàng
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=nameUser&order=<%= (by === 'nameUser' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Tên khách hàng
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=price&order=<%= (by === 'price' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Tổng giá
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=date&order=<%= (by === 'date' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Ngày đặt
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">Địa chỉ</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Trạng thái giao</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">Thanh toán</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">Chức năng</th>
                                 </tr>
-                            </thead>
+                              </thead>
                             <tbody>
                                 <% listL.forEach((order)=> { %>
                                     <tr>
                                     <tr>
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             <%= order._id %>
                                         </td>
                                     
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= order.id_user._id%>
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= order.id_user.name%>
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= order.total_price%>
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= order.date%>
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= order.id_address.address%>
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= order.delivery_status%>
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <img title="Đã thanh toán" style="width: 24px; height: 24px;" class="lock-icon" src="<%= order.pay_status ? '/images/da_thanh_toan.png' : '/images/chua_thanh_toan.png' %>" alt="Khóa">
                                         </td>
                                        
-                                        <td style="vertical-align: middle; text-align: center; width: 150px;">             
+                                        <td style="vertical-align: middle; text-align: center; width: 150px; padding: 7px;">             
                                             <button class="btn bg-warning-subtle btn-sm edit" 
                                             style="font-size: 12px;" type="button" title="Chi tiết" id="show-emp"
                                              data-order-id="<%= order._id %>" data-img-url-user="<%=  order.id_user.image  %>"

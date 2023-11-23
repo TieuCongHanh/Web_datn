@@ -20,6 +20,15 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <style>
+    .th-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    }
     .lock-icon{
         width: 16px; /* Đặt kích thước hình ảnh dựa trên kích thước thích hợp */
     height: 16px;
@@ -84,73 +93,77 @@
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%">
-                                    <a href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">
-                                      Mã
+                                  <th scope="col" style="vertical-align: middle; width: 5%;  padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Mã 
+                                      </div>
                                     </a>
                                   </th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 12%">
-                                    <a href="<%= req.params.i %>?by=name&order=<%= (by === 'name' && order === 'asc') ? 'desc' : 'asc' %>">
-                                      Họ tên
+                                  <th scope="col" style="vertical-align: middle; width: 12%;  padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=name&order=<%= (by === 'name' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Họ tên 
+                                      </div>
                                     </a>
                                   </th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8%">Ảnh thẻ</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 22%">Địa chỉ</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8%">SDT</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8%">Ngày sinh</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 4%">Giới tính</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 15%">Email</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%">Chức vụ</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 13%">Chức năng</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8% ;  padding: 7px;">Ảnh thẻ</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 22%;  padding: 7px;">Địa chỉ</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8%;  padding: 7px;">SDT</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8%;  padding: 7px;">Ngày sinh</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 4%;  padding: 7px;">Giới tính</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;  padding: 7px;">Email</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%;  padding: 7px;">Chức vụ</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 13%;  padding: 7px;">Chức năng</th>
                                 </tr>
-                              </thead>
+                            </thead>
                             <tbody>
                                 <% listStaff.forEach((staff)=> { %>
                                     <tr>
                                     <tr>
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             <%= staff._id %>
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= staff.name %>
                                         </td>
 
-                                        <td style="text-align: center; vertical-align: middle;max-width: 100px;">
+                                        <td style="text-align: center; vertical-align: middle;max-width: 100px; padding: 7px;">
                                             <img src="<%= staff.image %>" alt="anh" style="width: 60px; height: 60px;border-radius: 30px;">
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= staff.address %>
                                         </td>
                                         
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                              <%= staff.phone %>
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= staff.date %>
                                         </td>
                                        
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
                                             <%= staff.gender %>
                                         </td>
                                 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             <%= staff.email %>
                                         </td>
 
-                                        <td style="vertical-align: middle; text-align: center;">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             <%= staff.role %>
                                         </td>
                                     
                                         
-                                        <td style="vertical-align: middle; text-align: center">
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
 
                                             <a href="/staff/edit/<%= staff._id %>">
                                                 <button class="btn bg-warning-subtle btn-sm edit"  type="button" title="Sửa" id="show-emp">

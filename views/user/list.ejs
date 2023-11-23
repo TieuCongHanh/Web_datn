@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title> Sản phẩm</title>
+    <title>Người Dùng</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,17 +20,24 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <style>
+    .th-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    }    
     .lock-icon{
         width: 16px; /* Đặt kích thước hình ảnh dựa trên kích thước thích hợp */
     height: 16px;
     }
-    /* CSS cho trang được chọn */
-.page-item.active .page-link {
+    .page-item.active .page-link {
     background-color: #007bff; /* Màu nền khi nút được chọn */
     color: #fff; /* Màu chữ khi nút được chọn */
     border-color: #007bff; /* Màu viền khi nút được chọn */
 }
-
 </style>
 </head>
 
@@ -39,7 +46,7 @@
     <main class="app-content">
         <div class="app-title">
             <ul class="app-breadcrumb breadcrumb side">
-                <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
+                <li class="breadcrumb-item active"><a href="#"><b>Danh sách người dùng</b></a></li>
             </ul>
            
             <div id="clock"></div>
@@ -52,16 +59,16 @@
                         <div class="row element-button">
                             <div class="col-sm-2">
                              
-                                <a class="btn btn-add btn-sm" href="/sanpham/<%= countPage %>/add" title="Thêm" id="show-emp"><i
+                                <a class="btn btn-add btn-sm" href="/user/<%= countPage %>/add" title="Thêm" id="show-emp"><i
                                         class="fas fa-plus"></i>
-                                    Tạo mới sản phẩm</a> 
+                                    Tạo mới người dùng</a> 
                             </div>
                             <div class="col-sm-2" id="btnExport">
-                                <a class="btn btn-excel btn-sm" href="/sanpham/countPage/in"  title="In"><i class="fas fa-file-excel"></i>
+                                <a class="btn btn-excel btn-sm" href="/user/countPage/in"  title="In"><i class="fas fa-file-excel"></i>
                                     Xuất Excel</a>
                             </div>
                             <div class="col-sm-2">
-                                <a class="btn btn-delete btn-sm print-file" href="/sanpham/countPage/print"  type="button" title="In"
+                                <a class="btn btn-delete btn-sm print-file" href="/user/countPage/print"  type="button" title="In"
                                     ><i class="fas fa-print"></i> In dữ liệu</a>
                             </div>
                         </div>
@@ -83,49 +90,81 @@
                                 <button class="btn btn-outline-info" style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
                             </form>
                         </div>
-
+                        <!-- thay đỏi -->
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 10%;"><a href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">Mã</a></th>
-                                    <th scope="col" style="vertical-align: middle; width: 150px;text-align: center; width: 10%;">Ảnh đại diện </th>
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;"><a href="<%= req.params.i %>?by=name&order=<%= (by === 'name' && order === 'asc') ? 'desc' : 'asc' %>">Tên sản phẩm</a></th> 
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 10%;"><a href="<%= req.params.i %>?by=price&order=<%= (by === 'price' && order === 'asc') ? 'desc' : 'asc' %>">Giá sản phẩm</a></th>                                                      
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 35%;">Mô tả sản phẩm</th> 
-                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;">Chức năng</th>
+                                   <th scope="col" style="vertical-align: middle; width: 5%; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Mã 
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; width: 150px; text-align: center; width: 8%; padding: 7px;">
+                                    Ảnh đại diện
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ;padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=username&order=<%= (by === 'username' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Tên tài khoản
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 18%;padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=name&order=<%= (by === 'name' && order === 'asc') ? 'desc' : 'asc' %>">
+                                     <div class="th-link">
+                                        Họ và tên 
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ; padding: 7px;">SDT</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 20% ;padding: 7px;">Email</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 7% ;padding: 7px;">Vai trò</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ;padding: 7px;">Trạng thái</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 12% ;padding: 7px;">Chức năng</th>
                                 </tr>
-                            </thead>
+                              </thead>
                             <tbody>
-                                <% listL.forEach((sanpham)=> { %>
+                                <% listUS.forEach((user)=> { %>
                                     <tr>
                                     <tr>
-                                        <td style="text-align: center; vertical-align: middle; ">
-                                            <%= sanpham._id %>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            <%= user._id %>
                                         </td>
-                                        <td style="vertical-align: middle; text-align: center; vertical-align: middle;max-width: 100px;">
-                                            <img src="<%= sanpham.image %>" alt="anh" style="width: 60px; height: 60px;border-radius: 30px;">
+                                        <td style="text-align: center; vertical-align: middle;max-width: 100px; padding: 7px;">
+                                            <img src="<%= user.image %>" alt="anh" style="width: 60px; height: 60px;border-radius: 30px;">
                                         </td>
-                                        <td style="vertical-align: middle; text-align: center;">
-                                            
-                                            <%= sanpham.name%>
-                                        </td>
-                                        <td style="vertical-align: middle; text-align: center;">
-                                            
-                                            <%= sanpham.price%>
-                                        </td>
-                                        <td style="vertical-align: middle; text-align: center;">
-                                            
-                                            <%= sanpham.describe%>
-                                        </td>
-                                        <td style="vertical-align: middle; text-align: center; width: 150px;">             
-                                            <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
-                                                <a href="/sanpham/edit/<%= sanpham._id %>"><i class="fas fa-edit"></i></a>
-                                            </button>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            <%= user.username %></td>
+                                        
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                             <%= user.name %></td>
 
-                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Xóa" type="button" data-bs-toggle="modal"data-bs-target="#deleteModal" data-user-id="<%= sanpham._id %>">
-                                                 <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
-                                            </button>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            <%= user.phone %></td>
+                                        
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            <%= user.userEmail %></td>   
+                                
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            <%= user.role %></td>
 
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            <%= user.isActive ? 'Hoạt động' : 'Khóa' %></td>
+
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            <a href="/user/edit/<%= user._id %>">
+                                            <button class="btn bg-warning-subtle btn-sm edit"  type="button" title="Sửa" id="show-emp">
+                                               <i class="fas fa-edit"></i>
+                                            </button>
+                                            </a>
+
+                                            <button class="btn bg-warning-subtle btn-sm"  type="button" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal" data-user-id="<%= user._id %>">
+                                            <img class="lock-icon" src="<%= user.isActive ? '/images/mo.png' : '/images/dong.png' %>" alt="Khóa">
+                                            </button>
+                                            
                                         </td>
                                     </tr>
                                     </tr>
@@ -137,7 +176,7 @@
                         <!-- hết bảng -->
                         <div class="row justify-content-between" style="vertical-align: middle; align-items: center">
                             <div class="col-auto">
-                              Bạn đang xem <%=(listL.length == 0) ? start : start + 1 %> đến <%= start + listL.length %> trong tổng số <%= totalSP %> sản phẩm
+                              Bạn đang xem <%=(listUS.length == 0) ? start : start + 1 %> đến <%= start + listUS.length %> trong tổng số <%= totalUsers %> người dùng
                             </div>
                             <div class="col-auto">
                               <nav aria-label="Page navigation">
@@ -150,14 +189,12 @@
                                 </ul>
                               </nav>
                             </div>
-                        </div>
+                          </div>
                         
-                        <!-- hết  thông tin thông số của trang -->
                     </div>
                 </div>
             </div>
         </div>
-      
     </main>
 
     <!-- modal delete -->
@@ -169,7 +206,7 @@
                     <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xoá User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/sanpham/delete" method="POST" id="formDelete">
+                <form action="/user/delete" method="POST" id="formDelete">
                     <input type="hidden" name="IdDelete" id="IdDelete">
                         <div class="modal-body">
                             Bạn có chắc muốn thay đổi trang thái User này không?
@@ -201,6 +238,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+
 
     <script type="text/javascript">
         $('#sampleTable').DataTable();
@@ -263,15 +301,15 @@
         })
       </script>
 
-      <script>
-        function changePerPage(selectElement) {
-        const perPage = parseInt(selectElement.value);
-        const currentPage = parseInt('<%= req.params.i %>'); // Lấy trang hiện tại từ dữ liệu động
-        const url = `/sanpham/${currentPage}?data_tables_leght=${perPage}`;
+        <script>
+            function changePerPage(selectElement) {
+            const perPage = parseInt(selectElement.value);
+            const currentPage = parseInt('<%= req.params.i %>'); // Lấy trang hiện tại từ dữ liệu động
+            const url = `/user/${currentPage}?data_tables_leght=${perPage}`;
 
-        window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
-        }
-      </script>
+            window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
+            }
+        </script>
 
 </body>
 
