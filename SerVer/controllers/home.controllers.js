@@ -1,6 +1,6 @@
 const md = require('../models/user.models');
 const md1 = require('../models/sanpham.models');
-const md2 = require('../models/orders.models');
+const md2 = require('../models/orderdetail.models');
 const bcrypt = require('bcrypt');
 var msg = '';
 exports.home = async (req, res, next) => {
@@ -9,9 +9,9 @@ exports.home = async (req, res, next) => {
     let countProduct = await md1.sanphamModel.countDocuments({});
     console.log(`Tổng số product: ${countProduct}`);
     let totalQuantitySold = 0;
-    let dthuproduct = await md2.ordersModel.find();
-    dthuproduct.forEach((order) => {
-        totalQuantitySold += order.price * order.quantity;
+    let dthuproduct = await md2.orderDetailModel.find();
+    dthuproduct.forEach((orderDetail) => {
+        totalQuantitySold += orderDetail.total_price;
     });
     console.log(`Tổng số doanh thu: ${totalQuantitySold}`);
     res.render('home/home', {req : req , msg: msg, countProduct: countProduct, countUser:countUser, totalQuantitySold:totalQuantitySold});
@@ -62,7 +62,7 @@ exports.Reg = async (req, res, next) => {
         console.log(req.body);
 
        
-        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name || !req.body.email || !req.body.phone) {
+        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name || !req.body.phone) {
             msg = 'Vui lòng điền đầy đủ thông tin.';
             return res.render('home/dk', { msg: msg });
         }

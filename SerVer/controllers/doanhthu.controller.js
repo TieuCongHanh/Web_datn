@@ -60,12 +60,12 @@ exports.list = async (req, res, next) => {
   // đang làm số lương sản phẩm bán ra
   let totalRevenue = 0;
   let totalQuantitySold = 0;
-  let dthuproduct = await ordermd.ordersModel.find();
-  dthuproduct.forEach((order) => {
-    totalRevenue += order.quantity;
+  let dthuproduct = await orderDetailModel.orderDetailModel.find();
+  dthuproduct.forEach((orderDetail) => {
+    totalRevenue += orderDetail.quantity;
     //totalQuantitySold += order.price;
     // Sử dụng hàm
-    totalQuantitySold += order.price * order.quantity;
+    totalQuantitySold += orderDetail.total_price;
   });
 
   // Tính tổng số người dùng
