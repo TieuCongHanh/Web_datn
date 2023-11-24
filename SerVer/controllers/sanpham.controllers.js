@@ -16,7 +16,7 @@ exports.list = async (req, res, next) => {
 
     let start=( page - 1 )*perPage; // vị trí 0
    
-    const by = req.query.by || '_id name price'; // Sắp xếp theo price nếu không có giá trị by
+    const by = req.query.by || '_id name price quantity'; // Sắp xếp theo price nếu không có giá trị by
     const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
 
     let list = await myMD.sanphamModel.find(timkiemSP).skip(start).limit(perPage).sort({ [by] :order });
@@ -39,6 +39,7 @@ exports.in = async (req, res, next) => {
             { header: "_id", key: "_id", width: 50 },
             { header: "name", key: "name", width: 30 },
             { header: "price", key: "price", width: 30 },
+            { header: "quantity", key: "quantity", width: 30 },
             { header: "describe", key: "describe", width: 50 },
             { header: "image", key: "image", width: 70 },
         ];
@@ -47,7 +48,9 @@ exports.in = async (req, res, next) => {
         sanphams.forEach((sanpham) => {
             sheet.addRow({
                 _id: sanpham._id,
-                tenLoai: sanpham.tenLoai,
+                name: sanpham.name,
+                price: sanpham.price,
+                quantity: sanpham.quantity,
                 describe: sanpham.describe,
                 image: sanpham.image || '', 
             });
@@ -92,6 +95,7 @@ exports.print = async (req, res, next) => {
             doc.fontSize(14).text(`sp ID: ${Sanpham._id}`);
             doc.fontSize(12).text(`Name: ${Sanpham.name}`);
             doc.fontSize(12).text(`Price: ${Sanpham.price}`);
+            doc.fontSize(12).text(`quantity: ${Sanpham.quantity}`);
             doc.fontSize(12).text(`describe: ${Sanpham.describe}`);
             doc.fontSize(12).text(`AVT: ${Sanpham.image || "N/A"}`);
             doc.moveDown(1);
@@ -121,6 +125,11 @@ exports.add = async (req, res, next) => {
                 res.render('sanpham/add', { req: req, msg: "Giá sản phẩm phải là một số dương." });
                 return;
             }
+            const quantity = parseFloat(req.body.quantity);
+            if (isNaN(quantity) || quantity <= 0) {
+                res.render('sanpham/add', { req: req, msg: "Số lượng sản phẩm phải là một số dương." });
+                return;
+            }
 
             let url_file = '';
             if (req.file != undefined) {
@@ -134,6 +143,7 @@ exports.add = async (req, res, next) => {
             const objSP = new myMD.sanphamModel();
             objSP.name = req.body.name;
             objSP.price = req.body.price;
+            objSP.quantity = req.body.quantity;
             objSP.describe = req.body.describe;
             objSP.image = url_file;
 
@@ -164,10 +174,15 @@ exports.edit = async (req, res, next) => {
                 res.render('sanpham/edit', { req: req, msg: "Giá sản phẩm phải là một số dương." });
                 return;
             }
-
+            const quantity = parseFloat(req.body.quantity);
+            if (isNaN(quantity) || quantity <= 0) {
+                res.render('sanpham/edit', { req: req, msg: "Số lượng sản phẩm phải là một số dương." });
+                return;
+            }
             // Sử dụng cùng một biến `objSP` để cập nhật thông tin sản phẩm
             objSP.name = req.body.name;
             objSP.price = req.body.price;
+            objSP.quantity = req.body.quantity;
             objSP.describe = req.body.describe;
 
             if (req.file != undefined) {

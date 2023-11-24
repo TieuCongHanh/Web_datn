@@ -4,6 +4,7 @@ const sanphamSchema = new db.mongoose.Schema(
         _id: {type: db.mongoose.Schema.Types.String},
         name: {type: String, require: true},
         price: {type: String, require: true},
+        quantity: {type: String, require: true},
         describe: {type: String, require: true},
         image: {type: String, require: false},
     },

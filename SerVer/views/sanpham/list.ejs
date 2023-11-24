@@ -91,6 +91,7 @@
                                     <th scope="col" style="vertical-align: middle; width: 150px;text-align: center; width: 10%;">Ảnh đại diện </th>
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;"><a href="<%= req.params.i %>?by=name&order=<%= (by === 'name' && order === 'asc') ? 'desc' : 'asc' %>">Tên sản phẩm</a></th> 
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 10%;"><a href="<%= req.params.i %>?by=price&order=<%= (by === 'price' && order === 'asc') ? 'desc' : 'asc' %>">Giá sản phẩm</a></th>                                                      
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 10%;"><a href="<%= req.params.i %>?by=quantity&order=<%= (by === 'quantity' && order === 'asc') ? 'desc' : 'asc' %>">Số lượng sản phẩm</a></th>   
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 35%;">Mô tả sản phẩm</th> 
                                     <th scope="col" style="vertical-align: middle; text-align: center; width: 15%;">Chức năng</th>
                                 </tr>
@@ -112,6 +113,10 @@
                                         <td style="vertical-align: middle; text-align: center;">
                                             
                                             <%= sanpham.price%>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center;">
+                                            
+                                            <%= sanpham.quantity%>
                                         </td>
                                         <td style="vertical-align: middle; text-align: center;">
                                             

@@ -5,15 +5,12 @@
     <!-- Navbar Right Menu-->
     <ul class="app-nav">
         <!-- User Menu-->
-
         <li>
-            <form action="/home/logout" method="post">
-                <a class="app-nav__item" href="/" style="padding: 8px;">
-                    <button type="submit" style="margin: 0;" title="Đăng Xuất!">
-                        <i class='bx bx-log-out bx-rotate-180'></i>
-                    </button>
-                </a>
-            </form>
+            <a class="app-nav__item" href="javascript:void(0);" onclick="confirmLogout()" style="padding: 8px;">
+                <button type="button" style="margin: 0;" title="Đăng Xuất!">
+                    <i class='bx bx-log-out bx-rotate-180'></i>
+                </button>
+            </a>
         </li>
     </ul>
 </header>
@@ -82,6 +79,19 @@
     setTimeout(function () {
         document.getElementById('my-message-div').style.display = 'none';
     }, 2000);
+</script>
+<script>
+    function confirmLogout() {
+        if (confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/home/logout';
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            // Người dùng chọn "Cancel" (Không) - không làm gì cả
+        }
+    }
 </script>
 <style>#my-message-div {
     position: fixed;
