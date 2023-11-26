@@ -155,18 +155,17 @@
                                             
                                             <%= sanpham.describe%>
                                         </td>
-                                        <td style="vertical-align: middle; text-align: center; width: 150px; padding: 7px;">             
+                                        <td style="vertical-align: middle; text-align: center; width: 150px; padding: 7px;">   
+                                            <a href="/sanpham/edit/<%= sanpham._id %>">         
                                             <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
-                                                <a href="/sanpham/edit/<%= sanpham._id %>"><i class="fas fa-edit"></i></a>
-                                            </button>
+                                                <i class="fas fa-edit"></i>
+                                            </button></a> 
 
                                             <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Nhập hàng" type="button" data-bs-toggle="modal"data-bs-target="#ImportModal" data-user-id="<%= sanpham._id %>">
-                                                <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
+                                                <i class="fa fa-cart-plus" style="font-size: 12px;"></i>
                                            </button>
 
-                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Xóa" type="button" data-bs-toggle="modal"data-bs-target="#deleteModal" data-user-id="<%= sanpham._id %>">
-                                                 <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
-                                            </button>
+                                    
 
                                         </td>
                                     </tr>
@@ -214,7 +213,7 @@
                 <form action="/sanpham/delete" method="POST" id="formDelete">
                     <input type="hidden" name="IdDelete" id="IdDelete">
                         <div class="modal-body">
-                            Bạn có chắc muốn thay đổi trang thái User này không?
+                            Bạn có chắc muốn xóa sản phẩm này không?
                         </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
