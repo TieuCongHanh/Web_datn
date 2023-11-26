@@ -86,7 +86,7 @@
                                 <label class="ml-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px">mục</label>
                             </div>
                             <form role="search" class="d-flex" style="margin-left: auto;">
-                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên đăng nhập..." aria-label="Search" name="staffName">
+                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm kiếm..." aria-label="Search" name="searchUser" value="<%= req.query.searchStaff || '' %>">
                                 <button class="btn btn-outline-info" style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
                             </form>
                         </div>
@@ -202,14 +202,14 @@
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xoá User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header" style="color: black;">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận</h5>
+                    <button type="button"  data-bs-dismiss="modal" ><i class="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 <form action="/user/delete" method="POST" id="formDelete">
                     <input type="hidden" name="IdDelete" id="IdDelete">
                         <div class="modal-body">
-                            Bạn có chắc muốn thay đổi trang thái User này không?
+                            Bạn có chắc muốn thay đổi trạng thái User này không?
                         </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>

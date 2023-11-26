@@ -1,5 +1,6 @@
 const { log } = require('console');
 var myMD = require('../models/sanpham.models');
+var categoryMD = require('../models/category.models');
 const excelJs = require("exceljs");
 var fs = require('fs');
 const bcrypt = require('bcrypt');
@@ -8,22 +9,31 @@ var msg = '';
 exports.list = async (req, res, next) => {
     let page = parseInt(req.params.i);
     let perPage = parseInt(req.query.data_tables_leght) || 5;
-    let timkiemSP = null;
+    let productSearch = null;
 
-    if (req.query.name != '' && String(req.query.name) != 'undefined') {
-        timkiemSP = { name: req.query.name }
-    }
+   
+  const searchTerm = req.query.productSearch || '';
+  const regex = new RegExp(searchTerm, 'i');
 
+  if (searchTerm !== '') {
+    productSearch = {
+      $or: [
+        { name: { $regex: regex } },
+        { _id: { $regex: regex } },
+        { price: { $regex: regex } },
+      ]
+    };
+  }
     let start=( page - 1 )*perPage; // vị trí 0
    
     const by = req.query.by || '_id name price'; // Sắp xếp theo price nếu không có giá trị by
     const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
 
-    let list = await myMD.sanphamModel.find(timkiemSP).skip(start).limit(perPage).sort({ [by] :order });
-    let totalSP = await myMD.sanphamModel.find(timkiemSP).countDocuments();
+    let list = await myMD.sanphamModel.find(productSearch).skip(start).limit(perPage).sort({ [by] :order }).populate('id_category');
+    let totalSP = await myMD.sanphamModel.find(productSearch).countDocuments();
     let currentPageTotal = start + list.length;
 
-    let countlist = await myMD.sanphamModel.find(timkiemSP);
+    let countlist = await myMD.sanphamModel.find(productSearch);
     let count = countlist.length / perPage;
     count = Math.ceil(count);
 
@@ -36,18 +46,23 @@ exports.in = async (req, res, next) => {
         let workbook = new excelJs.Workbook();
         const sheet = workbook.addWorksheet("LoaiSP");
         sheet.columns = [
-            { header: "_id", key: "_id", width: 50 },
-            { header: "name", key: "name", width: 30 },
-            { header: "price", key: "price", width: 30 },
-            { header: "describe", key: "describe", width: 50 },
-            { header: "image", key: "image", width: 70 },
+            { header: "Mã", key: "_id", width: 50 },
+            { header: "Tên", key: "name", width: 30 },
+            { header: "Loại", key: "category", width: 30 },
+            { header: "Giá", key: "price", width: 30 },
+            { header: "Số lượng", key: "quantity", width: 30 },
+            { header: "Mô tả", key: "describe", width: 50 },
+            { header: "Ảnh", key: "image", width: 70 },
         ];
         const sanphams = await myMD.sanphamModel.find({}); 
         // Thêm dữ liệu người dùng vào bảng Excel
         sanphams.forEach((sanpham) => {
             sheet.addRow({
                 _id: sanpham._id,
-                tenLoai: sanpham.tenLoai,
+                category: sanpham.id_category.name,
+                name: sanpham.name,
+                price: sanpham.price,
+                quantity: sanpham.quantity,
                 describe: sanpham.describe,
                 image: sanpham.image || '', 
             });
@@ -73,7 +88,7 @@ exports.print = async (req, res, next) => {
         const Sanpham = await myMD.sanphamModel.find({});
         // Tạo một tệp PDF mới
         const doc = new PDFDocument();
-        const pdfFileName = "Loaisp.pdf";
+        const pdfFileName = "SanPham.pdf";
         // Thiết lập tiêu đề tệp PDF
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
@@ -91,7 +106,9 @@ exports.print = async (req, res, next) => {
         Sanpham.forEach((Sanpham) => {
             doc.fontSize(14).text(`sp ID: ${Sanpham._id}`);
             doc.fontSize(12).text(`Name: ${Sanpham.name}`);
+            doc.fontSize(12).text(`Category: ${Sanpham.category}`);
             doc.fontSize(12).text(`Price: ${Sanpham.price}`);
+            doc.fontSize(12).text(`Price: ${Sanpham.quantity}`);
             doc.fontSize(12).text(`describe: ${Sanpham.describe}`);
             doc.fontSize(12).text(`AVT: ${Sanpham.image || "N/A"}`);
             doc.moveDown(1);
@@ -109,16 +126,22 @@ exports.print = async (req, res, next) => {
 
 
 exports.add = async (req, res, next) => {
+    const listCategory = await categoryMD.categoryModel.find();
     if (req.method == 'POST') {
         try {
             if (!req.body.name || !req.body.price) {
-                res.render('sanpham/add', { req: req, msg: "Vui lòng điền đầy đủ thông tin sản phẩm." });
+                res.render('sanpham/add', { req: req, listCategory :listCategory, msg: "Vui lòng điền đầy đủ thông tin sản phẩm." });
                 return;
             }
 
             const price = parseFloat(req.body.price);
             if (isNaN(price) || price <= 0) {
-                res.render('sanpham/add', { req: req, msg: "Giá sản phẩm phải là một số dương." });
+                res.render('sanpham/add', { req: req, listCategory :listCategory, msg: "Giá sản phẩm phải là một số dương." });
+                return;
+            }
+            const quantity = parseFloat(req.body.quantity);
+            if (isNaN(quantity) || quantity <= 0) {
+                res.render('sanpham/add', { req: req, listCategory :listCategory, msg: "Số lượng sản phẩm phải là một số dương." });
                 return;
             }
 
@@ -127,13 +150,15 @@ exports.add = async (req, res, next) => {
                 fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
                 url_file = '/uploads/' + req.file.originalname;
             } else {
-                res.render('sanpham/add', { req: req, msg: "Vui lòng chọn một tệp hình ảnh" });
+                res.render('sanpham/add', { req: req, listCategory :listCategory, msg: "Vui lòng chọn một tệp hình ảnh" });
                 return;
             }
-
+            
             const objSP = new myMD.sanphamModel();
+            objSP.id_category = req.body.category
             objSP.name = req.body.name;
             objSP.price = req.body.price;
+            objSP.quantity = req.body.quantity;
             objSP.describe = req.body.describe;
             objSP.image = url_file;
 
@@ -144,36 +169,47 @@ exports.add = async (req, res, next) => {
             console.log(err);
         }
     }
-    res.render('sanpham/add', { req: req, msg: msg });
+    res.render('sanpham/add', { req: req, msg: msg ,listCategory :listCategory});
 };
 
 exports.edit = async (req, res, next) => {
     let msg = '';
     let idsp = req.params.id;
-    let objSP = await myMD.sanphamModel.findById(idsp);
+    let objSP = await myMD.sanphamModel.findById(idsp).populate('id_category');
+    const listCategory = await categoryMD.categoryModel.find();
 
     if (req.method === 'POST') {
         try {
             if (!req.body.name || !req.body.price) {
-                res.render('sanpham/edit', { req: req, msg: "Vui lòng điền đầy đủ thông tin sản phẩm." });
+                res.render('sanpham/edit', { req: req, listCategory :listCategory, objL: objSP, msg: "Vui lòng điền đầy đủ thông tin sản phẩm." });
                 return;
             }
 
             const price = parseFloat(req.body.price);
             if (isNaN(price) || price <= 0) {
-                res.render('sanpham/edit', { req: req, msg: "Giá sản phẩm phải là một số dương." });
+                res.render('sanpham/edit', { req: req, listCategory :listCategory, objL: objSP, msg: "Giá sản phẩm phải là một số dương." });
+                return;
+            }
+
+            const quantity = parseFloat(req.body.quantity);
+            if (isNaN(quantity) || quantity <= 0) {
+                res.render('sanpham/edit', { req: req, listCategory :listCategory, objL: objSP,msg: "Số lượng sản phẩm phải là một số dương." });
                 return;
             }
 
             // Sử dụng cùng một biến `objSP` để cập nhật thông tin sản phẩm
             objSP.name = req.body.name;
+            objSP.id_category = req.body.category;
             objSP.price = req.body.price;
+            objSP.quantity = req.body.quantity;
             objSP.describe = req.body.describe;
 
             if (req.file != undefined) {
                 fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
                 let url_file = '/uploads/' + req.file.originalname;
                 objSP.image = url_file;
+            } else {
+                objSP.image = objSP.image;
             }
 
             await objSP.save(); // Sử dụng .save() để lưu thông tin sản phẩm
@@ -185,7 +221,7 @@ exports.edit = async (req, res, next) => {
         }
     }
 
-    res.render('sanpham/edit', { msg: msg, objL: objSP, req: req });
+    res.render('sanpham/edit', { msg: msg, objL: objSP, listCategory :listCategory, req: req });
 };
 
 
@@ -197,4 +233,45 @@ exports.deleteLoai= async (req,res,next)=>{
 
 
 
+exports.import = async (req, res, next) => {
+    try {
+        const productId = req.body.productId;
+        const importDate = new Date();
+        const importQuantity = req.body.importQuantity;
 
+        const updatedProduct = await myMD.sanphamModel.findOneAndUpdate(
+            { _id: productId },
+            {
+                $inc: { quantity: importQuantity },
+                $push: {
+                    importHistory: {
+                        date: importDate,
+                        quantity: importQuantity
+                    }
+                }
+            },
+            { new: true }
+        );
+
+        res.json({msg :'Thông tin nhập hàng đã được cập nhật'});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({msg : 'Lỗi khi cập nhật thông tin nhập hàng'});
+    }
+};
+
+
+
+exports.getProduct  = async (req, res) => {
+    var productId = req.params.productId;
+    try {
+      const order = await myMD.sanphamModel
+        .findById(productId)
+        .populate("id_category")
+
+      res.json(order);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Server error" });
+    }
+  };

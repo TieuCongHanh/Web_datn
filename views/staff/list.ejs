@@ -85,7 +85,7 @@
                                 <label class="ml-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px">mục</label>
                             </div>
                             <form role="search" class="d-flex" style="margin-left: auto;">
-                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên đăng nhập..." aria-label="Search" name="staffName">
+                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm kiếm..." aria-label="Search" name="searchStaff" value="<%= req.query.searchStaff || '' %>">
                                 <button class="btn btn-outline-info" style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
                             </form>
                         </div>
@@ -166,14 +166,14 @@
                                         <td style="vertical-align: middle; text-align: center; padding: 7px;">
 
                                             <a href="/staff/edit/<%= staff._id %>">
-                                                <button class="btn bg-warning-subtle btn-sm edit"  type="button" title="Sửa" id="show-emp">
+                                                <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;"  type="button" title="Sửa" id="show-emp">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </a>
 
-                                            <button class="btn btn-danger btn-sm"  type="button" data-bs-toggle="modal"
+                                            <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;"  type="button" data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal" data-user-id="<%= staff._id %>">
-                                                    <i class="fas fa-trash"></i>
+                                                    <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
                                             </button>
 
                                         </td>
@@ -212,9 +212,9 @@
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xoá nhân viên</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header" style="color: black;">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận</h5>
+                    <button type="button"  data-bs-dismiss="modal" ><i class="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 <form action="/staff/delete" method="POST" id="formDelete">
                     <input type="hidden" name="IdDelete" id="IdDelete">

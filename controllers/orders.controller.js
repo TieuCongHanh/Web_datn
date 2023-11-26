@@ -9,10 +9,21 @@ var msg = "";
 exports.list = async (req, res) => {
   let page = parseInt(req.params.i);
   let perPage = parseInt(req.query.data_tables_leght) || 5; // Lấy số mục từ query parameter
-  let timkiemSP = null;
+  let orderSearch = null;
 
-  if (req.query.name != "" && String(req.query.name) != "undefined") {
-    timkiemSP = { name: req.query.name };
+  const searchTerm = req.query.orderSearch || '';
+  const regex = new RegExp(searchTerm, 'i');
+
+  if (searchTerm !== '') {
+    orderSearch = {
+      $or: [
+        { 'id_user._id': { $regex: regex } },
+        { 'id_user.name': { $regex: regex } },
+        { _id: { $regex: regex } },
+        { date: { $regex: regex } },
+        { 'id_address.address': { $regex: regex } }
+      ]
+    };
   }
 
   let start = (page - 1) * perPage; 
@@ -21,7 +32,7 @@ exports.list = async (req, res) => {
   const order = req.query.order || "asc"; // Sắp xếp tăng dần nếu không có giá trị order
 
   let list = await OrderModel.ordersModel
-    .find(timkiemSP)
+    .find(orderSearch)
     .skip(start)
     .limit(perPage)
     .sort({ [by]: order })
@@ -30,10 +41,10 @@ exports.list = async (req, res) => {
     .populate("id_payment")
     .populate("id_address");
 
-  let totalSP = await OrderModel.ordersModel.find(timkiemSP).countDocuments();
+  let totalSP = await OrderModel.ordersModel.find(orderSearch).countDocuments();
   let currentPageTotal = start + list.length;
 
-  let countlist = await OrderModel.ordersModel.find(timkiemSP);
+  let countlist = await OrderModel.ordersModel.find(orderSearch);
   let count = countlist.length / perPage;
   count = Math.ceil(count);
 
@@ -174,8 +185,7 @@ exports.details = async (req, res) => {
     const listOrderDetail = await detailModel.orderDetailModel.find({ id_order : orderId })
     .populate("id_order")
     .populate("id_product");
-
-    console.log({order, listOrderDetail});
+    
     res.json({order, listOrderDetail});
   } catch (error) {
     console.log(error);

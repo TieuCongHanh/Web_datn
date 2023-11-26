@@ -8,10 +8,22 @@ var msg = '';
 exports.list = async (req, res, next) => {
     let page = parseInt(req.params.i);
     let perPage=parseInt(req.query.data_tables_leght) || 5; 
-    let timkiemUser = null;
+    let searchUser = null;
 
-    if (req.query.username != '' && String(req.query.username) != 'undefined') {
-        timkiemUser = { username: req.query.username }
+    const searchTerm = req.query.searchUser || '';
+    const regex = new RegExp(searchTerm, 'i');
+
+    if (searchTerm !== '') {
+        searchUser = {
+        $or: [
+            { name: { $regex: regex } },
+            { username: { $regex: regex } },
+            { userEmail: { $regex: regex } },
+            { _id: { $regex: regex } },
+            { role: { $regex: regex } },
+            { phone: { $regex: regex } }
+        ]
+        };
     }
 
     let start=( page - 1 )*perPage;
@@ -19,11 +31,11 @@ exports.list = async (req, res, next) => {
     const by = req.query.by || '_id username name'; // Sắp xếp theo user nếu không có giá trị by
     const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
 
-    let list = await myMD.userModel.find(timkiemUser).skip(start).limit(perPage).sort({ [by] :order });
-    let totalUsers = await myMD.userModel.find(timkiemUser).countDocuments();
+    let list = await myMD.userModel.find(searchUser).skip(start).limit(perPage).sort({ [by] :order });
+    let totalUsers = await myMD.userModel.find(searchUser).countDocuments();
    let currentPageTotal = start + list.length;
    
-    let countlist = await myMD.userModel.find(timkiemUser);
+    let countlist = await myMD.userModel.find(searchUser);
     let count = countlist.length / perPage;
     count = Math.ceil(count);
 
@@ -219,11 +231,10 @@ exports.deleteUser = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ msg: 'Người dùng không tồn tại' });
         }
-        if (user.vaitro === 'Admin') {
-            return res.status(403).json({ msg: 'Không thể thay đổi trạng thái của tài khoản Admin' });
+        if (user._id === "KH001" || user == req.session.userLogin) {
+            return res.status(403).json({ msg: 'Không thể thay đổi trạng thái của tài khoản này' });
         }
 
-        // Nếu tài khoản đang hoạt động, tạm ngưng nó. Nếu không, kích hoạt nó.
         user.isActive = !user.isActive;
         await user.save();
 

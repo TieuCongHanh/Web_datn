@@ -3,16 +3,27 @@ const excelJs = require("exceljs");
 var fs = require('fs');
 const bcrypt = require('bcrypt');
 var msg = '';
+const PDFDocument = require("pdfkit");
 
 exports.list = async (req, res, next) => {
   let page = parseInt(req.params.i);
   let perPage = parseInt(req.query.data_tables_leght) || 5;
   let searchStaff = null;
-  
-  if (req.query.staffName != '' && String(req.query.staffName) != 'undefined') {
-    searchStaff = { name: req.query.staffName };
+
+  const searchTerm = req.query.searchStaff || '';
+  const regex = new RegExp(searchTerm, 'i');
+
+  if (searchTerm !== '') {
+    searchStaff = {
+      $or: [
+        { name: { $regex: regex } },
+        { _id: { $regex: regex } },
+        { role: { $regex: regex } },
+        { phone: { $regex: regex } }
+      ]
+    };
   }
-  
+
   let start = (page - 1) * perPage;
 
   const by = req.query.by || '_id name';
@@ -27,7 +38,7 @@ exports.list = async (req, res, next) => {
   count = Math.ceil(count);
 
   console.log(list);
-  res.render('staff/list', {perPage : perPage, listStaff: list, countPage: count, req: req, msg: msg, by: by, order: order, totalStaff: totalStaff, currentPageTotal: currentPageTotal, start : start });
+  res.render('staff/list', { perPage: perPage, listStaff: list, countPage: count, req: req, msg: msg, by: by, order: order, totalStaff: totalStaff, currentPageTotal: currentPageTotal, start: start });
 };
 
 exports.in = async (req, res, next) => {
@@ -86,7 +97,7 @@ exports.in = async (req, res, next) => {
       ];
       const staffs = await myMD.staffModel.find({});
       // Thêm dữ liệu người dùng vào bảng Excel
-      orders.forEach((order) => {
+      staffs.forEach((staffs) => {
         sheet.addRow({
           _id: staffs._id,
           name: staffs.name,
@@ -137,7 +148,7 @@ exports.in = async (req, res, next) => {
       doc.moveDown(1);
   
       // Xuất danh sách người dùng
-      orders.forEach((staffs) => {
+      staffs.forEach((staffs) => {
         doc.fontSize(14).text(`Mã nhân viên: ${staffs._id}`);
         doc.fontSize(12).text(`Họ tên: ${staffs.name}`);
         doc.fontSize(12).text(`Địa chỉ: ${staffs.address}`);

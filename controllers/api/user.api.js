@@ -9,33 +9,28 @@ exports.Login = async (req, res, next) => {
             const { username, password } = req.body;
             const user1 = await md.userModel.findOne({ username });
             if (!user1) {
-                return res.status(400).json({msg: "sai thông tin đăng nhập"});
+                return res.status(400).json({msg: "Sai thông tin đăng nhập"});
             } else {
                 // So sánh mật khẩu đã băm
                 const passwordMatch = await bcrypt.compare(password, user1.password);
                 if (!passwordMatch) {
-                    return res.status(401).json({msg : "sai mật khẩu"});
+                    return res.status(401).json({msg : "Sai mật khẩu"});
                 }
                 if (!user1.isActive) {
-                    return res.status(403).json({msg: "tài khoản của bạn đã bị khóa"});
+                    return res.status(403).json({msg: "Tài khoản của bạn đã bị khóa"});
                 } 
                 else {
-                    console.log("Đăng nhập thành công.");
-                   return res.status(200).json({
-                    username: user1.username, password: user1.password,
-                    userId: user1._id,name: user1.name,
-                    role: user1.role, image:user1.image,
-                    phone: user1.phone, isActive: user1.isActive
-                   });
+                   return res.status(200).json({user : user1 , msg: "Đăng nhập thành công."});
                 }
             }
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Server error' });
+            res.status(500).json({ msg: 'Server error' });
         }
     }
 };
 const vietnamesePhoneNumberRegex = /(0[1-9][0-9]{8})\b/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 exports.Reg = async (req, res, next) => {
     const existingUser = await md.userModel.findOne({ username: req.body.username });
     if (req.method === 'POST') {
@@ -54,12 +49,16 @@ exports.Reg = async (req, res, next) => {
         if (!vietnamesePhoneNumberRegex.test(req.body.phone)) {
             return res.status(404).json("Số điện thoại không hợp lệ. Vui lòng kiểm tra lại");
         }
+        if (!emailRegex.test(req.body.userEmail)) {
+            return res.status(404).json("Email không hợp lệ. Vui lòng kiểm tra lại");
+        }
             try {
                 let objU = new md.userModel();
                 objU.username = req.body.username;
                 objU.password = req.body.password;
             
                 objU.role = 'User';
+                objU.userEmail = req.body.userEmail;
                 
                 const salt = await bcrypt.genSalt(10);
                 objU.password = await bcrypt.hash(req.body.password, salt);
@@ -69,7 +68,7 @@ exports.Reg = async (req, res, next) => {
                 objU.isActive = true;
 
                 await objU.save();
-            return res.status(200).json("đăng ký thành công");
+            return res.status(200).json("Đăng ký thành công");
 
             } catch (error) {
                 

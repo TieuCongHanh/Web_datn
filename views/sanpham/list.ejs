@@ -50,7 +50,6 @@
             <ul class="app-breadcrumb breadcrumb side">
                 <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
             </ul>
-           
             <div id="clock"></div>
         </div>
         <div class="row">
@@ -88,7 +87,7 @@
                                 <label class="ml-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px">mục</label>
                             </div>
                             <form role="search" class="d-flex" style="margin-left: auto;">
-                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên đăng nhập..." aria-label="Search" name="staffName">
+                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm kiếm..." aria-label="Search" name="productSearch" value="<%= req.query.searchStaff || '' %>">
                                 <button class="btn btn-outline-info" style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
                             </form>
                         </div>
@@ -113,6 +112,7 @@
                                       </div>
                                     </a>
                                   </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">Loại</th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">
                                     <a class="d-flex" href="<%= req.params.i %>?by=price&order=<%= (by === 'price' && order === 'asc') ? 'desc' : 'asc' %>">
                                       <div class="th-link">
@@ -120,8 +120,9 @@
                                       </div>
                                     </a>
                                   </th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 35%; padding: 7px;">Mô tả sản phẩm</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">Chức năng</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">Số lượng</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 25%; padding: 7px;">Mô tả sản phẩm</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">Chức năng</th>
                                 </tr>
                               </thead>
                             <tbody>
@@ -140,7 +141,15 @@
                                         </td>
                                         <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
+                                            <%= sanpham.id_category.name%>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            
                                             <%= sanpham.price%>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            
+                                            <%= sanpham.quantity%>
                                         </td>
                                         <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
@@ -150,6 +159,10 @@
                                             <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
                                                 <a href="/sanpham/edit/<%= sanpham._id %>"><i class="fas fa-edit"></i></a>
                                             </button>
+
+                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Nhập hàng" type="button" data-bs-toggle="modal"data-bs-target="#ImportModal" data-user-id="<%= sanpham._id %>">
+                                                <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
+                                           </button>
 
                                             <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Xóa" type="button" data-bs-toggle="modal"data-bs-target="#deleteModal" data-user-id="<%= sanpham._id %>">
                                                  <i class="fas fa-trash-alt text-danger" style="font-size: 12px;"></i>
@@ -194,9 +207,9 @@
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xoá User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header" style="color: black;">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận</h5>
+                    <button type="button"  data-bs-dismiss="modal" ><i class="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 <form action="/sanpham/delete" method="POST" id="formDelete">
                     <input type="hidden" name="IdDelete" id="IdDelete">
@@ -212,6 +225,41 @@
         </div>
     </div>
 
+    <div class="modal fade" id="ImportModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="color: black;">
+                    <h5 class="modal-title" id="importModalLabel">Nhập hàng</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/sanpham/import" method="POST" id="importForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div>Mã: <span id="productCode"></span></div>
+                            <div>Tên sản phẩm: <span id="productName"></span></div>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="productId" id="importProductId">
+                        </div>
+                        <div class="form-group">
+                            <label for="importDate">Ngày nhập:</label>
+                            <input type="date" name="importDate" id="importDate" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="importQuantity">Số lượng nhập:</label>
+                            <input type="number" name="importQuantity" id="importQuantity" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger">Nhập hàng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
    
 
     <!-- Essential javascripts for application to work-->
@@ -230,6 +278,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
         $('#sampleTable').DataTable();
@@ -301,6 +350,91 @@
         window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
         }
       </script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#ImportModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var productId = button.data('user-id');
+    
+            // Gán productId vào trường ẩn trong modal
+            $('#importProductId').val(productId);
+        });
+    
+        $('#importForm').submit(function(event) {
+            event.preventDefault();
+    
+            // Lấy thông tin từ modal
+            var productId = $('#importProductId').val();
+            var importDate = $('#importDate').val();
+            var importQuantity = $('#importQuantity').val();
+    
+            // Gửi yêu cầu nhập hàng đến server
+            $.ajax({
+                url: '/sanpham/import',
+                method: 'POST',
+                data: {
+                    productId: productId,
+                    importDate: importDate,
+                    importQuantity: importQuantity
+                },
+                success: function(response) {
+                    // Hiển thị thông báo thành công
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: response.msg
+                    }).then(function() {
+                        // Làm mới trang
+                        location.reload();
+                    });
+                },
+                error: function(error) {
+                    // Hiển thị thông báo lỗi
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Đã xảy ra lỗi khi thực hiện yêu cầu'
+                    });
+                    console.error(error);
+                }
+            });
+        });
+    });
+    </script>
+
+
+        <script>
+            $(document).ready(function() {
+                var currentDate = new Date().toISOString().split('T')[0];
+                $('#importDate').val(currentDate);
+            });
+        </script>
+
+        <script>
+            $('#ImportModal').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget);
+    var productId = button.data('user-id');
+
+    // Gán productId vào trường ẩn trong modal
+    $('#importProductId').val(productId);
+
+    // Lấy thông tin sản phẩm từ server
+    $.ajax({
+        url: '/sanpham/detail/' + productId,
+        method: 'GET',
+        success: function(response) {
+
+            $('#productCode').text(response._id);
+            $('#productName').text(response.name);
+        },
+        error: function(error) {
+            console.error(error);
+        }
+    });
+});
+        </script>
 
 </body>
 

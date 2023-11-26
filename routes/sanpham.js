@@ -34,5 +34,8 @@ router.post('/edit/:id',upload.single("productImage"),check_login.yeu_cau_dang_n
 router.post('/delete',loaispCtrl.deleteLoai);
 router.get('/:loaisp',check_login.yeu_cau_dang_nhap, loaispCtrl.list)
 
+router.post('/import',check_login.yeu_cau_dang_nhap, loaispCtrl.import)
+router.get('/detail/:productId',check_login.yeu_cau_dang_nhap, loaispCtrl.getProduct)
+
 
 module.exports = router;

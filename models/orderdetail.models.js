@@ -59,45 +59,7 @@ orderDetailSchema.pre("save", async function (next) {
   next();
 });
 
-orderDetailSchema.post("save", async function (doc) {
-  try {
-    await updateTotalPrice(doc.id_order);
-  } catch (error) {
-    console.error("Error updating total price:", error);
-  }
-});
-
-// Middleware "pre" để tự động cập nhật giá trị total_price khi có thay đổi trong orderDetailModel
-orderDetailSchema.post("findOneAndUpdate", async function (doc) {
-  try {
-    // Gọi hàm cập nhật lại giá trị total_price
-    await updateTotalPrice(doc.id_order);
-  } catch (error) {
-    console.error("Error updating total price:", error);
-  }
-});
 
 let orderDetailModel = db.mongoose.model("orderDetailModel", orderDetailSchema);
 
-async function updateTotalPrice(orderId) {
-  try {
-    const totalOrderPrice = await orderDetailModel.aggregate([
-      { $match: { id_order: orderId } },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$total_price" },
-        },
-      },
-    ]);
-
-    await ordersModel.updateOne(
-      { _id: orderId },
-      { total_price: totalOrderPrice[0]?.total || 0 }
-    );
-  } catch (error) {
-    console.error("Error updating total price:", error);
-  }
-}
-
-module.exports = { orderDetailModel, updateTotalPrice };
+module.exports = { orderDetailModel };

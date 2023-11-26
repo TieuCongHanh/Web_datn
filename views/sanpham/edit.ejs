@@ -38,26 +38,40 @@
             <span><%= msg %></span>
             <div id="clock"></div>
         </div>
-        <img src="<%= objL.image %>" id="displayImage" alt="anh" style="width: 200px; height: 200px;border-radius: 30px; ">
+        <img src="<%= objL.image %>" id="displayImage" alt="anh" style="width: 150px; height: 150px;border-radius: 30px; ">
         
        
-        <form action="" method="post" enctype="multipart/form-data" style="margin-top: 50px;">          
+        <form action="" method="post" enctype="multipart/form-data" style="margin-top: 20px;">          
             <div class="row">
                 <div class="form-group col-md-6" >
                     <label class="control-label">Tên sản phẩm</label>
-                    <input  class="form-control" type="text" name="name" value="<%= objL.name%>">
+                    <input  class="form-control" type="text" name="name" value="<%= objL.name%>" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Loại</label>
+                    <select class="form-control" id="categorySelect" name="category" required>
+                        <option value="" disabled selected></option>
+                        <% for(let i = 0; i < listCategory.length; i++) { %>
+                            <% var isSelected = (objL && objL.id_category && objL.id_category._id && listCategory[i]._id && objL.id_category._id.toString() === listCategory[i]._id.toString()) %>
+                            <option value="<%= listCategory[i]._id %>" <%= isSelected ? 'selected' : '' %>><%= listCategory[i].name %></option>
+                        <% } %>
+                    </select>
                 </div>
                 <div class="form-group col-md-6" >
-                    <label class="control-label">giá sản phẩm</label>
-                    <input  class="form-control" type="text" name="price" value="<%= objL.price%>">
+                    <label class="control-label">Giá sản phẩm</label>
+                    <input  class="form-control" type="number" name="price" value="<%= objL.price%>" required>
+                </div>
+                <div class="form-group col-md-6" >
+                    <label class="control-label">Số lượng</label>
+                    <input  class="form-control" type="number" name="quantity" value="<%= objL.quantity%>" required>
                 </div>
                 <div class="form-group col-md-6" >
                     <label class="control-label">Mô tả sản phẩm</label>
-                    <input  class="form-control" type="text" name="describe" value="<%= objL.describe%>">
+                    <input  class="form-control" type="text" name="describe" value="<%= objL.describe%>" >
                 </div>
                 <div class="form-group col-md-6">
                     <label class="control-label">Hình ảnh</label>
-                    <input class="form-control" id="newImage" type="file" name="productImage">
+                    <input class="form-control" id="newImage" type="file" name="productImage" >
                 </div>
             </div>
             <BR>
@@ -70,18 +84,7 @@
                     <button style=" width: 90px; height: 40px;" type="submit" action="/edit" class="btn btn-primary">Lưu</button>
                         </div>
         </form>
-        
-
-        <!-- đít -->
-        <footer class="text-center text-lg-start bg-white text-muted " style="margin-top: 100px;">
-            <!-- Copyright -->
-            <div class="text-center p-4" style="background-color: rgb(238, 127, 182);color: black;">
-                © 2023 Tác giả :
-                <a class="text-reset fw-bold" style="text-decoration: none;"
-                href="https://zalo.me/g/rtzyfx009">Boy nhà nghèo</a>
-            </div>
-            <!-- Copyright -->
-        </footer>
+    
     </main>
 
 
@@ -187,6 +190,7 @@
     }
 });
     </script>
+
 </body>
 
 </html>

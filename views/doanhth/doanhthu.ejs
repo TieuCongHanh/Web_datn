@@ -26,6 +26,7 @@
             height: 16px;
         }
     </style>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 
 <body onload="time()" class="app sidebar-mini rtl">
@@ -45,64 +46,70 @@
                             <!-- thanh chức năng đầu tiên -->
                             <div class="row element-button">
                                 <div class="col-sm-2" id="btnExport">
-                                    <a class="btn btn-excel btn-sm" href="/doanhth/countPage/in" title="In"><i
-                                            class="fas fa-file-excel"></i>
-                                        Xuất Excel</a>
-                                </div>
-                                <div class="col-sm-2">
-                                    <a class="btn btn-delete btn-sm print-file" href="/doanhth/countPage/print"
-                                        type="button" title="In"><i class="fas fa-print"></i> In dữ liệu</a>
+                                    <a class="btn btn-excel btn-sm" href="#" title="In" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Xuất Excel</a>
                                 </div>
                             </div>
-                            <!-- thanh tìm kiếm -->
-                            <form role="search"
-                                style=" margin-top: 20px; margin-bottom: 30px; display: flex; float: right;">
-                                <input class="form-control col-6 col-sm-6 col-md-9" type="search"
-                                    placeholder="Tìm tên sản phẩm..." aria-label="Search" name="name">
-                                <button class="btn btn-outline-info" style="margin: 0px;" type="submit"><i
-                                        style="height: 20px; padding-top: 6px; "
-                                        class=' bx bx-search-alt-2'></i></button>
-                            </form>
+                            <div class="d-flex justify-content-between">
+                                <div class="col-8" style="padding: 0;">
+                                  <form class="justify-content-between" style="display: flex;">
+                                    <div class="col-6 d-flex form-group justify-content-between" style="padding: 0px; margin-right: 10px;">
+                                      <label for="startDate">Ngày bắt đầu:</label>
+                                      <input type="date" class="form-control" id="startDate" name="startDate" >
+                                    </div>
+                                    <div class="col-6 d-flex form-group justify-content-between "style="padding: 0px;">
+                                      <label for="endDate">Ngày kết thúc:</label>
+                                      <input type="date" class="form-control" id="endDate" name="endDate" >
+                                    </div>
+                                    <button class="btn btn-outline-info" style="margin: 0px; height: 45px;" type="submit">
+                                      <i style="height: 20px; padding-top: 6px;" class="bx bx-filter-alt"></i>
+                                    </button>
+                                  </form>
+                                </div>
+                              
+                            </div>
                             <!-- thay đỏi -->
                             <table class="table table-bordered col" id="tableorder">
                                 <thead style="width: auto;">
                                     <tr>
-                                        <th scope="col" style="vertical-align: middle; text-align: center;">Mã sản phẩm</th>
-                                        <th scope="col" style="vertical-align: middle; width: 150px;text-align: center">Ảnh đại diện </th>
-                                        <th scope="col" style="vertical-align: middle; text-align: center">Tên sản phẩm</th>
-                                        <th scope="col" style="vertical-align: middle; text-align: center"><a
-                                                href="/sanpham?by=price&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Giá
-                                                sản phẩm</a></th>
-                                        <th scope="col" style="vertical-align: middle; text-align: center">SL bán ra</th>
-                                        <th scope="col" style="vertical-align: middle; text-align: center">Doanh thu</th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">Mã sản phẩm</th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px">Ảnh đại diện </th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center; width: 20%; padding: 7px">Tên sản phẩm</th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px">Giá sản phẩm</th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px">Số lượng nhập</th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px">SL bán ra</th>
+                                        <th scope="col" style="vertical-align: middle; text-align: center; width: 20%; padding: 7px">Doanh thu</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% listod.forEach((order)=> { %>
                                         <tr>
                                         <tr>
-                                            <td style="vertical-align: middle; text-align: center; width: 250px;">
-                                                <%= order._id.id_product %>
+                                            <td style="vertical-align: middle; text-align: center; padding: 7px">
+                                                <%= order.product._id %>
                                             </td>
-                                            <td style="text-align: center; vertical-align: middle;max-width: 100px;">
+                                            <td style="text-align: center; vertical-align: middle; padding: 7px">
                                                 <img src="<%= order.product.image %>" alt="anh"
                                                     style="width: 60px; height: 60px;border-radius: 30px;">
                                             </td>
-                                            <td style="vertical-align: middle; text-align: center;">
+                                            <td style="vertical-align: middle; text-align: center; padding: 7px">
 
                                                 <%= order.product.name%>
                                             </td>
-                                            <td style="vertical-align: middle; text-align: center;">
+                                            <td style="vertical-align: middle; text-align: center; padding: 7px">
 
-                                                <%= order._id.price%>
+                                                <%= order.product.price%>
                                             </td>
-                                            <td style="vertical-align: middle; text-align: center;">
+                                            <td style="vertical-align: middle; text-align: center; padding: 7px">
 
-                                                <%= order.quantity%>
+                                                <%= order.totalQuantity%>
                                             </td>
-                                            <td style="vertical-align: middle; text-align: center;">
+                                            <td style="vertical-align: middle; text-align: center; padding: 7px">
 
-                                                <%= order.total_price %>
+                                                <%= order.detailOrder.quantity%>
+                                            </td>
+                                            <td style="vertical-align: middle; text-align: center; padding: 7px">
+
+                                                <%= order.detailOrder.total_price %>
                                             </td>
                                         </tr>
                                         </tr>
@@ -111,27 +118,7 @@
 
                                 </tbody>
                             </table>
-                            <!-- hết bảng -->
-                            <!-- <div>
-                                Bạn đang xem <%= listL.length %> trong tổng số <%= totalSP %> sản phẩm
-                            </div> -->
-                            <!-- thông tin thông số của trang -->
-                            <!-- <div class="row justify-content-end">
-                                <div class="col-auto">
-                                    <nav aria-label="Page navigation">
-                                        <ul class="pagination justify-content-end">
-                                            <% for (let i=1; i <=countPage; i++) { %>
-                                                <li class="page-item<%= (i == req.params.i) ? ' active' : '' %>">
-                                                    <a class="page-link" href="/doanhth/<%= i %>">
-                                                        <%= i %>
-                                                    </a>
-                                                </li>
-                                                <% } %>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div> -->
-                            <!-- hết  thông tin thông số của trang -->
+                        
                         </div>
                     </div>
                 </div>
@@ -140,19 +127,7 @@
                 <div class="col-md-12">
                     <div class="tile">
                         <div class="tile-body">
-                            <!-- thanh chức năng đầu tiên -->
-                            <!-- <div class="row element-button">
-                                <div class="col-sm-2" id="btnExport">
-                                    <a class="btn btn-excel btn-sm" href="/doanhth/countPage/in" title="In"><i
-                                            class="fas fa-file-excel"></i>
-                                        Xuất Excel</a>
-                                </div>
-                                <div class="col-sm-2">
-                                    <a class="btn btn-delete btn-sm print-file" href="/doanhth/countPage/print1"
-                                        type="button" title="In"><i class="fas fa-print"></i> In dữ liệu</a>
-                                </div>
-                            </div> -->
-                            <!-- thay đỏi -->
+                           
                             <table class="table table-bordered col" id="tableorder">
                                 <thead style="width: auto;">
                                     <tr>
@@ -165,13 +140,13 @@
                                     <tr>
                                     <tr>
                                         <td scope="col" style="text-align: center">
-                                            <%= totalSP %>
-                                        </td>
-                                        <td scope="col" style="text-align: center">
-                                            <%= totalRevenue %>
+                                            <%= totalQuantityInput %>
                                         </td>
                                         <td scope="col" style="text-align: center">
                                             <%= totalQuantitySold %>
+                                        </td>
+                                        <td scope="col" style="text-align: center">
+                                            <%= totalRevenue %>
                                         </td>
                                     </tr>
                                     </tr>
@@ -264,6 +239,67 @@
                 });
             })
         </script>
+
+<script>
+    // Kiểm tra xem ngày đã được lưu trữ trong localStorage chưa
+    var startDate = localStorage.getItem('startDate');
+    var endDate = localStorage.getItem('endDate');
+  
+    if(startDate) {
+        document.getElementById('startDate').value = startDate;
+    }
+    if (endDate) {
+      document.getElementById('endDate').value = endDate;
+    }   
+    // Lưu trữ giá trị ngày khi người dùng thay đổi
+    document.getElementById('startDate').addEventListener('change', function () {
+      localStorage.setItem('startDate', this.value);
+    });
+    document.getElementById('endDate').addEventListener('change', function () {
+      localStorage.setItem('endDate', this.value);
+    });
+  </script>
+
+<script>
+    function exportToExcel() {
+    // Lấy dữ liệu từ bảng HTML
+    var table = document.getElementById("tableorder");
+    var rows = table.getElementsByTagName("tr");
+
+    // Tạo một mảng chứa dữ liệu từ bảng
+    var data = [];
+
+    // Thêm dòng tiêu đề
+    var headerRow = [];
+    var headerCells = rows[0].getElementsByTagName("th");
+    for (var j = 0; j < headerCells.length; j++) {
+        headerRow.push(headerCells[j].innerText);
+    }
+    data.push(headerRow);
+
+    // Thêm dữ liệu từ các dòng còn lại
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var rowData = [];
+        var cells = row.getElementsByTagName("td");
+        for (var j = 0; j < cells.length; j++) {
+            rowData.push(cells[j].innerText);
+        }
+        data.push(rowData);
+    }
+
+    // Tạo workbook và worksheet
+    var workbook = XLSX.utils.book_new();
+    var worksheet = XLSX.utils.aoa_to_sheet(data);
+
+    // Thêm worksheet vào workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+
+    // Xuất file Excel
+    var filename = "data.xlsx";
+    XLSX.writeFile(workbook, filename);
+}
+</script>
 
 </body>
 

@@ -3,6 +3,7 @@ var myMD = require("../models/sanpham.models");
 const excelJs = require("exceljs");
 var ordermd = require("../models/orders.models");
 var orderDetailModel = require("../models/orderdetail.models");
+const moment = require('moment');
 
 var msg = "";
 
@@ -18,75 +19,148 @@ exports.list = async (req, res, next) => {
   const by = req.query.by || "price"; // Sắp xếp theo price nếu không có giá trị by
   const order = req.query.order || "asc"; // Sắp xếp tăng dần nếu không có giá trị order
 
+  let startDate = req.query.startDate;
+  let endDate = req.query.endDate;
+
+
   let list = await myMD.sanphamModel
     .find(timkiemSP)
     .skip(start)
     .limit(perPage)
     .sort({ [by]: order });
 
-  let listDetailOrder = await orderDetailModel.orderDetailModel
-  .aggregate([
-    {
-      $lookup: {
-        from: "orders",
-        localField: "id_order",
-        foreignField: "_id",
-        as: "order",
-      },
-    },
-    {
-      $lookup: {
-        from: "sanpham",
-        localField: "id_product",
-        foreignField: "_id",
-        as: "product",
-      },
-    },
-    {
-      $group: {
-        _id: {
-          id_product: "$id_product",
-          price: "$price"
+    let matchCondition = {
+      "order._id": { $exists: true },
+      "order.pay_status": true,
+      $expr: { $eq: ["$id_order", { $arrayElemAt: ["$order._id", 0] }] }
+    };
+    
+    if (startDate && endDate) {
+      matchCondition["order.date"] = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+
+    if (!startDate && !endDate) {
+      
+    } else {
+      matchCondition.$or = [];
+      if (startDate) {
+        matchCondition.$or.push({ "order.date": { $gte: new Date(startDate) } });
+      }
+      if (endDate) {
+        matchCondition.$or.push({ "order.date": { $lte: new Date(endDate) } });
+      }
+    }
+    
+    const listDetailOrder = await orderDetailModel.orderDetailModel.aggregate([
+      {
+        $lookup: {
+          from: "orders",
+          localField: "id_order",
+          foreignField: "_id",
+          as: "order",
         },
-        quantity: { $sum: "$quantity" },
-        total_price: { $sum: "$total_price" },
-        product: { $first: { $arrayElemAt: ["$product", 0] } },
       },
-    },
-  ]);
+      {
+        $lookup: {
+          from: "sanpham",
+          localField: "id_product",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      {
+        $lookup: {
+          from: "orders",
+          localField: "order._id",
+          foreignField: "_id",
+          as: "orderDetails",
+        },
+      },
+      {
+        $match: matchCondition,
+      },
+      {
+        $group: {
+          _id: "$id_product",
+          quantity: { $sum: "$quantity" },
+          total_price: { $sum: "$total_price" },
+          product: { $first: { $arrayElemAt: ["$product", 0] } },
+          orderDetails: { $first: "$orderDetails" },
+        },
+      },
+    ]);
+    
+    const productList = await Promise.all(
+      listDetailOrder.map(async (item) => {
+        const productId = item._id.toString();
+        const product = await myMD.sanphamModel.findById(productId);
+        const startDateD = startDate ? moment(startDate).startOf('day') : null;
+        const endDateD = endDate ? moment(endDate).endOf('day') : null;
+        let totalQuantity = 0;
+    
+        if (!startDateD && !endDateD) {
+          // Tính tổng số lượng từ toàn bộ lịch sử nhập hàng của sản phẩm
+          if (product) {
+            totalQuantity = product.importHistory.reduce((total, history) => {
+              return total + history.quantity;
+            }, 0);
+          }
+        } else {
+          // Tính tổng số lượng trong khoảng thời gian chỉ định
+          if (product) {
+            totalQuantity = product.importHistory.reduce((total, history) => {
+              const historyDate = moment(history.date).startOf('day');
+              if (
+                (!startDateD || historyDate.isSameOrAfter(startDateD)) &&
+                (!endDateD || historyDate.isSameOrBefore(endDateD))
+              ) {
+                return total + history.quantity;
+              }
+              return total;
+            }, 0);
+          }
+        }
+    
+        const detailOrder = listDetailOrder.find((order) => order._id === productId);
+    
+        return {
+          product,
+          detailOrder,
+          totalQuantity,
+        };
+      })
+    );
 
-  console.log(listDetailOrder);
 
-  // đang làm số lương sản phẩm bán ra
-  let totalRevenue = 0;
-  let totalQuantitySold = 0;
-  let dthuproduct = await ordermd.ordersModel.find();
-  dthuproduct.forEach((order) => {
-    totalRevenue += order.quantity;
-    //totalQuantitySold += order.price;
-    // Sử dụng hàm
-    totalQuantitySold += order.price * order.quantity;
-  });
-
-  // Tính tổng số người dùng
-  let totalSP = await myMD.sanphamModel.find(timkiemSP).countDocuments();
-
-  let countlist = await myMD.sanphamModel.find(timkiemSP);
-  let count = countlist.length / perPage;
-  count = Math.ceil(count);
+    // Tính tổng số lượng nhập vào
+    let totalQuantityInput = 0;
+    let totalQuantitySold = 0;
+    let totalRevenue = 0;
+    productList.forEach((order) => {
+      totalQuantityInput += order.totalQuantity;
+      totalQuantitySold += order.detailOrder.quantity;
+      totalRevenue += order.detailOrder.total_price;
+    });
+    
   res.render("doanhth/doanhthu", {
     listL: list,
-    listod: listDetailOrder,
-    totalQuantitySold: totalQuantitySold,
-    totalRevenue: totalRevenue,
-    countPage: count,
+    listod: productList,
     req: req,
     msg: msg,
     by: by,
     order: order,
-    totalSP: totalSP,
+    totalQuantityInput : totalQuantityInput,
+    totalQuantitySold :totalQuantitySold,
+    totalRevenue, totalRevenue
   });
 };
+
+
+
+
 exports.in = async (req, res, next) => {
   try {
     let workbook = new excelJs.Workbook();

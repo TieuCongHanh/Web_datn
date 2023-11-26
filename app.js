@@ -11,8 +11,10 @@ var homeRouter=require('./routes/home');
 var sanphamRouter=require('./routes/sanpham');
 var orderRouter=require('./routes/orders');
 var staffRouter=require('./routes/staff');
+var categoryRouter=require('./routes/category');
 var doanhthuRouter=require('./routes/doanhthu');
 var addressRouter=require('./routes/address');
+var apiRouter = require('./routes/api');
 
 
 var app = express();
@@ -38,8 +40,11 @@ app.use('/home', homeRouter);
 app.use('/sanpham', sanphamRouter);
 app.use('/order',check_login.yeu_cau_dang_nhap, orderRouter);
 app.use('/staff',check_login.yeu_cau_dang_nhap, staffRouter);
+app.use('/category',check_login.yeu_cau_dang_nhap, categoryRouter);
 app.use('/doanhth', doanhthuRouter);
 app.use('/address', addressRouter);
+
+app.use('/api', apiRouter);
 
 app.use(express.static("images"));
 
