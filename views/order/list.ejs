@@ -127,14 +127,14 @@
                                       </div>
                                     </a>
                                   </th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">
                                     <a class="d-flex" href="<%= req.params.i %>?by=nameUser&order=<%= (by === 'nameUser' && order === 'asc') ? 'desc' : 'asc' %>">
                                       <div class="th-link">
                                         Tên khách hàng
                                       </div>
                                     </a>
                                   </th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">
                                     <a class="d-flex" href="<%= req.params.i %>?by=price&order=<%= (by === 'price' && order === 'asc') ? 'desc' : 'asc' %>">
                                       <div class="th-link">
                                         Tổng giá
@@ -151,7 +151,8 @@
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">Địa chỉ</th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Trạng thái giao</th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">Thanh toán</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">Chức năng</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Trạng thái</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Chức năng</th>
                                 </tr>
                               </thead>
                             <tbody>
@@ -199,7 +200,11 @@
                                             
                                             <img title="<%= order.pay_status ? "Đã thanh toán" : "Chưa thanh toán" %>" style="width: 24px; height: 24px;" class="lock-icon" src="<%= order.pay_status ? '/images/da_thanh_toan.png' : '/images/chua_thanh_toan.png' %>" alt="Khóa">
                                         </td>
-                                       
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            
+                                            <%= order.status%>
+                                        </td>
+
                                         <td style="vertical-align: middle; text-align: center; width: 150px; padding: 7px;">             
                                             <button class="btn bg-warning-subtle btn-sm edit" 
                                             style="font-size: 12px;" type="button" title="Chi tiết" id="show-emp"
@@ -207,6 +212,12 @@
                                              data-img-url-staff="<%=order.id_staff.image %>">
                                                 <i class="fa fa-info"></i>
                                             </button>
+                                            <button class="btn bg-warning-subtle btn-sm updateStatus" 
+                                                style="font-size: 12px;" type="button" title="Đổi trạng thái" id="show-emp"data-bs-toggle="modal"data-bs-target="#UpdateStatusModal"
+                                                data-order-id="<%= order._id %>" >
+                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                            </button>
+                                            
                                         </td>
 
                                     </tr>
@@ -241,6 +252,42 @@
         </div>
         <!-- đít -->
     </main>
+
+    <div class="modal fade" id="UpdateStatusModal" tabindex="-1" role="dialog" aria-labelledby="UpdateStatusModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="color: black;">
+                    <h5 class="modal-title" id="UpdateStatusModalLabel">Cập nhật trạng thái</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/sanpham/import" method="POST" id="importForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div>Mã: <span id="productCode"></span></div>
+                            <div>Tên sản phẩm: <span id="productName"></span></div>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="productId" id="importProductId">
+                        </div>
+                        <div class="form-group">
+                            <label for="importDate">Ngày nhập:</label>
+                            <input type="date" name="importDate" id="importDate" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="importQuantity">Số lượng nhập:</label>
+                            <input type="number" name="importQuantity" id="importQuantity" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger">Nhập hàng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- modal detail -->
     <!-- form detail -->
@@ -476,9 +523,6 @@
                 row.append(productIdCell, productNameCell, productPriceCell, quantityCell, totalCell);
                 tableBody.append(row);
             });
-
-
-
 
 
                 $('#detailModal').modal('show');

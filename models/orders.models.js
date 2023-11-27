@@ -11,6 +11,7 @@ const ordersSchema = new db.mongoose.Schema(
     pay_status: { type: Boolean, require: true },
     id_address: { type: db.mongoose.Schema.Types.String, ref: "addressModel" },
     date: { type: Date, require: true },
+    status: { type: String, require: true },
   },
   {
     collection: "orders",
@@ -35,6 +36,7 @@ ordersSchema.pre("save", function (next) {
         // Gán giá trị ngày hiện tại cho trường "date"
         doc.date = new Date();
         doc._id = formattedId;
+        doc.status = "Chờ xử lý"
         next();
       })
       .catch((error) => {

@@ -1,5 +1,7 @@
 const { log } = require('console');
 var categoryMD = require('../models/category.models');
+var productMD = require('../models/sanpham.models');
+
 var msg = '';
 const excelJs = require("exceljs");
 const PDFDocument = require("pdfkit");
@@ -164,10 +166,26 @@ exports.getEdit = async (req, res, next) => {
 
 // delete
 exports.deleteLoai= async (req,res,next)=>{
-    await myMD.sanphamModel.deleteOne({_id: req.body.IdDelete});
-    res.redirect('/category/1');
+  try {
+      let category = await categoryMD.categoryModel.deleteOne({_id: req.body.IdDelete});
+      
+      if(category){
+          let productList = await productMD.sanphamModel.find({id_category : req.body.IdDelete});
+          
+          for (let i = 0; i < productList.length; i++) {
+              let product = productList[i];
+              product.id_category = undefined;
+              product.category_name = "Khác";
+              await product.save();
+          }
+      }
+  
+      res.redirect('/category/1');
+  } catch (error) {
+      console.log(error);
+      res.redirect('/category/1');
+  }
 }
-
 
 
 

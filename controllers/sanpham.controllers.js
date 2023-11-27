@@ -181,25 +181,31 @@ exports.edit = async (req, res, next) => {
     if (req.method === 'POST') {
         try {
             if (!req.body.name || !req.body.price) {
-                res.render('sanpham/edit', { req: req, listCategory :listCategory, objL: objSP, msg: "Vui lòng điền đầy đủ thông tin sản phẩm." });
+                res.render('sanpham/edit', { req: req, listCategory: listCategory, objL: objSP, msg: "Vui lòng điền đầy đủ thông tin sản phẩm." });
                 return;
             }
 
             const price = parseFloat(req.body.price);
             if (isNaN(price) || price <= 0) {
-                res.render('sanpham/edit', { req: req, listCategory :listCategory, objL: objSP, msg: "Giá sản phẩm phải là một số dương." });
+                res.render('sanpham/edit', { req: req, listCategory: listCategory, objL: objSP, msg: "Giá sản phẩm phải là một số dương." });
                 return;
             }
 
             const quantity = parseFloat(req.body.quantity);
             if (isNaN(quantity) || quantity <= 0) {
-                res.render('sanpham/edit', { req: req, listCategory :listCategory, objL: objSP,msg: "Số lượng sản phẩm phải là một số dương." });
+                res.render('sanpham/edit', { req: req, listCategory: listCategory, objL: objSP, msg: "Số lượng sản phẩm phải là một số dương." });
                 return;
             }
 
             // Sử dụng cùng một biến `objSP` để cập nhật thông tin sản phẩm
             objSP.name = req.body.name;
             objSP.id_category = req.body.category;
+            if (req.body.category) {
+                const foundCategory = listCategory.find(category => category._id.toString() === req.body.category);
+                objSP.category_name = foundCategory ? foundCategory.name : "Khác";
+            } else {
+                objSP.category_name = "Khác";
+            }
             objSP.price = req.body.price;
             objSP.quantity = req.body.quantity;
             objSP.describe = req.body.describe;
@@ -221,7 +227,7 @@ exports.edit = async (req, res, next) => {
         }
     }
 
-    res.render('sanpham/edit', { msg: msg, objL: objSP, listCategory :listCategory, req: req });
+    res.render('sanpham/edit', { msg: msg, objL: objSP, listCategory: listCategory, req: req });
 };
 
 
