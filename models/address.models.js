@@ -3,7 +3,8 @@ const addressSchema = new db.mongoose.Schema(
     {
         _id: {type: db.mongoose.Schema.Types.String},
         id_user: {type: db.mongoose.Schema.Types.String, ref: 'userModel'},
-        address: {type: String, require: false}
+        address: {type: String, require: true},
+        phone: {type: String, require: true}
     },
     {
         collection: 'address'

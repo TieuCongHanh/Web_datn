@@ -1,5 +1,6 @@
 var OrderModel = require('../../models/orders.models');
 var orderDetailModel = require('../../models/orderdetail.models');
+var addressModal = require('../../models/address.models');
 
 var msg = '';
 
@@ -39,6 +40,13 @@ exports.addOrder = async (req, res, next) => {
     let id_product = req.body.id_product;
 
     let orderDetails = []; // Danh sách orderDetail
+
+
+    let address = await addressModal.addressModel.find({id_user : id_user});
+
+    if(!address){
+      return res.status(400).json({ msg: "Lỗi: Người dùng cần thêm địa chỉ nhận hàng" });
+    }
 
     if (Array.isArray(quantity) && Array.isArray(id_product) && quantity.length === id_product.length) {
       for (let i = 0; i < quantity.length; i++) {
