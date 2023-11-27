@@ -9,24 +9,63 @@ var msg = "";
 exports.list = async (req, res) => {
   let page = parseInt(req.params.i);
   let perPage = parseInt(req.query.data_tables_leght) || 5; // Lấy số mục từ query parameter
-  let orderSearch = null;
+  let orderSearch = {};
 
   const searchTerm = req.query.orderSearch || '';
   const regex = new RegExp(searchTerm, 'i');
 
-  if (searchTerm !== '') {
+  let startDate = req.query.startDate;
+  let endDate = req.query.endDate;
+
+  let dateSearch = {};
+  let hasDateSearch = false;
+
+  if (startDate && endDate) {
+    dateSearch = {
+      date: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      },
+    };
+    hasDateSearch = true; // Đánh dấu rằng có điều kiện ngày
+  } else if (startDate && !endDate) {
+    dateSearch = {
+      date: {
+        $gte: new Date(startDate),
+      },
+    };
+    hasDateSearch = true;
+  } else if (!startDate && endDate) {
+    dateSearch = {
+      date: {
+        $lte: new Date(endDate),
+      },
+    };
+    hasDateSearch = true;
+  }
+
+  if (hasDateSearch) {
+    orderSearch = {
+      ...dateSearch,
+      $or: [
+        { 'id_user._id': { $regex: regex } },
+        { 'id_user.name': { $regex: regex } },
+        { _id: { $regex: regex } },
+        { 'id_address.address': { $regex: regex } },
+      ],
+    };
+  } else {
     orderSearch = {
       $or: [
         { 'id_user._id': { $regex: regex } },
         { 'id_user.name': { $regex: regex } },
         { _id: { $regex: regex } },
-        { date: { $regex: regex } },
-        { 'id_address.address': { $regex: regex } }
-      ]
+        { 'id_address.address': { $regex: regex } },
+      ],
     };
   }
 
-  let start = (page - 1) * perPage; 
+  let start = (page - 1) * perPage;
 
   const by = req.query.by || "_id id_user nameUser price date"; // Sắp xếp theo price nếu không có giá trị by
   const order = req.query.order || "asc"; // Sắp xếp tăng dần nếu không có giá trị order
@@ -41,17 +80,16 @@ exports.list = async (req, res) => {
     .populate("id_payment")
     .populate("id_address");
 
-  let totalSP = await OrderModel.ordersModel.find(orderSearch).countDocuments();
+  let totalSP = await OrderModel.ordersModel.countDocuments(orderSearch);
   let currentPageTotal = start + list.length;
 
   let countlist = await OrderModel.ordersModel.find(orderSearch);
   let count = countlist.length / perPage;
   count = Math.ceil(count);
 
-  console.log(list);
   res.render("order/list", {
-    start : start,
-    perPage : perPage,
+    start: start,
+    perPage: perPage,
     listL: list,
     countPage: count,
     req: req,
@@ -60,6 +98,8 @@ exports.list = async (req, res) => {
     order: order,
     totalSP: totalSP,
     currentPageTotal: currentPageTotal,
+    startDate: startDate,
+    endDate: endDate,
   });
 };
 

@@ -74,7 +74,7 @@
                             </div>
                         </div>
                         <!-- thanh tìm kiếm -->
-                        <div class="d-flex justify-content-between" style="margin-top: 20px; margin-bottom: 30px;">
+                        <div class="d-flex container justify-content-between" style="margin-top: 20px; margin-bottom: 30px; padding: 0px;">
                             <div class="dataTables_length d-flex align-items-center">
                                 <label class="mr-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px;">Xem</label>
                                 <select name="data_tables_leght" style="width: 60px;" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm" onchange="changePerPage(this)">
@@ -86,9 +86,28 @@
                                 </select>
                                 <label class="ml-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px">mục</label>
                             </div>
-                            <form role="search" class="d-flex" style="margin-left: auto;">
+
+                            <div class="align-items-center" style="padding: 0;">
+                                <form class="justify-content-between align-items-center" style="display: flex;">
+                                  <div class=" d-flex form-group justify-content-between" style="margin: auto; padding: 0px; margin-right: 10px;">
+                                    <label for="startDate">Ngày bắt đầu:</label>
+                                    <input type="date" class="form-control" id="startDate" name="startDate" >
+                                  </div>
+                                  <div class=" d-flex form-group justify-content-between"style="margin: auto; padding: 0px;">
+                                    <label for="endDate">Ngày kết thúc:</label>
+                                    <input type="date" class="form-control" id="endDate" name="endDate" >
+                                  </div>
+                                  <button class=" btn btn-outline-info" style="margin: 0px; height: 45px;" type="submit">
+                                    <i style="height: 20px; padding-top: 6px;" class="bx bx-filter-alt"></i>
+                                  </button>
+                                </form>
+                            </div>
+
+                            <form role="search" class="d-flex align-items-center">
                                 <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm kiếm..." aria-label="Search" name="orderSearch" value="<%= req.query.searchStaff || '' %>">
-                                <button class="btn btn-outline-info" style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
+                                <button class="btn btn-outline-info" style="margin: 0px;  height: 45px;" type="submit">
+                                    <i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i>
+                                </button>
                             </form>
                         </div>
                         <table class="table table-bordered col" id="tableorder">
@@ -123,11 +142,11 @@
                                     </a>
                                   </th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">
-                                    <a class="d-flex" href="<%= req.params.i %>?by=date&order=<%= (by === 'date' && order === 'asc') ? 'desc' : 'asc' %>">
+                                   
                                       <div class="th-link">
                                         Ngày đặt
                                       </div>
-                                    </a>
+                               
                                   </th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">Địa chỉ</th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Trạng thái giao</th>
@@ -480,7 +499,25 @@
     window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
     }
 </script>
-
+<script>
+    // Kiểm tra xem ngày đã được lưu trữ trong localStorage chưa
+    var startDate = localStorage.getItem('startDate');
+    var endDate = localStorage.getItem('endDate');
+  
+    if(startDate) {
+        document.getElementById('startDate').value = startDate;
+    }
+    if (endDate) {
+      document.getElementById('endDate').value = endDate;
+    }   
+    // Lưu trữ giá trị ngày khi người dùng thay đổi
+    document.getElementById('startDate').addEventListener('change', function () {
+      localStorage.setItem('startDate', this.value);
+    });
+    document.getElementById('endDate').addEventListener('change', function () {
+      localStorage.setItem('endDate', this.value);
+    });
+</script>
 </body>
 
 </html>
