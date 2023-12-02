@@ -3,12 +3,12 @@ var msg = '';
 
 exports.list = async (req, res, next) => {
     try {
-        const { id_user } = req.body; // Lấy giá trị id_user từ body
-        if(!id_user){
-            return res.status(404).json({ address: [], msg: "Nhập id_user" });
-        }
+        // const { id_user } = req.body; // Lấy giá trị id_user từ body
+        // if(!id_user){
+        //     return res.status(404).json({ address: [], msg: "Nhập id_user" });
+        // }
 
-        let list = await myMD.addressModel.find({ id_user : id_user });
+        let list = await myMD.addressModel.find({ id_user : req.query.id_user });
         if(!list){
             return res.status(404).json({ address: [], msg: "Không tìm thấy địa chỉ" });
         }
