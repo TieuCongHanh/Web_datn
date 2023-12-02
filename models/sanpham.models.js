@@ -6,7 +6,7 @@ const sanphamSchema = new db.mongoose.Schema(
         id_category: {type: db.mongoose.Schema.Types.String, ref: "categoryModel" },
         category_name: {type: String, require: true},
         name: {type: String, require: true},
-        price: {type: String, require: true},
+        price: {type: Number, require: true},
         describe: {type: String, require: true},
         image: {type: String, require: true},
         quantity: {type : Number, require : true},
