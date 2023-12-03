@@ -43,39 +43,44 @@ exports.add = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     try {
-        const  id  = req.params;
-        const { address, phone } = req.body;
+        const id = req.params.id;
+        const address = req.body.address;
+        const phone = req.body.phone;
 
         const addressObj = await myMD.addressModel.findById(id);
-        if(!addressObj){
-            return res.status(404).json("Không tìm thấy địa chỉ");
+        if (!addressObj) {
+            return res.status(404).json({ msg: "Không tìm thấy địa chỉ" });
         }
         if (!address || !phone) {
-            return res.status(400).json("Thiếu các trường bắt buộc" );
+            return res.status(400).json({ msg: "Thiếu các trường bắt buộc" });
         }
-        
+
         addressObj.address = address;
         addressObj.phone = phone;
-        await addressObj.save();
 
-        return res.status(200).json(addressObj);
+        const updatedAddress = await addressObj.save();
+
+        if (!updatedAddress) {
+            return res.status(404).json({ msg: "Không tìm thấy địa chỉ" });
+        }
+
+        return res.status(200).json({ address: updatedAddress, msg: "Địa chỉ đã được cập nhật" });
     } catch (error) {
-        return res.status(500).json("Lỗi khi cập nhật địa chỉ");
+        return res.status(500).json({ msg: "Lỗi khi cập nhật địa chỉ" });
     }
 };
-
 exports.delete = async (req, res, next) => {
    
     try {
         const id = req.params.id;
-        const deletedAddress = await myMD.addressModel.findByIdAndDelete(id);
+        const deletedAddress = await myMD.addressModel.findOneAndDelete(id);
 
         if (!deletedAddress) {
-            return res.status(404).json("Không tìm thấy địa chỉ" );
+            return res.status(404).json({ msg: "Không tìm thấy địa chỉ" });
         }
 
-        return res.status(200).json("Địa chỉ đã được xóa");
+        return res.status(200).json({ msg: "Địa chỉ đã được xóa" });
     } catch (error) {
-        return res.status(500).json("Lỗi khi xóa địa chỉ" );
+        return res.status(500).json({ msg: "Lỗi khi xóa địa chỉ" });
     }
 };
