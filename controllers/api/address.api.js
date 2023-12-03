@@ -44,8 +44,7 @@ exports.add = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     try {
         const  id  = req.params;
-        const address = req.body.address;
-        const phone = req.body.phone;
+        const { address, phone } = req.body;
 
         const addressObj = await myMD.addressModel.findById(id);
         if(!addressObj){
