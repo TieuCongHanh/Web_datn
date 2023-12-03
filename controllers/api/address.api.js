@@ -79,7 +79,7 @@ exports.delete = async (req, res, next) => {
             return res.status(404).json("Không tìm thấy địa chỉ" );
         }
 
-        return res.status(200).json("Địa chỉ đã được xóa");
+        return res.status(200).json(deletedAddress);
     } catch (error) {
         return res.status(500).json("Lỗi khi xóa địa chỉ" );
     }
