@@ -73,7 +73,7 @@ exports.delete = async (req, res, next) => {
    
     try {
         const id = req.params.id;
-        const deletedAddress = await myMD.addressModel.findOneAndDelete(id);
+        const deletedAddress = await myMD.addressModel.findByIdAndDelete(id);
 
         if (!deletedAddress) {
             return res.status(404).json("Không tìm thấy địa chỉ" );
