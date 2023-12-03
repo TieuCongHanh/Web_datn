@@ -13,6 +13,7 @@ router.post('/user/logup', user_api.Reg);
 
 // product
 router.get('/product/list', productApi.list);
+router.get('/product/filter/:id_category', productApi.filterCategory);
 
 // category
 router.get('/category/list', categoryApi.list);
