@@ -71,6 +71,7 @@
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
+<<<<<<< Updated upstream:SerVer/views/user/list.ejs
                                     <th scope="col" style="text-align: center; width: 12%">Mã người dùng</th>
                                     <th scope="col" style="width: 150px;text-align: center; width: 16%">Ảnh đại diện </th>
                                     <th scope="col" style="text-align: center; width: 15%"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên tài khoản</a></th>
@@ -79,6 +80,37 @@
                                     <th scope="col" style="text-align: center; width: 7%">Vai trò</th>
                                     <th scope="col" style="text-align: center; width: 10%">Trạng thái</th>
                                     <th scope="col" style="text-align: center; width: 15%">Chức năng</th>
+=======
+                                   <th scope="col" style="vertical-align: middle; width: 5%; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Mã 
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; width: 150px; text-align: center; width: 8%; padding: 7px;">
+                                    Ảnh đại diện
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ;padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=username&order=<%= (by === 'username' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Tên tài khoản
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 18%;padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=name&order=<%= (by === 'name' && order === 'asc') ? 'desc' : 'asc' %>">
+                                     <div class="th-link">
+                                        Họ và tên 
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ; padding: 7px;">SDT</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 20% ;padding: 7px;">Email</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 7% ;padding: 7px;">Vai trò</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ;padding: 7px;">Trạng thái</th>
+                                  <!-- <th scope="col" style="vertical-align: middle; text-align: center; width: 12% ;padding: 7px;">Chức năng</th> -->
+>>>>>>> Stashed changes:views/user/list.ejs
                                 </tr>
                             </thead>
                             <tbody>
@@ -111,6 +143,14 @@
                                         <td style="text-align: center;"><%= user.isActive ? 'Hoạt động' : 'Khóa' %></td>
                                         <td style="text-align: center">
 
+<<<<<<< Updated upstream:SerVer/views/user/list.ejs
+=======
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            <%= user.isActive ? 'Hoạt động' : 'Khóa' %></td>
+
+                                        <!-- <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            <a href="/user/edit/<%= user._id %>">
+>>>>>>> Stashed changes:views/user/list.ejs
                                             <button class="btn bg-warning-subtle btn-sm edit"  type="button" title="Sửa" id="show-emp">
                                                 <a href="/user/edit/<%= user._id %>"><i class="fas fa-edit"></i></a>
                                             </button>
@@ -120,11 +160,15 @@
                                             <img class="lock-icon" src="<%= user.isActive ? '/images/mo.png' : '/images/dong.png' %>" alt="Khóa">
                                             </button>
                                             
+<<<<<<< Updated upstream:SerVer/views/user/list.ejs
                                             <button class="btn bg-warning-subtle btn-sm"  type="button" title="Chi tiết" id="show-emp">
                                                 <a href="/user/edit/<%= user._id %>"><i class="fa fa-info"></i></a>
                                             </button>
 
                                         </td>
+=======
+                                        </td> -->
+>>>>>>> Stashed changes:views/user/list.ejs
                                     </tr>
                                     </tr>
                                     <% }); %>
