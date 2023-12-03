@@ -43,7 +43,7 @@ exports.add = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     try {
-        const  id  = req.params.id;
+        const  id  = req.params;
         const address = req.body.address;
         const phone = req.body.phone;
 
