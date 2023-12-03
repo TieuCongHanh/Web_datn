@@ -49,10 +49,10 @@ exports.update = async (req, res, next) => {
 
         const addressObj = await myMD.addressModel.findById(id);
         if (!addressObj) {
-            return res.status(404).json({ msg: "Không tìm thấy địa chỉ" });
+            return res.status(404).json("Không tìm thấy địa chỉ" );
         }
         if (!address || !phone) {
-            return res.status(400).json({ msg: "Thiếu các trường bắt buộc" });
+            return res.status(400).json("Thiếu các trường bắt buộc" );
         }
 
         addressObj.address = address;
@@ -61,12 +61,12 @@ exports.update = async (req, res, next) => {
         const updatedAddress = await addressObj.save();
 
         if (!updatedAddress) {
-            return res.status(404).json({ msg: "Không tìm thấy địa chỉ" });
+            return res.status(404).json("Không tìm thấy địa chỉ");
         }
 
-        return res.status(200).json({ address: updatedAddress, msg: "Địa chỉ đã được cập nhật" });
+        return res.status(200).json(updatedAddress);
     } catch (error) {
-        return res.status(500).json({ msg: "Lỗi khi cập nhật địa chỉ" });
+        return res.status(500).json("Lỗi khi cập nhật địa chỉ" );
     }
 };
 exports.delete = async (req, res, next) => {
@@ -76,11 +76,11 @@ exports.delete = async (req, res, next) => {
         const deletedAddress = await myMD.addressModel.findOneAndDelete(id);
 
         if (!deletedAddress) {
-            return res.status(404).json({ msg: "Không tìm thấy địa chỉ" });
+            return res.status(404).json("Không tìm thấy địa chỉ" );
         }
 
-        return res.status(200).json({ msg: "Địa chỉ đã được xóa" });
+        return res.status(200).json("Địa chỉ đã được xóa");
     } catch (error) {
-        return res.status(500).json({ msg: "Lỗi khi xóa địa chỉ" });
+        return res.status(500).json("Lỗi khi xóa địa chỉ" );
     }
 };
