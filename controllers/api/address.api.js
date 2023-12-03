@@ -57,14 +57,9 @@ exports.update = async (req, res, next) => {
         
         addressObj.address = address;
         addressObj.phone = phone;
+        await addressObj.save();
 
-        const updatedAddress = await myMD.addressModel.save();
-
-        if (!updatedAddress) {
-            return res.status(404).json("Không tìm thấy địa chỉ" );
-        }
-
-        return res.status(200).json(updatedAddress);
+        return res.status(200).json(addressObj);
     } catch (error) {
         return res.status(500).json("Lỗi khi cập nhật địa chỉ");
     }
