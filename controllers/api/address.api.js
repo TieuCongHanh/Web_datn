@@ -15,13 +15,14 @@ exports.list = async (req, res, next) => {
 
         return res.status(200).json({ address: list, msg: "Danh sách địa chỉ" });
     } catch (error) {
-        return res.status(500).json({ product: [], msg: "error" });
+        return res.status(500).json({ msg: "error" });
     }
 }
 
 exports.add = async (req, res, next) => {
     try {
-        const { id_user, address, phone } = req.body;
+        const id_user  = req.query.id_user;
+        const { address, phone } = req.body;
 
         if (!id_user || !address || !phone) {
             return res.status(400).json({ msg: "Thiếu các trường bắt buộc" });
@@ -46,19 +47,21 @@ exports.update = async (req, res, next) => {
         const address = req.body.address;
         const phone = req.body.phone;
 
-
+        const addressObj = await myMD.addressModel.findById(id);
+        if(!addressObj){
+            return res.status(404).json({ msg: "Không tìm thấy địa chỉ" });
+        }
         if (!id) {
             return res.status(400).json({ msg: "Thiếu ID địa chỉ" });
         }
         if (!address || !phone) {
             return res.status(400).json({ msg: "Thiếu các trường bắt buộc" });
         }
+        
+        addressObj.address = address;
+        addressObj.phone = phone;
 
-        const updatedAddress = await myMD.addressModel.findByIdAndUpdate(
-            id,
-            { address : address , phone : phone},
-            { new: true }
-        );
+        const updatedAddress = await myMD.addressModel.save();
 
         if (!updatedAddress) {
             return res.status(404).json({ msg: "Không tìm thấy địa chỉ" });
@@ -78,7 +81,7 @@ exports.delete = async (req, res, next) => {
             return res.status(400).json({ msg: "Thiếu ID địa chỉ" });
         }
 
-        const deletedAddress = await myMD.addressModel.deleteOne({_id : id});
+        const deletedAddress = await myMD.addressModel.findByIdAndDelete(id);
 
         if (!deletedAddress) {
             return res.status(404).json({ msg: "Không tìm thấy địa chỉ" });
