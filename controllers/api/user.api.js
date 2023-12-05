@@ -100,9 +100,9 @@ exports.changePassword = async (req, res, next) => {
             const salt = await bcrypt.genSalt(10);
             objUser.password = await bcrypt.hash(newPassword, salt);
 
-            const updateUser = await objUser.save();
+            await objUser.save();
 
-            res.json(updateUser);
+            res.json(objUser);
         } catch (error) {
             res.json(error);
         }
@@ -120,23 +120,22 @@ exports.edit = async (req, res, next) => {
             return res.json("Vui lòng điền đầy đủ thông tin.");
         }
         try {
-            let objUS = new md.userModel();
-            objUS.userEmail = req.body.userEmail;
+           
+            objUser.userEmail = req.body.userEmail;
 
             if (req.file != undefined) {
                 fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
                 let url_file = '/uploads/' + req.file.originalname;
-                objUS.image = url_file;
+                objUser.image = url_file;
             } else {
-                objUS.image = objUser.image;
+                objUser.image = objUser.image;
             }
-            objUS.name = req.body.name;
-            objUS.phone = req.body.phone;
+            objUser.name = req.body.name;
+            objUser.phone = req.body.phone;
 
-            objUS._id = iduser;
+            await objUser.save();
+            res.json(objUser);
 
-            let user = await md.userModel.findByIdAndUpdate(iduser, objUS);
-            res.json(user);
         } catch (error) {
             res.json( 'Lỗi Ghi CSDL: ' + error.message);
         }
