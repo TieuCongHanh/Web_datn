@@ -234,4 +234,21 @@ exports.details = async (req, res) => {
 };
 
 
+  
+exports.updateStatus = async (req, res, next) => {
+  try {
+      const id_order = req.body.id_order;
+      const newStatus = req.body.newStatus;
 
+      const updatedOrder = await OrderModel.ordersModel.findOneAndUpdate(
+          { _id: id_order },
+          { delivery_status: newStatus },
+          { new: true }
+      );
+
+      res.json({ msg: 'Thông tin trạng thái đã được cập nhật' });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ msg: 'Lỗi khi cập nhật thông tin trạng thái' });
+  }
+};

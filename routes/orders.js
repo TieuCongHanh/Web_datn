@@ -16,5 +16,6 @@ router.get('/:i/print', ordersController.print);
 router.post('/:i/print',  ordersController.print);
 
 router.get('/detail/:orderId', ordersController.details);
+router.post('/updateStatus', ordersController.updateStatus);
 
 module.exports = router;

@@ -4,6 +4,7 @@ var fs = require('fs');
 const bcrypt = require('bcrypt');
 var msg = '';
 const PDFDocument = require("pdfkit");
+const { isPhoneNumber, isValidEmail } = require('../public/js/validation');
 
 exports.list = async (req, res, next) => {
   let page = parseInt(req.params.i);
@@ -176,7 +177,7 @@ exports.add = async (req, res, next) => {
       
         if (!existingStaff) {
             msg = "Nhân viên đã tồn tại.";
-            return res.end();
+            return  res.render('staff/add', { req: req, msg: msg })
         }
 
         if (!req.body.nameStaff || !req.body.role ||
@@ -184,7 +185,16 @@ exports.add = async (req, res, next) => {
               !req.body.date || !req.body.gender || !req.body.email ) {
 
             msg = "Vui lòng điền đầy đủ thông tin.";
-            return res.end();
+            return  res.render('staff/add', { req: req, msg: msg })
+        }
+
+        if(!isPhoneNumber(req.body.phone)){
+          msg = "Số điện thoại không hợp lệ.";
+          return  res.render('staff/add', { req: req, msg: msg })
+        }
+        if(!isValidEmail(req.body.email)){
+          msg = "Email không hợp lệ.";
+          return  res.render('staff/add', { req: req, msg: msg })
         }
             try {
                 let url_file = ''; 
@@ -227,6 +237,16 @@ exports.edit = async (req, res, next) => {
             msg = "Vui lòng điền đầy đủ thông tin.";
             return res.render('staff/edit', { msg: msg, objStaff: objStaff, req: req });
         }
+
+        if(!isPhoneNumber(req.body.phone)){
+          msg = "Số điện thoại không hợp lệ.";
+          return  res.render('staff/add', { req: req, msg: msg })
+        }
+        if(!isValidEmail(req.body.email)){
+          msg = "Email không hợp lệ.";
+          return  res.render('staff/add', { req: req, msg: msg })
+        }
+
         try {
             let objStaff = new myMD.staffModel();
             objStaff.name = req.body.nameStaff;

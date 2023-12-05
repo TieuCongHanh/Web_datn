@@ -1,5 +1,6 @@
 const { log } = require('console');
 var myMD = require('../models/user.models');
+var addressModel = require('../models/address.models');
 const excelJs = require("exceljs");
 var fs = require('fs');
 const bcrypt = require('bcrypt');
@@ -7,42 +8,65 @@ var msg = '';
 
 exports.list = async (req, res, next) => {
     let page = parseInt(req.params.i);
-    let perPage=parseInt(req.query.data_tables_leght) || 5; 
+    let perPage = parseInt(req.query.data_tables_leght) || 5;
     let searchUser = null;
-
+  
     const searchTerm = req.query.searchUser || '';
     const regex = new RegExp(searchTerm, 'i');
-
+  
     if (searchTerm !== '') {
-        searchUser = {
+      searchUser = {
         $or: [
-            { name: { $regex: regex } },
-            { username: { $regex: regex } },
-            { userEmail: { $regex: regex } },
-            { _id: { $regex: regex } },
-            { role: { $regex: regex } },
-            { phone: { $regex: regex } }
+          { name: { $regex: regex } },
+          { username: { $regex: regex } },
+          { userEmail: { $regex: regex } },
+          { _id: { $regex: regex } },
+          { role: { $regex: regex } },
+          { phone: { $regex: regex } }
         ]
-        };
+      };
     }
+  
+    let start = (page - 1) * perPage;
+  
+    const by = req.query.by || '_id username name';
+    const order = req.query.order || 'asc';
+  
+    let list = await myMD.userModel
+      .find(searchUser)
+      .skip(start)
+      .limit(perPage)
+      .sort({ [by]: order });
+  
+    // Lấy thông tin về địa chỉ cho mỗi người dùng
+    list = await Promise.all(
+      list.map(async (user) => {
+        const addressList = await addressModel.addressModel.find({ id_user: user._id });
+        return { ...user.toObject(), addressList };
+      })
+    );
 
-    let start=( page - 1 )*perPage;
-   
-    const by = req.query.by || '_id username name'; // Sắp xếp theo user nếu không có giá trị by
-    const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
-
-    let list = await myMD.userModel.find(searchUser).skip(start).limit(perPage).sort({ [by] :order });
     let totalUsers = await myMD.userModel.find(searchUser).countDocuments();
-   let currentPageTotal = start + list.length;
-   
+    let currentPageTotal = start + list.length;
+  
     let countlist = await myMD.userModel.find(searchUser);
     let count = countlist.length / perPage;
     count = Math.ceil(count);
-
+  
     console.log(list);
-    res.render('user/list', {perPage : perPage, start : start, listUS: list, countPage: count , req: req , msg: msg,by : by, order :order,totalUsers: totalUsers,currentPageTotal:currentPageTotal});
-}
-
+    res.render('user/list', {
+      perPage: perPage,
+      start: start,
+      listUS: list,
+      countPage: count,
+      req: req,
+      msg: msg,
+      by: by,
+      order: order,
+      totalUsers: totalUsers,
+      currentPageTotal: currentPageTotal
+    });
+  };
 
 exports.in = async (req, res, next) => {
     try {
