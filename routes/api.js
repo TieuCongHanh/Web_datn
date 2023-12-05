@@ -10,6 +10,8 @@ var addressApi = require('../controllers/api/address.api');
 // user
 router.post('/user/login', user_api.Login);
 router.post('/user/logup', user_api.Reg);
+router.post('/user/changePassword', user_api.changePassword);
+router.put('/user/edit/:id', user_api.edit);
 
 // product
 router.get('/product/list', productApi.list);

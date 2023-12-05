@@ -1,6 +1,6 @@
 const md = require('../../models/user.models');
 const bcrypt = require('bcrypt');
-
+var fs = require('fs');
 
 exports.Login = async (req, res, next) => {
    
@@ -75,4 +75,72 @@ exports.Reg = async (req, res, next) => {
                 return res.status(500).json("Lỗi");
             }
         }
+};
+
+exports.changePassword = async (req, res, next) => {
+    const { password, newPassword, userName } = req.body;
+
+    if (req.method === 'POST') {
+        try {
+            let objUser = await md.userModel.findOne({ username: userName });
+            if (!objUser) {
+                return res.json("Tài khoản không tồn tại.");
+            }
+            const passwordMatch = await bcrypt.compare(password, objUser.password);
+            if (!passwordMatch) {
+                return res.json("Mật khẩu cũ không chính xác.");
+            }
+            if (!newPassword) {
+                return res.json("Vui lòng cung cấp mật khẩu mới.");
+            }
+            if(newPassword === password){
+                return res.json("Vui lòng tạo mật khẩu khác mật khẩu cũ.");
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            objUser.password = await bcrypt.hash(newPassword, salt);
+
+            const updateUser = await objUser.save();
+
+            res.json(updateUser);
+        } catch (error) {
+            res.json(error);
+        }
+    } else {
+        res.json("Phương thức không hợp lệ");
+    }
+};
+
+exports.edit = async (req, res, next) => {
+    let iduser = req.params.id;
+    let objUser = await md.userModel.findById(iduser);
+
+    if (req.method === 'PUT') {
+        if (!req.body.name || !req.body.phone) {
+            return res.json("Vui lòng điền đầy đủ thông tin.");
+        }
+        try {
+            let objUS = new md.userModel();
+            objUS.userEmail = req.body.userEmail;
+
+            if (req.file != undefined) {
+                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
+                let url_file = '/uploads/' + req.file.originalname;
+                objUS.image = url_file;
+            } else {
+                objUS.image = objUser.image;
+            }
+            objUS.name = req.body.name;
+            objUS.phone = req.body.phone;
+
+            objUS._id = iduser;
+
+            await md.userModel.findByIdAndUpdate(iduser, objUS);
+            res.json(user);
+        } catch (error) {
+            res.json( 'Lỗi Ghi CSDL: ' + error.message);
+        }
+    } else {
+        res.json("Phương thức không hợp lệ");
+    }
 };

@@ -177,7 +177,7 @@ exports.edit = async (req, res, next) => {
     let iduser = req.params.id;
     let objUser = await myMD.userModel.findById(iduser);
 
-    if (req.method === 'POST') {
+    if (req.method === 'PUT') {
         if ( !req.body.name || !req.body.phone) {
             msg = "Vui lòng điền đầy đủ thông tin.";
             return res.render('user/edit', { msg: msg, objUS: objUser, req: req });
