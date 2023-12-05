@@ -212,7 +212,7 @@
                                             <button class="btn bg-warning-subtle btn-sm edit" 
                                             style="font-size: 12px;" type="button" title="Chi tiết" id="show-emp"
                                              data-order-id="<%= order._id %>" data-img-url-user="<%=  order.id_user.image  %>"
-                                             data-img-url-staff="<%=order.id_staff.image %>">
+                                             data-img-url-staff="<% (order.id_staff) ? order.id_staff.image : " "%>">
                                                 <i class="fa fa-info"></i>
                                             </button>
                                             <button class="btn bg-warning-subtle btn-sm updateStatus" 
@@ -336,7 +336,8 @@
                         <div class="form-group col-md-6" >
                             <label class="control-label">Vận chuyển</label>
 
-                                <div style="margin-left: 20px;">
+                            <div style="margin-left: 20px;">
+                                <div  id="deliveryDetails">
                                     <div>
                                         <label style="width: 20%;" class="control-label">Họ tên</label>
                                         <span type="text" name="staffName"></span>
@@ -349,11 +350,12 @@
                                         <label style="width: 20%;" class="control-label">Email</label>
                                         <span type="text" name="staffEmail"></span>
                                     </div>
-                                    <div>
-                                        <label style="width: 20%;" class="control-label">Trạng thái</label>
-                                        <span type="text" name="deliverStatus"></span>
-                                    </div>
                                 </div>
+                                <div>
+                                    <label style="width: 20%;" class="control-label">Trạng thái</label>
+                                    <span type="text" name="deliverStatus"></span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group col-md-12" >
@@ -493,9 +495,15 @@
             $('#detailModal').find('span[name="userEmail"]').eq(0).text(order.id_user.userEmail);
             $('#detailModal').find('span[name="address"]').eq(0).text(order.id_address.address);
 
-            $('#detailModal').find('span[name="staffName"]').eq(0).text(order.id_staff.name);
-            $('#detailModal').find('span[name="staffPhone"]').eq(0).text(order.id_staff.phone);
-            $('#detailModal').find('span[name="staffEmail"]').eq(0).text(order.id_staff.email);
+            var staff = order.id_staff;
+
+            if (staff) {
+                $('#detailModal').find('span[name="staffName"]').eq(0).text(staff.name);
+                $('#detailModal').find('span[name="staffPhone"]').eq(0).text(staff.phone);
+                $('#detailModal').find('span[name="staffEmail"]').eq(0).text(staff.email);
+            } else {
+                $('#deliveryDetails').hide();
+            }
             $('#detailModal').find('span[name="deliverStatus"]').eq(0).text(order.delivery_status);
 
             $('#detailModal').find('span[name="method"]').eq(0).text(order.id_payment.method);
