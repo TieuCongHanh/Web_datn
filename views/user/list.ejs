@@ -121,13 +121,13 @@
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ; padding: 7px;">SDT</th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 20% ;padding: 7px;">Email</th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 7% ;padding: 7px;">Vai trò</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ;padding: 7px;">Trạng thái</th>
-                                  <!-- <th scope="col" style="vertical-align: middle; text-align: center; width: 12% ;padding: 7px;">Chức năng</th> -->
+                                  <!-- <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ;padding: 7px;">Trạng thái</th> -->
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 12% ;padding: 7px;">Chức năng</th>
                                 </tr>
                               </thead>
                             <tbody>
                                 <% listUS.forEach((user)=> { %>
-                                    <tr>
+                        
                                     <tr>
                                         <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             <%= user._id %>
@@ -150,23 +150,21 @@
                                         <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             <%= user.role %></td>
 
-                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
-                                            <%= user.isActive ? 'Hoạt động' : 'Khóa' %></td>
-
                                         <!-- <td style="vertical-align: middle; text-align: center; padding: 7px;">
-                                            <a href="/user/edit/<%= user._id %>">
+                                            <%= user.isActive ? 'Hoạt động' : 'Khóa' %></td> -->
+
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+<!--                                         
                                             <button class="btn bg-warning-subtle btn-sm edit"  type="button" title="Sửa" id="show-emp">
                                                <i class="fas fa-edit"></i>
                                             </button>
-                                            </a>
-
-                                            <button class="btn bg-warning-subtle btn-sm"  type="button" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal" data-user-id="<%= user._id %>">
-                                            <img class="lock-icon" src="<%= user.isActive ? '/images/mo.png' : '/images/dong.png' %>" alt="Khóa">
-                                            </button>
+                                            </a> -->
+                                                <button class="btn bg-warning-subtle btn-sm" type="button" data-bs-toggle="modal"
+                                                    data-bs-target="#detailModel" data-user-info="<%= JSON.stringify(user) %>">
+                                                    <i class="fa fa-info"></i>
+                                                </button>
                                             
-                                        </td> -->
-                                    </tr>
+                                        </td>
                                     </tr>
                                     <% }); %>
 
@@ -197,25 +195,38 @@
         </div>
     </main>
 
-    <!-- modal delete -->
-    <!-- form xoá -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+
+    <div class="modal fade" style=" align-items: flex-start; justify-content: center; padding-top: 0px;" id="detailModel" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header" style="color: black;">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận</h5>
-                    <button type="button"  data-bs-dismiss="modal" ><i class="fa fa-times" aria-hidden="true"></i></button>
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Thông tin người dùng</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <form action="/user/delete" method="POST" id="formDelete">
-                    <input type="hidden" name="IdDelete" id="IdDelete">
-                        <div class="modal-body">
-                            Bạn có chắc muốn thay đổi trạng thái User này không?
-                        </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Ok</button>
-                    </div>
-                </form>
+                <div class="modal-body">
+                    <p><strong>Mã:</strong> <span id="userId"></span></p>
+                    <p><strong>Ảnh:</strong></p>
+                    <img id="userImage" src="" alt="Ảnh người dùng" style="width: 60px; height: 60px; border-radius: 30px;">
+                    <p><strong>Tên đăng nhập:</strong> <span id="username"></span></p>
+                    <p><strong>Tên:</strong> <span id="name"></span></p>
+                    <p><strong>Số điện thoại:</strong> <span id="phone"></span></p>
+                    <p><strong>Email:</strong> <span id="userEmail"></span></p>
+                    <p><strong>Vai trò:</strong> <span id="role"></span></p>
+                    <div id="addressList">
+                        <h6>Danh sách địa chỉ:</h6>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>Địa chỉ</th>
+                              <th>Số điện thoại</th>
+                            </tr>
+                          </thead>
+                          <tbody id="addressTableBody"></tbody>
+                        </table>
+                      </div>
+                </div>
             </div>
         </div>
     </div>
@@ -284,7 +295,7 @@
         }
 
     </script>
-    <script>
+    <!-- <script>
         $('#deleteModal').on('show.bs.modal', function (event) {
           var button = $(event.relatedTarget) // Nút mở modal
           console.log('da clickkkkkkkk'+button);
@@ -299,7 +310,7 @@
             $('#deleteModal').modal('hide');
           });
         })
-      </script>
+      </script> -->
 
         <script>
             function changePerPage(selectElement) {
@@ -309,6 +320,38 @@
 
             window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
             }
+        </script>
+
+        <script>
+       $('#detailModel').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var user = button.data('user-info');
+      
+                console.log(user);
+                var modal = $(this);
+                modal.find('#userId').text(user._id);
+                modal.find('#userImage').attr('src', user.image);
+                modal.find('#username').text(user.username);
+                modal.find('#name').text(user.name);
+                modal.find('#phone').text(user.phone);
+                modal.find('#userEmail').text(user.userEmail);
+                modal.find('#role').text(user.role);
+
+                var addressTableBody = modal.find('#addressTableBody');
+                addressTableBody.empty();
+
+                if (user.addressList && user.addressList.length > 0) {
+                user.addressList.forEach(function (address) {
+                    var row = '<tr>' +
+                    '<td>' + address.address + '</td>' +
+                    '<td>' + address.phone + '</td>' +
+                    '</tr>';
+                    addressTableBody.append(row);
+                });
+                } else {
+                addressTableBody.append('<tr><td colspan="2">Không có địa chỉ</td></tr>');
+                }
+            });
         </script>
 
 </body>
