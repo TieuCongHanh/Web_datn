@@ -149,7 +149,7 @@
                                
                                   </th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">Địa chỉ</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Trạng thái</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 8%; padding: 7px;">Trạng thái</th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 5%; padding: 7px;">Thanh toán</th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Chức năng</th>
                                 </tr>
@@ -191,9 +191,18 @@
                                         </td>
 
                                         <td style="vertical-align: middle; text-align: center; padding: 7px;">
-                                            
-                                            <%= order.delivery_status%>
-                                        </td>
+                                            <div <% if(order.delivery_status === "Chờ xử lý") { %>
+                                                style="background-color: aqua; border-radius: 20px; padding: 2px;"
+                                            <% } else if(order.delivery_status === "Đang chuẩn bị") { %>
+                                                style="background-color: yellow; border-radius: 20px; padding: 2px;"
+                                            <% } else if(order.delivery_status === "Đang giao") { %>
+                                                style="background-color: orange; border-radius: 20px; padding: 2px;"
+                                            <% } else { %>
+                                                style="background-color: green; border-radius: 20px; padding: 2px;"
+                                            <% } %>>
+                                              <%= order.delivery_status %>
+                                            </div>
+                                          </td>
 
                                         <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             

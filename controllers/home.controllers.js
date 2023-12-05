@@ -11,7 +11,7 @@ exports.home = async (req, res, next) => {
     let totalQuantitySold = 0;
     let dthuproduct = await md2.ordersModel.find();
     dthuproduct.forEach((order) => {
-        totalQuantitySold += order.price * order.quantity;
+        totalQuantitySold += order.total_price;
     });
     console.log(`Tổng số doanh thu: ${totalQuantitySold}`);
     res.render('home/home', {req : req , msg: msg, countProduct: countProduct, countUser:countUser, totalQuantitySold:totalQuantitySold});
