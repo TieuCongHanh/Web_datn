@@ -13,12 +13,9 @@ var orderRouter=require('./routes/orders');
 var staffRouter=require('./routes/staff');
 var categoryRouter=require('./routes/category');
 var doanhthuRouter=require('./routes/doanhthu');
-<<<<<<< HEAD:SerVer/app.js
 var ratingRouter = require('./routes/danhgia');
-=======
 var addressRouter=require('./routes/address');
 var apiRouter = require('./routes/api');
->>>>>>> e0efbc58fb51fc0a9d981548bbe6dbbb46bcf6dd:app.js
 
 var addressRouter=require('./routes/address');
 
@@ -52,10 +49,7 @@ app.use('/danhgia', ratingRouter);
 
 app.use('/address', addressRouter);
 
-<<<<<<< HEAD:SerVer/app.js
-=======
 app.use('/api', apiRouter);
->>>>>>> e0efbc58fb51fc0a9d981548bbe6dbbb46bcf6dd:app.js
 
 app.use(express.static("images"));
 
