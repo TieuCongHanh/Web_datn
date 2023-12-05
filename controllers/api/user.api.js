@@ -135,8 +135,8 @@ exports.edit = async (req, res, next) => {
 
             objUS._id = iduser;
 
-            await md.userModel.findByIdAndUpdate(iduser, objUS);
-            res.json(objUS);
+            let user = await md.userModel.findByIdAndUpdate(iduser, objUS);
+            res.json(user);
         } catch (error) {
             res.json( 'Lỗi Ghi CSDL: ' + error.message);
         }
