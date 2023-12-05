@@ -258,35 +258,42 @@
 
     <div class="modal fade" id="UpdateStatusModal" tabindex="-1" role="dialog" aria-labelledby="UpdateStatusModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header" style="color: black;">
-                    <h5 class="modal-title" id="UpdateStatusModalLabel">Cập nhật trạng thái</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="/order/updateStatus" method="POST" id="status">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <div>Mã: <span id="id_order"></span></div>
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control" id="statusSelect" name="newStatus" required>
-                                <option>Chờ xử lý</option>
-                                <option>Đang chuẩn bị</option>
-                                <option>Đang giao</option>
-                                <option>Đã giao</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-danger">Cập nhật</button>
-                    </div>
-                </form>
+          <div class="modal-content">
+            <div class="modal-header" style="color: black;">
+              <h5 class="modal-title" id="UpdateStatusModalLabel">Cập nhật trạng thái</h5>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
+            <form id="status">
+              <div class="modal-body">
+                <div class="form-group">
+                  <div>Mã: <span id="id_order"></span></div>
+                </div>
+                <div class="form-group">
+                  <select class="form-control" id="statusSelect" name="statusSelect" required>
+                    <option>Chờ xử lý</option>
+                    <option>Đang chuẩn bị</option>
+                    <option value="Đang giao">Đang giao</option>
+                    <option>Hủy</option>
+                  </select>
+                </div>
+                <div id="deliveryPersonSelect" style="display: none;">
+                  <div class="form-group">
+                    <select class="form-control" id="deliveryPerson" name="deliveryPerson" required>
+                      <option value="" disabled selected>Chọn người giao</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-danger">Cập nhật</button>
+              </div>
+            </form>
+          </div>
         </div>
-    </div>
+      </div>
 
     <!-- modal detail -->
     <!-- form detail -->
@@ -571,54 +578,102 @@
     });
 </script>
 
+<!-- Đoạn mã JavaScript -->
 <script>
-  $(document).ready(function() {
-  $('#UpdateStatusModal').on('show.bs.modal', function(event) {
-    var button = $(event.relatedTarget);
-    var orderId = button.data('order-id');
-    var currentStatus = button.data('current-status');
+    $(document).ready(function () {
+        function populateStaffOptions() {
+            $.ajax({
+                url: '/order/staff/list',
+                method: 'GET',
+                success: function (response) {
+                console.log('Staff response:', response); // Check the response in the console
 
-    $('#id_order').text(orderId);
+                var staffSelect = $('#deliveryPerson');
+                staffSelect.empty();
 
-    $('#statusSelect').val(currentStatus);
-  });
+                staffSelect.append($('<option>', {
+                    value: '',
+                    text: 'Chọn người giao',
+                    disabled: true,
+                    selected: true
+                }));
 
-  $('#status').submit(function(event) {
-    event.preventDefault();
+                response.forEach(function (staff) {
+                    staffSelect.append($('<option>', {
+                    value: staff._id,
+                    text: staff.name + " - " + staff.role
+                    }));
+                });
+                },
+                error: function (error) {
+                console.error(error);
+                }
+            });
+            }
 
-    var orderId = $('#id_order').text();
-    var status = $('#statusSelect').val();
+        $('#UpdateStatusModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var orderId = button.data('order-id');
+            var currentStatus = button.data('current-status');
 
-    $.ajax({
-      url: '/order/updateStatus',
-      method: 'POST',
-      data: {
-        id_order: orderId,
-        newStatus: status
-        },
-      success: function(response) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Thành công',
-          text: response.msg
-        }).then(function() {
-          location.reload();
+            $('#id_order').text(orderId);
+            $('#statusSelect').val(currentStatus);
+
+            toggleDeliveryPersonSelect(currentStatus);
         });
-      },
-      error: function(error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Lỗi',
-          text: 'Đã xảy ra lỗi khi thực hiện yêu cầu'
+
+        $('#statusSelect').change(function () {
+            var selectedStatus = $(this).val();
+            toggleDeliveryPersonSelect(selectedStatus);
         });
-        console.error(error);
-      }
-    });
-  });
-});
-    </script>
 
+        function toggleDeliveryPersonSelect(status) {
+            if (status === 'Đang giao') {
+            populateStaffOptions();
+            $('#deliveryPersonSelect').show();
+            $('#deliveryPerson').attr('required', true);
+            } else {
+            $('#deliveryPersonSelect').hide();
+            $('#deliveryPerson').attr('required', false);
+            }
+        }
 
+        $('#status').submit(function (event) {
+            event.preventDefault();
+
+            var orderId = $('#id_order').text();
+            var status = $('#statusSelect').val();
+            var deliveryPerson = $('#deliveryPerson').val();
+
+            $.ajax({
+            url: '/order/updateStatus',
+            method: 'POST',
+            data: {
+                id_order: orderId,
+                newStatus: status,
+                deliveryPerson: deliveryPerson
+            },
+            success: function (response) {
+                Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: response.msg
+                }).then(function () {
+                location.reload();
+                });
+            },
+            error: function (error) {
+                Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Đã xảy ra lỗi khi thực hiện yêu cầu'
+                });
+                console.error(error);
+            }
+            });
+        });
+        });
+  </script>
 </body>
 
 </html>

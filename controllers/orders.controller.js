@@ -1,5 +1,6 @@
 const OrderModel = require("../models/orders.models");
 const paymentModel = require("../models/payment.models");
+const staffModel = require("../models/staffs.models")
 const detailModel = require("../models/orderdetail.models");
 const excelJs = require("exceljs");
 const PDFDocument = require("pdfkit");
@@ -233,22 +234,31 @@ exports.details = async (req, res) => {
   }
 };
 
-
-  
 exports.updateStatus = async (req, res, next) => {
   try {
-      const id_order = req.body.id_order;
-      const newStatus = req.body.newStatus;
+    const id_order = req.body.id_order;
+    const newStatus = req.body.newStatus;
+    const deliveryPerson = req.body.deliveryPerson;
 
-      const updatedOrder = await OrderModel.ordersModel.findOneAndUpdate(
-          { _id: id_order },
-          { delivery_status: newStatus },
-          { new: true }
-      );
+    const updatedOrder = await OrderModel.ordersModel.findOneAndUpdate(
+      { _id: id_order },
+      { delivery_status: newStatus, id_staff: deliveryPerson },
+      { new: true }
+    );
 
-      res.json({ msg: 'Thông tin trạng thái đã được cập nhật' });
+    res.json({ msg: 'Thông tin trạng thái đã được cập nhật' });
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ msg: 'Lỗi khi cập nhật thông tin trạng thái' });
+    console.error(err);
+    res.status(500).json({ msg: 'Lỗi khi cập nhật thông tin trạng thái' });
+  }
+};
+exports.listStaff = async (req, res, next) => {
+  try {
+    const staffList = await staffModel.staffModel.find();
+    console.log(staffList);
+    res.json(staffList);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Lỗi khi cập nhật thông tin trạng thái' });
   }
 };
