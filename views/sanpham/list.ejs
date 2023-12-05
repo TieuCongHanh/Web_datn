@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title> Sản phẩm</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" href="/bootstrap-5.2.3-dist/css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <!-- or -->
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <!-- Icon web -->
+    <link rel="icon" href="/images/logo_app.png" type="image/png">
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css"
+        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<style>
+        .th-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    }
+    .lock-icon{
+        width: 16px; /* Đặt kích thước hình ảnh dựa trên kích thước thích hợp */
+    height: 16px;
+    }
+    /* CSS cho trang được chọn */
+.page-item.active .page-link {
+    background-color: #007bff; /* Màu nền khi nút được chọn */
+    color: #fff; /* Màu chữ khi nút được chọn */
+    border-color: #007bff; /* Màu viền khi nút được chọn */
+}
+
+</style>
+</head>
+
+<body onload="time()" class="app sidebar-mini rtl">
+    <%- include('../inc/nav.ejs') %>
+    <main class="app-content">
+        <div class="app-title">
+            <ul class="app-breadcrumb breadcrumb side">
+                <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
+            </ul>
+            <div id="clock"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tile">
+                    <div class="tile-body">
+                        <!-- thanh chức năng đầu tiên -->
+                        <div class="row element-button">
+                            <div class="col-sm-2">
+                             
+                                <a class="btn btn-add btn-sm" href="/sanpham/<%= countPage %>/add" title="Thêm" id="show-emp"><i
+                                        class="fas fa-plus"></i>
+                                    Tạo mới sản phẩm</a> 
+                            </div>
+                            <div class="col-sm-2" id="btnExport">
+                                <a class="btn btn-excel btn-sm" href="/sanpham/countPage/in"  title="In"><i class="fas fa-file-excel"></i>
+                                    Xuất Excel</a>
+                            </div>
+                            <div class="col-sm-2">
+                                <a class="btn btn-delete btn-sm print-file" href="/sanpham/countPage/print"  type="button" title="In"
+                                    ><i class="fas fa-print"></i> In dữ liệu</a>
+                            </div>
+                        </div>
+                        <!-- thanh tìm kiếm -->
+                        <div class="d-flex justify-content-between" style="margin-top: 20px; margin-bottom: 30px;">
+                            <div class="dataTables_length d-flex align-items-center">
+                                <label class="mr-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px;">Xem</label>
+                                <select name="data_tables_leght" style="width: 60px;" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm" onchange="changePerPage(this)">
+                                    <option value="5" <%= perPage === 5 ? 'selected' : '' %>>5</option>
+                                    <option value="10" <%= perPage === 10 ? 'selected' : '' %>>10</option>
+                                    <option value="25" <%= perPage === 25 ? 'selected' : '' %>>25</option>
+                                    <option value="50" <%= perPage === 50 ? 'selected' : '' %>>50</option>
+                                    <option value="100" <%= perPage === 100 ? 'selected' : '' %>>100</option>
+                                </select>
+                                <label class="ml-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px">mục</label>
+                            </div>
+                            <form role="search" class="d-flex" style="margin-left: auto;">
+                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm kiếm..." aria-label="Search" name="productSearch" value="<%= req.query.searchStaff || '' %>">
+                                <button class="btn btn-outline-info" style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
+                            </form>
+                        </div>
+
+                        <table class="table table-bordered col" id="tableorder">
+                            <thead style="width: auto;">
+                                <tr>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Mã
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; width: 150px; text-align: center; width: 10%; padding: 7px;">
+                                    Ảnh đại diện
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=name&order=<%= (by === 'name' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Tên sản phẩm
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">Loại</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">
+                                    <a class="d-flex" href="<%= req.params.i %>?by=price&order=<%= (by === 'price' && order === 'asc') ? 'desc' : 'asc' %>">
+                                      <div class="th-link">
+                                        Giá sản phẩm
+                                      </div>
+                                    </a>
+                                  </th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">Số lượng</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 25%; padding: 7px;">Mô tả sản phẩm</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">Chức năng</th>
+                                </tr>
+                              </thead>
+                            <tbody>
+                                <% listL.forEach((sanpham)=> { %>
+                                    <tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; padding: 7px;">
+                                            <%= sanpham._id %>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; vertical-align: middle;max-width: 100px; padding: 7px;">
+                                            <img src="<%= sanpham.image %>" alt="anh" style="width: 60px; height: 60px;border-radius: 30px;">
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            
+                                            <%= sanpham.name%>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            
+                                            <%= sanpham.category_name%>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            
+                                            <%= sanpham.price%>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            
+                                            <%= sanpham.quantity%>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            
+                                            <%= sanpham.describe%>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; width: 150px; padding: 7px;">   
+                                            <a href="/sanpham/edit/<%= sanpham._id %>">         
+                                            <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
+                                                <i class="fas fa-edit"></i>
+                                            </button></a> 
+
+                                            <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Nhập hàng" type="button" data-bs-toggle="modal"data-bs-target="#ImportModal" data-user-id="<%= sanpham._id %>">
+                                                <i class="fa fa-cart-plus" style="font-size: 12px;"></i>
+                                           </button>
+
+                                    
+
+                                        </td>
+                                    </tr>
+                                    </tr>
+                                    <% }); %>
+
+
+                            </tbody>
+                        </table>
+                        <!-- hết bảng -->
+                        <div class="row justify-content-between" style="vertical-align: middle; align-items: center">
+                            <div class="col-auto">
+                              Bạn đang xem <%=(listL.length == 0) ? start : start + 1 %> đến <%= start + listL.length %> trong tổng số <%= totalSP %> sản phẩm
+                            </div>
+                            <div class="col-auto">
+                              <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-end">
+                                  <% for (let i = 1; i <= countPage; i++) { %>
+                                    <li class="page-item<%= (i == req.params.i) ? ' active' : '' %>">
+                                      <a class="page-link" href="/user/<%= i %>"><%= i %></a>
+                                    </li>
+                                  <% } %>
+                                </ul>
+                              </nav>
+                            </div>
+                        </div>
+                        
+                        <!-- hết  thông tin thông số của trang -->
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+    </main>
+
+    <!-- modal delete -->
+    <!-- form xoá -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="color: black;">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận</h5>
+                    <button type="button"  data-bs-dismiss="modal" ><i class="fa fa-times" aria-hidden="true"></i></button>
+                </div>
+                <form action="/sanpham/delete" method="POST" id="formDelete">
+                    <input type="hidden" name="IdDelete" id="IdDelete">
+                        <div class="modal-body">
+                            Bạn có chắc muốn xóa sản phẩm này không?
+                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Ok</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ImportModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="color: black;">
+                    <h5 class="modal-title" id="importModalLabel">Nhập hàng</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/sanpham/import" method="POST" id="importForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div>Mã: <span id="productCode"></span></div>
+                            <div>Tên sản phẩm: <span id="productName"></span></div>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="productId" id="importProductId">
+                        </div>
+                        <div class="form-group">
+                            <label for="importDate">Ngày nhập:</label>
+                            <input type="date" name="importDate" id="importDate" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="importQuantity">Số lượng nhập:</label>
+                            <input type="number" name="importQuantity" id="importQuantity" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger">Nhập hàng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+   
+
+    <!-- Essential javascripts for application to work-->
+    <script src="/bootstrap-5.2.3-dist/js copy/jquery-3.2.1.min.js"></script>
+    <script src="/bootstrap-5.2.3-dist/js copy/popper.min.js"></script>
+    <script src="/bootstrap-5.2.3-dist/js copy/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/bootstrap-5.2.3-dist/js copy/main.js"></script>
+    <!-- The javascript plugin to display page loading on top-->
+    <script src="/bootstrap-5.2.3-dist/js copy/plugins/pace.min.js"></script>
+    <!-- Page specific javascripts-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <!-- Data table plugin-->
+    <script type="text/javascript" src="js/plugins/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script type="text/javascript">
+        $('#sampleTable').DataTable();
+        //Thời Gian
+        function time() {
+            var today = new Date();
+            var weekday = new Array(7);
+            weekday[0] = "Chủ Nhật";
+            weekday[1] = "Thứ Hai";
+            weekday[2] = "Thứ Ba";
+            weekday[3] = "Thứ Tư";
+            weekday[4] = "Thứ Năm";
+            weekday[5] = "Thứ Sáu";
+            weekday[6] = "Thứ Bảy";
+            var day = weekday[today.getDay()];
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1;
+            var yyyy = today.getFullYear();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            nowTime = h + " giờ " + m + " phút " + s + " giây";
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+            today = day + ', ' + dd + '/' + mm + '/' + yyyy;
+            tmp = '<span class="date"> ' + today + ' - ' + nowTime +
+                '</span>';
+            document.getElementById("clock").innerHTML = tmp;
+            clocktime = setTimeout("time()", "1000", "Javascript");
+
+            function checkTime(i) {
+                if (i < 10) {
+                    i = "0" + i;
+                }
+                return i;
+            }
+        }
+
+    </script>
+    <script>
+        $('#deleteModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget) // Nút mở modal
+          console.log('da clickkkkkkkk'+button);
+          var userId = button.data('user-id') // Lấy giá trị của thuộc tính data-product-id
+          var deleteModal = document.querySelector("#deleteModal");
+          var formDelete = deleteModal.querySelector("#formDelete");
+          formDelete.querySelector("#IdDelete").value = userId;
+          $("#confirmDeleteBtn").click(function () {
+            // Xử lý xoá sản phẩm ở đây
+      
+            // Sau khi xoá thành công, ẩn dialog
+            $('#deleteModal').modal('hide');
+          });
+        })
+      </script>
+
+      <script>
+        function changePerPage(selectElement) {
+        const perPage = parseInt(selectElement.value);
+        const currentPage = parseInt('<%= req.params.i %>'); // Lấy trang hiện tại từ dữ liệu động
+        const url = `/sanpham/${currentPage}?data_tables_leght=${perPage}`;
+
+        window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
+        }
+      </script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#ImportModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var productId = button.data('user-id');
+    
+            // Gán productId vào trường ẩn trong modal
+            $('#importProductId').val(productId);
+        });
+    
+        $('#importForm').submit(function(event) {
+            event.preventDefault();
+    
+            // Lấy thông tin từ modal
+            var productId = $('#importProductId').val();
+            var importDate = $('#importDate').val();
+            var importQuantity = $('#importQuantity').val();
+    
+            // Gửi yêu cầu nhập hàng đến server
+            $.ajax({
+                url: '/sanpham/import',
+                method: 'POST',
+                data: {
+                    productId: productId,
+                    importDate: importDate,
+                    importQuantity: importQuantity
+                },
+                success: function(response) {
+                    // Hiển thị thông báo thành công
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: response.msg
+                    }).then(function() {
+                        // Làm mới trang
+                        location.reload();
+                    });
+                },
+                error: function(error) {
+                    // Hiển thị thông báo lỗi
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Đã xảy ra lỗi khi thực hiện yêu cầu'
+                    });
+                    console.error(error);
+                }
+            });
+        });
+    });
+    </script>
+
+
+        <script>
+            $(document).ready(function() {
+                var currentDate = new Date().toISOString().split('T')[0];
+                $('#importDate').val(currentDate);
+            });
+        </script>
+
+        <script>
+            $('#ImportModal').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget);
+    var productId = button.data('user-id');
+
+    // Gán productId vào trường ẩn trong modal
+    $('#importProductId').val(productId);
+
+    // Lấy thông tin sản phẩm từ server
+    $.ajax({
+        url: '/sanpham/detail/' + productId,
+        method: 'GET',
+        success: function(response) {
+
+            $('#productCode').text(response._id);
+            $('#productName').text(response.name);
+        },
+        error: function(error) {
+            console.error(error);
+        }
+    });
+});
+        </script>
+
+</body>
+
+</html>

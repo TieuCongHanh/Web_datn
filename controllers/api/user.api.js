@@ -1,0 +1,78 @@
+const md = require('../../models/user.models');
+const bcrypt = require('bcrypt');
+
+
+exports.Login = async (req, res, next) => {
+   
+    if (req.method == 'POST') {
+        try {
+            const { username, password } = req.body;
+            const user1 = await md.userModel.findOne({ username });
+            if (!user1) {
+                return res.status(400).json({msg: "Sai thông tin đăng nhập"});
+            } else {
+                // So sánh mật khẩu đã băm
+                const passwordMatch = await bcrypt.compare(password, user1.password);
+                if (!passwordMatch) {
+                    return res.status(401).json({msg : "Sai mật khẩu"});
+                }
+                if (!user1.isActive) {
+                    return res.status(403).json({msg: "Tài khoản của bạn đã bị khóa"});
+                } 
+                else {
+                   return res.status(200).json({user : user1 , msg: "Đăng nhập thành công."});
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ msg: 'Server error' });
+        }
+    }
+};
+const vietnamesePhoneNumberRegex = /(0[1-9][0-9]{8})\b/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+exports.Reg = async (req, res, next) => {
+    const existingUser = await md.userModel.findOne({ username: req.body.username });
+    if (req.method === 'POST') {
+        console.log(req.body);
+
+        if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name || !req.body.phone) {
+            return res.status(400).json("yêu cầu nhập đầy đủ thông tin");
+        }
+        if (existingUser) {
+            return res.status(401).json("tài khoản đã tồn tại");
+        }
+
+        if (req.body.password !== req.body.passwd2) {
+            return res.status(403).json("Xác nhận mật khẩu không trùng khớp");
+        }  
+        if (!vietnamesePhoneNumberRegex.test(req.body.phone)) {
+            return res.status(404).json("Số điện thoại không hợp lệ. Vui lòng kiểm tra lại");
+        }
+        if (!emailRegex.test(req.body.userEmail)) {
+            return res.status(404).json("Email không hợp lệ. Vui lòng kiểm tra lại");
+        }
+            try {
+                let objU = new md.userModel();
+                objU.username = req.body.username;
+                objU.password = req.body.password;
+            
+                objU.role = 'User';
+                objU.userEmail = req.body.userEmail;
+                
+                const salt = await bcrypt.genSalt(10);
+                objU.password = await bcrypt.hash(req.body.password, salt);
+                objU.name = req.body.name;
+                
+                objU.phone = req.body.phone;
+                objU.isActive = true;
+
+                await objU.save();
+            return res.status(200).json("Đăng ký thành công");
+
+            } catch (error) {
+                
+                return res.status(500).json("Lỗi");
+            }
+        }
+};
