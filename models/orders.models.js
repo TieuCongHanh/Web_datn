@@ -3,7 +3,7 @@ var db = require("./db");
 const ordersSchema = new db.mongoose.Schema(
   {
     _id: { type: db.mongoose.Schema.Types.String },
-    id_user: { type: db.mongoose.Schema.Types.String, ref: "userModel" },
+    id_user: { type: db.mongoose.Schema.Types.String, ref: "userModel" , field: "username" },
     id_staff: { type: db.mongoose.Schema.Types.String, ref: "staffModel" },
     id_payment: { type: db.mongoose.Schema.Types.String, ref: "paymentModel" },
     total_price: { type: Number, require: true },
@@ -11,7 +11,6 @@ const ordersSchema = new db.mongoose.Schema(
     pay_status: { type: Boolean, require: true },
     id_address: { type: db.mongoose.Schema.Types.String, ref: "addressModel" },
     date: { type: Date, require: true },
-    status: { type: String, require: true },
   },
   {
     collection: "orders",
@@ -36,7 +35,7 @@ ordersSchema.pre("save", function (next) {
         // Gán giá trị ngày hiện tại cho trường "date"
         doc.date = new Date();
         doc._id = formattedId;
-        doc.status = "Chờ xử lý"
+        doc.delivery_status = "Chờ xử lý"
         next();
       })
       .catch((error) => {
