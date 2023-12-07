@@ -1,43 +1,50 @@
 var OrderModel = require('../../models/orders.models');
 var orderDetailModel = require('../../models/orderdetail.models');
 var addressModal = require('../../models/address.models');
+var paymentModel = require('../../models/payment.models')
 
 var msg = '';
 
 exports.ordered = async (req, res, next) => {
-    try {
-        let id_user = req.body.id_user;
-        let listOrdered = await OrderModel.ordersModel
-        .findOne({id_user : id_user})
-        .populate("id_user")
-        .populate("id_staff")
-        .populate("id_payment")
-        .populate("id_address");
+  try {
+    let id_user = req.body.id_user;
+    let listOrdered = await OrderModel.ordersModel
+      .findOne({ id_user: id_user })
+      .populate("id_user")
+      .populate("id_staff")
+      .populate("id_payment")
+      .populate("id_address");
 
-        if(listOrdered){
+    if (listOrdered) {
+      let listOrderDetail = await orderDetailModel.orderDetailModel
+        .find({ id_order: listOrdered._id })
+        .populate({
+          path: "id_product",
+          select: "-importHistory", // Exclude the importHistory field from id_product
+        });
 
-            let listOrderDetail = await orderDetailModel.orderDetailModel.find({id_order : listOrdered._id}).populate('id_product');
-            return res.status(200).json({ordered : listOrdered, listDetail : listOrderDetail , msg :"Danh sách đơn hàng"});
-        }
-
-    } catch (error) {
-        return res.status(500).json({ordered : [], msg :"error"});
+      return res
+        .status(200)
+        .json({ ordered: listOrdered, listDetail: listOrderDetail, msg: "Danh sách đơn hàng" });
     }
-}
+  } catch (error) {
+    return res.status(500).json({ ordered: [], msg: "error" });
+  }
+};
 
 
 exports.addOrder = async (req, res, next) => {
   try {
     let id_user = req.body.id_user;
-    let id_staff = req.body.id_staff;
-    let id_payment = req.body.id_payment;
-    let delivery_status = req.body.delivery_status;
     let pay_status = req.body.pay_status;
     let id_address = req.body.id_address;
-    let date = req.body.date;
 
     let quantity = req.body.quantity;
     let id_product = req.body.id_product;
+    
+    const paymentObj = new paymentModel.paymentModel();
+    paymentObj.method = req.body.method;
+    await paymentObj.save();
 
     let orderDetails = []; // Danh sách orderDetail
 
@@ -54,7 +61,6 @@ exports.addOrder = async (req, res, next) => {
           quantity: quantity[i],
           id_product: id_product[i],
         });
-
         orderDetails.push(orderDetail);
       }
     } else {
@@ -72,13 +78,10 @@ exports.addOrder = async (req, res, next) => {
 
     let newOrder = new OrderModel.ordersModel({
       id_user: id_user,
-      id_staff: id_staff,
-      id_payment: id_payment,
-      delivery_status: delivery_status,
+      id_payment: paymentObj._id,
       pay_status: pay_status,
       id_address: id_address,
       total_price: totalPrice, // Gán tổng giá trị total_price
-      date: date,
     });
 
     let savedOrder = await newOrder.save();

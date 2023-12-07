@@ -68,8 +68,8 @@ exports.list = async (req, res) => {
 
   let start = (page - 1) * perPage;
 
-  const by = req.query.by || "_id id_user nameUser price date"; // Sắp xếp theo price nếu không có giá trị by
-  const order = req.query.order || "asc"; // Sắp xếp tăng dần nếu không có giá trị order
+  const by = req.query.by || "_id"; // Sắp xếp theo price nếu không có giá trị by
+  const order = req.query.order || "desc"; // Sắp xếp tăng dần nếu không có giá trị order
 
   let list = await OrderModel.ordersModel
     .find(orderSearch)
