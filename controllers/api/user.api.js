@@ -123,13 +123,10 @@ exports.edit = async (req, res, next) => {
            
             objUser.userEmail = req.body.userEmail;
 
-            if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                let url_file = '/uploads/' + req.file.originalname;
-                objUser.image = url_file;
-            } else {
-                objUser.image = objUser.image;
+            if (req.file) {
+                objUser.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
             }
+            
             objUser.name = req.body.name;
             objUser.phone = req.body.phone;
 

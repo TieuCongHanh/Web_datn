@@ -8,27 +8,37 @@ var msg = '';
 exports.ordered = async (req, res, next) => {
   try {
     let id_user = req.body.id_user;
-    let listOrdered = await OrderModel.ordersModel
-      .findOne({ id_user: id_user })
+    let orders = await OrderModel.ordersModel
+      .find({ id_user: id_user })
       .populate("id_user")
       .populate("id_staff")
       .populate("id_payment")
       .populate("id_address");
 
-    if (listOrdered) {
-      let listOrderDetail = await orderDetailModel.orderDetailModel
-        .find({ id_order: listOrdered._id })
+    if (orders.length > 0) {
+      let orderIds = orders.map(order => order._id);
+
+      let orderDetails = await orderDetailModel.orderDetailModel
+        .find({ id_order: { $in: orderIds } })
         .populate({
           path: "id_product",
-          select: "-importHistory", // Exclude the importHistory field from id_product
+          select: "-importHistory",
         });
 
-      return res
-        .status(200)
-        .json({ ordered: listOrdered, listDetail: listOrderDetail, msg: "Danh sách đơn hàng" });
+        let result = orders.map(order => {
+          let orderDetail = orderDetails.filter(detail => detail.id_order.toString() === order._id.toString());
+          return {
+            ordered: order,
+            listDetail: orderDetail,
+          };
+        });
+
+      return res.status(200).json(result);
+    } else {
+      return res.status(200).json("Không có đơn hàng");
     }
   } catch (error) {
-    return res.status(500).json({ ordered: [], msg: "error" });
+    return res.status(500).json("Lỗi server");
   }
 };
 
