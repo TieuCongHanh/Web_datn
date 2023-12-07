@@ -15,7 +15,6 @@ router.put('/user/edit/:id', user_api.edit);
 
 // product
 router.get('/product/list', productApi.list);
-router.get('/product/filter/:id_category', productApi.filterCategory);
 
 // category
 router.get('/category/list', categoryApi.list);
