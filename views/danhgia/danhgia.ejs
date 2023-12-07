@@ -75,6 +75,7 @@
                                     <th scope="col" style="text-align: center; width: 13%">ID</th>
                                     <th scope="col" style="text-align: center; width: 15%"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên tài khoản</a></th>
                                     <th scope="col" style="text-align: center; width: 15%">Họ và tên</th>
+                                    <th scope="col" style="text-align: center; width: 15%">Tên món ăn</th>
                                     <th scope="col" style="text-align: center; width: 10%">Đánh giá</th>
                                     <th scope="col" style="text-align: center; width: 15%">Chức năng</th>
                                 </tr>
@@ -92,7 +93,9 @@
                                         <td style="text-align: center;">
                                             <%= rating.id_user.name %>
                                         </td>
-                                        
+                                        <td style="text-align: center;">
+                                            <%= rating.id_item.name %>
+                                        </td>
                                         <td style="text-align: center;">
                                             <%= rating.rating %>
                                         </td>

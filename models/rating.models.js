@@ -3,6 +3,7 @@ const ratingSchema = new db.mongoose.Schema(
     {
         _id: {type: db.mongoose.Schema.Types.String},
         id_user: {type: db.mongoose.Schema.Types.String, ref: 'userModel'},
+        id_item: {type: db.mongoose.Schema.Types.String, ref: 'sanphamModel'},
         rating: {type: String, require: false}
     },
     {
