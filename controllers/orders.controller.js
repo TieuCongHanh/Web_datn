@@ -49,19 +49,19 @@ exports.list = async (req, res) => {
     orderSearch = {
       ...dateSearch,
       $or: [
-        { 'id_user._id': { $regex: regex } },
-        { 'id_user.name': { $regex: regex } },
+        { $expr: { $regexMatch: { input: "$id_user._id", regex } } },
+        { $expr: { $regexMatch: { input: "$id_user.name", regex } } },
+        { $expr: { $regexMatch: { input: "$id_address.address", regex } } },
         { _id: { $regex: regex } },
-        { 'id_address.address': { $regex: regex } },
       ],
     };
   } else {
     orderSearch = {
       $or: [
-        { 'id_user._id': { $regex: regex } },
-        { 'id_user.name': { $regex: regex } },
+        { $expr: { $regexMatch: { input: "$id_user._id", regex } } },
+        { $expr: { $regexMatch: { input: "$id_user.name", regex } } },
+        { $expr: { $regexMatch: { input: "$id_address.address", regex } } },
         { _id: { $regex: regex } },
-        { 'id_address.address': { $regex: regex } },
       ],
     };
   }

@@ -104,7 +104,7 @@
                             </div>
 
                             <form role="search" class="d-flex align-items-center">
-                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm kiếm..." aria-label="Search" name="orderSearch" value="<%= req.query.searchStaff || '' %>">
+                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm kiếm..." aria-label="Search" name="orderSearch" >
                                 <button class="btn btn-outline-info" style="margin: 0px;  height: 45px;" type="submit">
                                     <i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i>
                                 </button>
@@ -197,8 +197,10 @@
                                                 style="background-color: yellow; border-radius: 20px; padding: 2px;"
                                             <% } else if(order.delivery_status === "Đang giao") { %>
                                                 style="background-color: orange; border-radius: 20px; padding: 2px;"
-                                            <% } else { %>
+                                            <% } else if(order.delivery_status === "Đã giao") { %>
                                                 style="background-color: green; border-radius: 20px; padding: 2px;"
+                                            <% } else { %>
+                                                style="background-color: red; border-radius: 20px; padding: 2px;"
                                             <% } %>>
                                               <%= order.delivery_status %>
                                             </div>
@@ -220,7 +222,6 @@
                                                 data-order-id="<%= order._id %>" data-current-status="<%= order.delivery_status %>">
                                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                             </button>
-                                            
                                         </td>
 
                                     </tr>
@@ -481,7 +482,147 @@
     </script>
 
 <script>
-    $(document).on('click', '.edit', function () {
+    
+</script>
+
+<script>
+    function changePerPage(selectElement) {
+    const perPage = parseInt(selectElement.value);
+    const currentPage = parseInt('<%= req.params.i %>'); // Lấy trang hiện tại từ dữ liệu động
+    const url = `/order/${currentPage}?data_tables_leght=${perPage}`;
+
+    window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
+    }
+</script>
+<script>
+    // Kiểm tra xem ngày đã được lưu trữ trong localStorage chưa
+    var startDate = localStorage.getItem('startDate');
+    var endDate = localStorage.getItem('endDate');
+  
+    if(startDate) {
+        document.getElementById('startDate').value = startDate;
+    }
+    if (endDate) {
+      document.getElementById('endDate').value = endDate;
+    }   
+    // Lưu trữ giá trị ngày khi người dùng thay đổi
+    document.getElementById('startDate').addEventListener('change', function () {
+      localStorage.setItem('startDate', this.value);
+    });
+    document.getElementById('endDate').addEventListener('change', function () {
+      localStorage.setItem('endDate', this.value);
+    });
+</script>
+
+<!-- Đoạn mã JavaScript -->
+<script>
+    $(document).ready(function () {
+        function populateStaffOptions(selectedStaffId) {
+            $.ajax({
+                url: '/order/staff/list',
+                method: 'GET',
+                success: function (response) {
+                    console.log('Staff response:', response); // Kiểm tra phản hồi trong console
+
+                    var staffSelect = $('#deliveryPerson');
+                    staffSelect.empty();
+
+                    staffSelect.append($('<option>', {
+                        value: '',
+                        text: 'Chọn người giao',
+                        disabled: true,
+                        selected: true
+                    }));
+
+                    response.forEach(function (staff) {
+                        var option = $('<option>', {
+                            value: staff._id,
+                            text: staff.name + " - " + staff.role
+                        });
+
+                        if (staff._id === selectedStaffId) {
+                            option.prop('selected', true); // Chọn người giao đã được lưu trữ
+                        }
+
+                        staffSelect.append(option);
+                    });
+
+                    $('#deliveryPersonSelect').show(); // Hiển thị menu dropdown người giao
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        $('#UpdateStatusModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var orderId = button.data('order-id');
+            var currentStatus = button.data('current-status');
+            
+
+            $('#id_order').text(orderId);
+            $('#statusSelect').val(currentStatus);
+
+            if (currentStatus === 'Đang giao') {
+                populateStaffOptions("");
+            } else {
+                $('#deliveryPersonSelect').hide(); // Ẩn menu dropdown người giao
+            }
+        });
+
+        $('#statusSelect').change(function () {
+            var selectedStatus = $(this).val();
+            if (selectedStatus === 'Đang giao') {
+                populateStaffOptions('');
+            } else {
+                $('#deliveryPersonSelect').hide(); // Ẩn menu dropdown người giao
+            }
+                var deliveryPersonSelect = $('#deliveryPerson');
+                if (selectedStatus !== 'Đang giao') {
+                deliveryPersonSelect.removeAttr('required'); // Xóa thuộc tính required
+                } else {
+                deliveryPersonSelect.attr('required', 'required'); // Thêm thuộc tính required
+                }
+        });
+
+        $('#status').submit(function (event) {
+            event.preventDefault();
+
+            var orderId = $('#id_order').text();
+            var status = $('#statusSelect').val();
+            var deliveryPerson = $('#deliveryPerson').val();
+            
+            
+            $.ajax({
+                url: '/order/updateStatus',
+                method: 'POST',
+                data: {
+                    id_order: orderId,
+                    newStatus: status,
+                    deliveryPerson: deliveryPerson
+                },
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: response.msg
+                    }).then(function () {
+                        location.reload();
+                    });
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Đã xảy ra lỗi khi thực hiện yêu cầu'
+                    });
+                    console.error(error);
+                }
+            });
+        });
+
+         $(document).on('click', '.edit', function () {
         var orderId = $(this).data('order-id');
 
         var imgUserUrl = $(this).data('img-url-user');
@@ -508,6 +649,7 @@
                 $('#detailModal').find('span[name="staffName"]').eq(0).text(staff.name);
                 $('#detailModal').find('span[name="staffPhone"]').eq(0).text(staff.phone);
                 $('#detailModal').find('span[name="staffEmail"]').eq(0).text(staff.email);
+                populateStaffOptions(staff._id)
             } else {
                 $('#deliveryDetails').hide();
             }
@@ -547,133 +689,10 @@
             }
         });
     });
-</script>
-
-<script>
-    function changePerPage(selectElement) {
-    const perPage = parseInt(selectElement.value);
-    const currentPage = parseInt('<%= req.params.i %>'); // Lấy trang hiện tại từ dữ liệu động
-    const url = `/order/${currentPage}?data_tables_leght=${perPage}`;
-
-    window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
-    }
-</script>
-<script>
-    // Kiểm tra xem ngày đã được lưu trữ trong localStorage chưa
-    var startDate = localStorage.getItem('startDate');
-    var endDate = localStorage.getItem('endDate');
-  
-    if(startDate) {
-        document.getElementById('startDate').value = startDate;
-    }
-    if (endDate) {
-      document.getElementById('endDate').value = endDate;
-    }   
-    // Lưu trữ giá trị ngày khi người dùng thay đổi
-    document.getElementById('startDate').addEventListener('change', function () {
-      localStorage.setItem('startDate', this.value);
     });
-    document.getElementById('endDate').addEventListener('change', function () {
-      localStorage.setItem('endDate', this.value);
-    });
+
+   
 </script>
-
-<!-- Đoạn mã JavaScript -->
-<script>
-    $(document).ready(function () {
-        function populateStaffOptions() {
-            $.ajax({
-                url: '/order/staff/list',
-                method: 'GET',
-                success: function (response) {
-                console.log('Staff response:', response); // Check the response in the console
-
-                var staffSelect = $('#deliveryPerson');
-                staffSelect.empty();
-
-                staffSelect.append($('<option>', {
-                    value: '',
-                    text: 'Chọn người giao',
-                    disabled: true,
-                    selected: true
-                }));
-
-                response.forEach(function (staff) {
-                    staffSelect.append($('<option>', {
-                    value: staff._id,
-                    text: staff.name + " - " + staff.role
-                    }));
-                });
-                },
-                error: function (error) {
-                console.error(error);
-                }
-            });
-            }
-
-        $('#UpdateStatusModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var orderId = button.data('order-id');
-            var currentStatus = button.data('current-status');
-
-            $('#id_order').text(orderId);
-            $('#statusSelect').val(currentStatus);
-
-            toggleDeliveryPersonSelect(currentStatus);
-        });
-
-        $('#statusSelect').change(function () {
-            var selectedStatus = $(this).val();
-            toggleDeliveryPersonSelect(selectedStatus);
-        });
-
-        function toggleDeliveryPersonSelect(status) {
-            if (status === 'Đang giao') {
-            populateStaffOptions();
-            $('#deliveryPersonSelect').show();
-            $('#deliveryPerson').attr('required', true);
-            } else {
-            $('#deliveryPersonSelect').hide();
-            $('#deliveryPerson').attr('required', false);
-            }
-        }
-
-        $('#status').submit(function (event) {
-            event.preventDefault();
-
-            var orderId = $('#id_order').text();
-            var status = $('#statusSelect').val();
-            var deliveryPerson = $('#deliveryPerson').val();
-
-            $.ajax({
-            url: '/order/updateStatus',
-            method: 'POST',
-            data: {
-                id_order: orderId,
-                newStatus: status,
-                deliveryPerson: deliveryPerson
-            },
-            success: function (response) {
-                Swal.fire({
-                icon: 'success',
-                title: 'Thành công',
-                text: response.msg
-                }).then(function () {
-                location.reload();
-                });
-            },
-            error: function (error) {
-                Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: 'Đã xảy ra lỗi khi thực hiện yêu cầu'
-                });
-                console.error(error);
-            }
-            });
-        });
-        });
-  </script>
 </body>
 
 </html>

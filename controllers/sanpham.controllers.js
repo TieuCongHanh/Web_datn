@@ -20,7 +20,7 @@ exports.list = async (req, res, next) => {
       $or: [
         { name: { $regex: regex } },
         { _id: { $regex: regex } },
-        { price: { $regex: regex } },
+        { category_name: { $regex: regex } },
       ]
     };
   }
