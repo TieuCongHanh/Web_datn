@@ -5,7 +5,7 @@ var productApi = require('../controllers/api/product.api');
 var orderApi = require('../controllers/api/order.api');
 var categoryApi = require('../controllers/api/category.api');
 var addressApi = require('../controllers/api/address.api');
-
+var ratingApi = require('../controllers/api/rating.api');
 
 // user
 router.post('/user/login', user_api.Login);
@@ -30,6 +30,9 @@ router.post('/address/add', addressApi.add);
 router.put('/address/update/:id', addressApi.update);
 router.delete('/address/delete/:id', addressApi.delete);
 
-
+// rating
+router.get('/rating/list', ratingApi.list);
+router.post('/rating/add', ratingApi.add);
+router.delete('/rating/delete', ratingApi.delete);
 
 module.exports = router;

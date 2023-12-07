@@ -48,12 +48,6 @@
                     <div class="tile-body">
                         <!-- thanh chức năng đầu tiên -->
                         <div class="row element-button">
-                            <div class="col-sm-2">
-                             
-                                <a class="btn btn-add btn-sm" href="/user/<%= countPage %>/add" title="Thêm" id="show-emp"><i
-                                        class="fas fa-plus"></i>
-                                    Tạo mới người dùng</a> 
-                            </div>
                             <div class="col-sm-2" id="btnExport">
                                 <a class="btn btn-excel btn-sm" href="/user/countPage/in"  title="In"><i class="fas fa-file-excel"></i>
                                     Xuất Excel</a>
@@ -65,7 +59,7 @@
                         </div>
                         <!-- thanh tìm kiếm -->
                         <form role="search" style=" margin-top: 20px; margin-bottom: 30px; display: flex; float: right;">
-                            <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên đăng nhập..." aria-label="Search" name="username">
+                            <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên món ăn..." aria-label="Search" name="item_name">
                             <button class="btn btn-outline-info"  style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
                         </form>
                         <!-- thay đỏi -->
@@ -75,6 +69,7 @@
                                     <th scope="col" style="text-align: center; width: 13%">ID</th>
                                     <th scope="col" style="text-align: center; width: 15%"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên tài khoản</a></th>
                                     <th scope="col" style="text-align: center; width: 15%">Họ và tên</th>
+                                    <th scope="col" style="text-align: center; width: 15%">Tên món ăn</th>
                                     <th scope="col" style="text-align: center; width: 10%">Đánh giá</th>
                                     <th scope="col" style="text-align: center; width: 15%">Chức năng</th>
                                 </tr>
@@ -87,12 +82,14 @@
                                             <%= rating._id %>
                                         </td>
                                         <td style="text-align: center; vertical-align: middle;max-width: 100px;">
-                                           <%= rating.id_user.username %>
+                                           <%= rating.user_username %>
                                         </td>
                                         <td style="text-align: center;">
-                                            <%= rating.id_user.name %>
+                                            <%= rating.user_name %>
                                         </td>
-                                        
+                                        <td style="text-align: center;">
+                                            <%= rating.item_name %>
+                                        </td>
                                         <td style="text-align: center;">
                                             <%= rating.rating %>
                                         </td>
