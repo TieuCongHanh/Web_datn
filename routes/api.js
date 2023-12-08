@@ -7,11 +7,14 @@ var categoryApi = require('../controllers/api/category.api');
 var addressApi = require('../controllers/api/address.api');
 var ratingApi = require('../controllers/api/rating.api');
 
+const multer  = require('multer')
+const upload = multer({ dest: './tmp' })
+
 // user
 router.post('/user/login', user_api.Login);
 router.post('/user/logup', user_api.Reg);
 router.post('/user/changePassword', user_api.changePassword);
-router.put('/user/edit/:id', user_api.edit);
+router.put('/user/edit/:id',upload.single('image'), user_api.edit);
 
 // product
 router.get('/product/list', productApi.list);

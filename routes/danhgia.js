@@ -6,12 +6,6 @@ var check_login = require('../middlewares/check_login');
 const multer  = require('multer')
 const upload = multer({ dest: './tmp' })
 
-router.use( (req, res, next) => {
-    console.log("---- Dòng này là middleware ---- ");
-    next();
-});
-
-
 
 router.use(bodyParser.urlencoded({extended:false}));
 router.get('/:i',check_login.yeu_cau_dang_nhap, ratingCtrl.listRating);
