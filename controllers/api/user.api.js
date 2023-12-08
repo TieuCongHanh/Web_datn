@@ -122,14 +122,12 @@ exports.edit = async (req, res, next) => {
         try {
            
             objUser.userEmail = req.body.userEmail;
-
-            if (req.file) {
-                objUser.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-            }
-            
             objUser.name = req.body.name;
             objUser.phone = req.body.phone;
-
+            if(req.body.image){
+                objUser.image = req.body.image;
+            }
+            
             await objUser.save();
             res.json(objUser);
 
