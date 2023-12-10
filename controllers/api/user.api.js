@@ -125,9 +125,7 @@ exports.edit = async (req, res, next) => {
             objUser.name = req.body.name;
             objUser.phone = req.body.phone;
             if (req.file != undefined ) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                let url_file = '/uploads/' + req.file.originalname;
-                objUser.image = url_file;
+                objUser.image = req.file;
             }
             await objUser.save();
             res.json(objUser);

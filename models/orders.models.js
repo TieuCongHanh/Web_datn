@@ -42,6 +42,8 @@ ordersSchema.pre("save", function (next) {
         const address = await addressModal.addressModel.findById(this.id_address);
         if (address) {
           this.address = address.address;
+        }else{
+          this.address = "";
         }
         
         next();
