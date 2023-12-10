@@ -53,7 +53,6 @@ exports.list = async (req, res, next) => {
     let count = countlist.length / perPage;
     count = Math.ceil(count);
   
-    console.log(list);
     res.render('user/list', {
       perPage: perPage,
       start: start,
@@ -221,7 +220,7 @@ exports.edit = async (req, res, next) => {
 
             if (req.file != undefined) {
                
-                objUS.image = req.file.path;
+                objUS.image = req.file;
             } else {
                 objUS.image = objUser.image;
             }
