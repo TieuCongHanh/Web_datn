@@ -128,6 +128,7 @@ exports.edit = async (req, res, next) => {
                 objUser.image = req.file;
             }
             await objUser.save();
+            console.log(objUser);
             res.json(objUser);
 
         } catch (error) {
