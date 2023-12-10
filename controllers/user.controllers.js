@@ -167,8 +167,7 @@ exports.add = async (req, res, next) => {
             try {
                 let url_file = ''; 
                 if (req.file != undefined) {
-                    fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                    url_file = '/uploads/' + req.file.originalname;
+                    url_file = req.file.path;
                 }
 
                 const objUS = new myMD.userModel();
@@ -221,9 +220,8 @@ exports.edit = async (req, res, next) => {
             }
 
             if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                let url_file = '/uploads/' + req.file.originalname;
-                objUS.image = url_file;
+               
+                objUS.image = req.file.path;
             } else {
                 objUS.image = objUser.image;
             }

@@ -1,4 +1,5 @@
 var db = require("./db");
+var addressModal = require('../models/address.models')
 
 const ordersSchema = new db.mongoose.Schema(
   {
@@ -10,6 +11,7 @@ const ordersSchema = new db.mongoose.Schema(
     delivery_status: { type: String, require: true },
     pay_status: { type: Boolean, require: true },
     id_address: { type: db.mongoose.Schema.Types.String, ref: "addressModel" },
+    address: {type: String, require: true},
     date: { type: Date, require: true },
   },
   {
@@ -25,7 +27,7 @@ ordersSchema.pre("save", function (next) {
     // Tìm người dùng có giá trị ID lớn nhất
     ordersModel
       .findOne({}, { _id: 1 }, { sort: { _id: -1 } })
-      .then((maxStaff) => {
+      .then(async (maxStaff) => {
         // Tăng giá trị ID lên 1
         const regex = /^OD(\d+)$/;
         const maxIdMatch = regex.exec(maxStaff?._id || "");
@@ -36,6 +38,12 @@ ordersSchema.pre("save", function (next) {
         doc.date = new Date();
         doc._id = formattedId;
         doc.delivery_status = "Chờ xử lý"
+
+        const address = await addressModal.addressModel.findById(this.id_address);
+        if (address) {
+          this.address = address.address;
+        }
+        
         next();
       })
       .catch((error) => {

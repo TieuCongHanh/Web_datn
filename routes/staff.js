@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var staffCtrl = require('../controllers/staff.controller');
 const bodyParser = require('body-parser');
+const uploadCloud = require('../middlewares/uploadImage');
 
 const multer  = require('multer')
 const upload = multer({ dest: './tmp' })

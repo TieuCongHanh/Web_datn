@@ -7,7 +7,7 @@ var msg = '';
 
 exports.ordered = async (req, res, next) => {
   try {
-    let id_user = req.body.id_user;
+    let id_user = req.params.id_user;
     let orders = await OrderModel.ordersModel
       .find({ id_user: id_user })
       .populate("id_user")

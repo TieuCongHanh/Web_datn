@@ -146,9 +146,9 @@ exports.add = async (req, res, next) => {
             }
 
             let url_file = '';
+            console.log(req.file);
             if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                url_file = '/uploads/' + req.file.originalname;
+                url_file = req.file.path;
             } else {
                 res.render('sanpham/add', { req: req, listCategory :listCategory, msg: "Vui lòng chọn một tệp hình ảnh" });
                 return;
@@ -211,9 +211,7 @@ exports.edit = async (req, res, next) => {
             objSP.describe = req.body.describe;
 
             if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                let url_file = '/uploads/' + req.file.originalname;
-                objSP.image = url_file;
+                objSP.image = req.file.path;
             } else {
                 objSP.image = objSP.image;
             }

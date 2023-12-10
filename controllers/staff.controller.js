@@ -199,8 +199,7 @@ exports.add = async (req, res, next) => {
             try {
                 let url_file = ''; 
                 if (req.file != undefined) {
-                    fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                    url_file = '/uploads/' + req.file.originalname;
+                    url_file = req.file.path;
                 }
 
                 const objStaff = new myMD.staffModel();
@@ -258,9 +257,7 @@ exports.edit = async (req, res, next) => {
                 objStaff.email = req.body.email;
 
             if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                let url_file = '/uploads/' + req.file.originalname;
-                objStaff.image = url_file;
+                objStaff.image = req.file.path;
             } else {
                 objStaff.image = objStaff.image;
             }
