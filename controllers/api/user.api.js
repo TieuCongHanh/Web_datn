@@ -125,7 +125,7 @@ exports.edit = async (req, res, next) => {
             objUser.name = req.body.name;
             objUser.phone = req.body.phone;
             if (req.file != undefined ) {
-                objUser.image = req.file;
+                objUser.image = req.file.path;
             }
             await objUser.save();
             console.log(objUser);

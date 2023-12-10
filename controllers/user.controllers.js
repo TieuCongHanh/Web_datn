@@ -220,7 +220,7 @@ exports.edit = async (req, res, next) => {
 
             if (req.file != undefined) {
                
-                objUS.image = req.file;
+                objUS.image = req.file.path;
             } else {
                 objUS.image = objUser.image;
             }
