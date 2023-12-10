@@ -27,8 +27,8 @@ exports.list = async (req, res, next) => {
 
   let start = (page - 1) * perPage;
 
-  const by = req.query.by || '_id name';
-  const order = req.query.order || 'asc';
+  const by = req.query.by || '_id';
+  const order = req.query.order || 'desc';
 
   let list = await myMD.staffModel.find(searchStaff).skip(start).limit(perPage).sort({ [by]: order });
   let totalStaff = await myMD.staffModel.find(searchStaff).countDocuments();

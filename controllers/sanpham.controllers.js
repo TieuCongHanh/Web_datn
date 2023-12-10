@@ -26,8 +26,8 @@ exports.list = async (req, res, next) => {
   }
     let start=( page - 1 )*perPage; // vị trí 0
    
-    const by = req.query.by || '_id name price'; // Sắp xếp theo price nếu không có giá trị by
-    const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
+    const by = req.query.by || '_id'; // Sắp xếp theo price nếu không có giá trị by
+    const order = req.query.order || 'desc'; // Sắp xếp tăng dần nếu không có giá trị order
 
     let list = await myMD.sanphamModel.find(productSearch).skip(start).limit(perPage).sort({ [by] :order }).populate('id_category');
     let totalSP = await myMD.sanphamModel.find(productSearch).countDocuments();

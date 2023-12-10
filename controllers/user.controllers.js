@@ -29,8 +29,8 @@ exports.list = async (req, res, next) => {
   
     let start = (page - 1) * perPage;
   
-    const by = req.query.by || '_id username name';
-    const order = req.query.order || 'asc';
+    const by = req.query.by || '_id ';
+    const order = req.query.order || 'desc';
   
     let list = await myMD.userModel
       .find(searchUser)
