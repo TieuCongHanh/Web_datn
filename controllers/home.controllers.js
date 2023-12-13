@@ -7,7 +7,7 @@ exports.home = async (req, res, next) => {
     let countUser = await md.userModel.countDocuments({});
     let countProduct = await md1.sanphamModel.countDocuments({});
     let totalQuantitySold = 0;
-    let dthuproduct = await md2.ordersModel.find();
+    let dthuproduct = await md2.ordersModel.find({pay_status : true});
     dthuproduct.forEach((order) => {
         totalQuantitySold += order.total_price;
     });
