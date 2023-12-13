@@ -126,7 +126,7 @@ exports.edit = async (req, res, next) => {
             objUser.phone = req.body.phone;
 
             if (req.file !== undefined) {
-                const publicId = objUser.image;
+                const publicId = getPublicIdFromUrl(objUser.image);
                 cloudinary.uploader.destroy(publicId, (error, result) => {
                     if (error) {
                         console.log("Xóa ảnh khỏi Cloudinary không thành công!");
@@ -148,3 +148,8 @@ exports.edit = async (req, res, next) => {
         res.json("Phương thức không hợp lệ");
     }
 };
+function getPublicIdFromUrl(url) {
+    const startIndex = url.lastIndexOf('/') + 1;
+    const endIndex = url.lastIndexOf('.');
+    return url.substring(startIndex, endIndex);
+}

@@ -246,8 +246,7 @@ exports.edit = async (req, res, next) => {
         }
 
         try {
-            let objStaff = new myMD.staffModel();
-            objStaff.name = req.body.nameStaff;
+              objStaff.name = req.body.nameStaff;
                 objStaff.role = req.body.role;
                 objStaff.address = req.body.address;
                 objStaff.phone = req.body.phone;
@@ -256,7 +255,7 @@ exports.edit = async (req, res, next) => {
                 objStaff.email = req.body.email;
 
                 if (req.file != undefined) {
-                      const publicId = objStaff.image;
+                      const publicId = getPublicIdFromUrl(objStaff.image);
                       cloudinary.uploader.destroy(publicId, (error, result) => {
                         if (error) {
                             console.log("Xóa ảnh khỏi Cloudinary không thành công!");
@@ -268,7 +267,6 @@ exports.edit = async (req, res, next) => {
                 }else{
                   objStaff.image = objStaff.image;
                 }
-
             await myMD.staffModel.findByIdAndUpdate(idStaff, objStaff);
             msg = 'Cập Nhật Thành Công';
         } catch (error) {
@@ -292,6 +290,12 @@ exports.deleteStaff = async (req, res, next) => {
       res.status(500).json({ message: 'Lỗi server' });
     }
   };
+
+  function getPublicIdFromUrl(url) {
+    const startIndex = url.lastIndexOf('/') + 1;
+    const endIndex = url.lastIndexOf('.');
+    return url.substring(startIndex, endIndex);
+}
 
 
 

@@ -1,10 +1,10 @@
-const { log } = require('console');
 var myMD = require('../models/sanpham.models');
 var categoryMD = require('../models/category.models');
 const excelJs = require("exceljs");
 var fs = require('fs');
-const bcrypt = require('bcrypt');
 var msg = '';
+const cloudinary = require('cloudinary').v2;
+
 
 exports.list = async (req, res, next) => {
     let page = parseInt(req.params.i);
@@ -208,7 +208,15 @@ exports.edit = async (req, res, next) => {
             objSP.describe = req.body.describe;
 
             if (req.file != undefined) {
-                objSP.image = req.file.path;
+                const publicId = getPublicIdFromUrl(objSP.image);
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                  if (error) {
+                      console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                  } else {
+                      console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                  }
+              });
+              objSP.image = req.file.path;
             } else {
                 objSP.image = objSP.image;
             }
@@ -276,3 +284,9 @@ exports.getProduct  = async (req, res) => {
       res.status(500).json({ error: "Server error" });
     }
   };
+
+  function getPublicIdFromUrl(url) {
+    const startIndex = url.lastIndexOf('/') + 1;
+    const endIndex = url.lastIndexOf('.');
+    return url.substring(startIndex, endIndex);
+}

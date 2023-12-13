@@ -197,7 +197,7 @@ exports.add = async (req, res, next) => {
 exports.edit = async (req, res, next) => {
     let msg = '';
     let iduser = req.params.id;
-    let objUser = await myMD.userModel.findById(iduser);
+    let objUS = await myMD.userModel.findById(iduser);
 
     if (req.method === 'PUT') {
         if ( !req.body.name || !req.body.phone) {
@@ -205,21 +205,20 @@ exports.edit = async (req, res, next) => {
             return res.render('user/edit', { msg: msg, objUS: objUser, req: req });
         }
         try {
-            let objUS = new myMD.userModel();
             objUS.username = req.body.username;
             objUS.userEmail = req.body.userEmail;
 
-            objUS.isActive = objUser.isActive;
+            objUS.isActive = objUS.isActive;
 
             if (req.body.password) {
                 const salt = await bcrypt.genSalt(10);
                 objUS.password = await bcrypt.hash(req.body.password, salt);
             } else {
-                objUS.password = objUser.password;
+                objUS.password = objUS.password;
             }
 
             if (req.file != undefined) {
-                const publicId = objUS.image;
+                const publicId = getPublicIdFromUrl(objUS.image);
                 cloudinary.uploader.destroy(publicId, (error, result) => {
                   if (error) {
                       console.log("Xóa ảnh khỏi Cloudinary không thành công!");
@@ -229,7 +228,7 @@ exports.edit = async (req, res, next) => {
               });
               objUS.image = req.file.path;
             } else {
-                objUS.image = objUser.image;
+                objUS.image = objUS.image;
             }
           
                 objUS.role = req.body.role;
@@ -274,6 +273,10 @@ exports.deleteUser = async (req, res, next) => {
 
 };
 
-
+function getPublicIdFromUrl(url) {
+    const startIndex = url.lastIndexOf('/') + 1;
+    const endIndex = url.lastIndexOf('.');
+    return url.substring(startIndex, endIndex);
+}
 
 
