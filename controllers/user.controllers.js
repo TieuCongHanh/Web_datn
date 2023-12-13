@@ -16,21 +16,27 @@ exports.list = async (req, res, next) => {
     const regex = new RegExp(searchTerm, 'i');
   
     if (searchTerm !== '') {
-      searchUser = {
-        $or: [
-          { name: { $regex: regex } },
-          { username: { $regex: regex } },
-          { userEmail: { $regex: regex } },
-          { _id: { $regex: regex } },
-          { role: { $regex: regex } },
-          { phone: { $regex: regex } }
-        ]
-      };
+        searchUser = {
+            $and: [
+              {
+                $or: [
+                  { name: { $regex: regex } },
+                  { username: { $regex: regex } },
+                  { userEmail: { $regex: regex } },
+                  { _id: { $regex: regex } },
+                  { phone: { $regex: regex } }
+                ]
+              },
+              { role: 'User' }
+            ]
+          };
+    }else {
+        searchUser = { role: 'User' };
     }
   
     let start = (page - 1) * perPage;
   
-    const by = req.query.by || '_id ';
+    const by = req.query.by || '_id';
     const order = req.query.order || 'desc';
   
     let list = await myMD.userModel
@@ -39,7 +45,6 @@ exports.list = async (req, res, next) => {
       .limit(perPage)
       .sort({ [by]: order });
   
-    // Lấy thông tin về địa chỉ cho mỗi người dùng
     list = await Promise.all(
       list.map(async (user) => {
         const addressList = await addressModel.addressModel.find({ id_user: user._id });

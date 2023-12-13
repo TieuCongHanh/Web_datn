@@ -337,7 +337,7 @@
         function changePerPage(selectElement) {
         const perPage = parseInt(selectElement.value);
         const currentPage = parseInt('<%= req.params.i %>'); // Lấy trang hiện tại từ dữ liệu động
-        const url = `/sanpham/${currentPage}?data_tables_leght=${perPage}`;
+        const url = `/sanpham/${1}?data_tables_leght=${perPage}`;
 
         window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
         }
