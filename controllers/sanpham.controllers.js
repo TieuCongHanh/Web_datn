@@ -37,7 +37,6 @@ exports.list = async (req, res, next) => {
     let count = countlist.length / perPage;
     count = Math.ceil(count);
 
-    console.log(list);
     res.render('sanpham/list', {perPage : perPage,  start : start, listL: list, countPage: count , req: req , msg: msg,by : by, order :order,totalSP: totalSP,currentPageTotal:currentPageTotal});
 }
 
@@ -146,7 +145,6 @@ exports.add = async (req, res, next) => {
             }
 
             let url_file = '';
-            console.log(req.file);
             if (req.file != undefined) {
                 url_file = req.file.path;
             } else {
@@ -164,7 +162,6 @@ exports.add = async (req, res, next) => {
 
             const objloai = await objSP.save();
             msg = "Thêm thành công";
-            console.log(objloai);
         } catch (err) {
             console.log(err);
         }

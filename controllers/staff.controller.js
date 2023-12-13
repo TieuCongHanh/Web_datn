@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 var msg = '';
 const PDFDocument = require("pdfkit");
 const { isPhoneNumber, isValidEmail } = require('../public/js/validation');
+const cloudinary = require('cloudinary').v2;
 
 exports.list = async (req, res, next) => {
   let page = parseInt(req.params.i);
@@ -38,7 +39,6 @@ exports.list = async (req, res, next) => {
   let count = countlist.length / perPage;
   count = Math.ceil(count);
 
-  console.log(list);
   res.render('staff/list', { perPage: perPage, listStaff: list, countPage: count, req: req, msg: msg, by: by, order: order, totalStaff: totalStaff, currentPageTotal: currentPageTotal, start: start });
 };
 
@@ -214,7 +214,6 @@ exports.add = async (req, res, next) => {
 
                 const new_staff = await objStaff.save();
                 msg = "Thêm thành công";
-                console.log(new_staff);
             } catch (err) {
                 console.log(err);
             }
@@ -256,11 +255,19 @@ exports.edit = async (req, res, next) => {
                 objStaff.gender = req.body.gender;
                 objStaff.email = req.body.email;
 
-            if (req.file != undefined) {
-                objStaff.image = req.file.path;
-            } else {
-                objStaff.image = objStaff.image;
-            }
+                if (req.file != undefined) {
+                      const publicId = objStaff.image;
+                      cloudinary.uploader.destroy(publicId, (error, result) => {
+                        if (error) {
+                            console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                        } else {
+                            console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                        }
+                    });
+                    objStaff.image = req.file.path;
+                }else{
+                  objStaff.image = objStaff.image;
+                }
 
             await myMD.staffModel.findByIdAndUpdate(idStaff, objStaff);
             msg = 'Cập Nhật Thành Công';

@@ -1,6 +1,7 @@
 const md = require('../../models/user.models');
 const bcrypt = require('bcrypt');
 var fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 
 exports.Login = async (req, res, next) => {
    
@@ -120,19 +121,28 @@ exports.edit = async (req, res, next) => {
             return res.json("Vui lòng điền đầy đủ thông tin.");
         }
         try {
-           
             objUser.userEmail = req.body.userEmail;
             objUser.name = req.body.name;
             objUser.phone = req.body.phone;
-            if (req.file != undefined ) {
+
+            if (req.file !== undefined) {
+                const publicId = objUser.image;
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                    if (error) {
+                        console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                    } else {
+                        console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                    }
+                });
+
                 objUser.image = req.file.path;
             }
+
             await objUser.save();
-            console.log(objUser);
             res.json(objUser);
 
         } catch (error) {
-            res.json( 'Lỗi Ghi CSDL: ' + error.message);
+            res.json('Lỗi Ghi CSDL: ' + error.message);
         }
     } else {
         res.json("Phương thức không hợp lệ");

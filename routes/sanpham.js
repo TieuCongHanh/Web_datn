@@ -3,8 +3,6 @@ var router = express.Router();
 var loaispCtrl = require('../controllers/sanpham.controllers');
 const bodyParser = require('body-parser');
 var check_login = require('../middlewares/check_login');
-const multer  = require('multer')
-const upload = multer({ dest: './tmp' })
 const uploadCloud = require('../middlewares/uploadImage');
 
 

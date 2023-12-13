@@ -5,6 +5,7 @@ const excelJs = require("exceljs");
 var fs = require('fs');
 const bcrypt = require('bcrypt');
 var msg = '';
+const cloudinary = require('cloudinary').v2;
 
 exports.list = async (req, res, next) => {
     let page = parseInt(req.params.i);
@@ -184,7 +185,6 @@ exports.add = async (req, res, next) => {
 
                 const new_product = await objUS.save();
                 msg = "Thêm thành công";
-                console.log(new_product);
             } catch (err) {
                 console.log(err);
             }
@@ -219,8 +219,15 @@ exports.edit = async (req, res, next) => {
             }
 
             if (req.file != undefined) {
-               
-                objUS.image = req.file.path;
+                const publicId = objUS.image;
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                  if (error) {
+                      console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                  } else {
+                      console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                  }
+              });
+              objUS.image = req.file.path;
             } else {
                 objUS.image = objUser.image;
             }
