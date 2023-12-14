@@ -239,8 +239,10 @@ label span {
                 <input type="submit" value="Đăng Nhập" class="btn1">
             </form>
             <div style="display: flex;">
-            <a href="#" class="dnthave">Bạn chưa có tài khoản?</a>
-            <a href="/dk" style="margin-left: 155px;" class="dnthave">Đăng kí</a></div>
+            <% if(!adminUser) { %>
+              <a href="#" class="dnthave">Bạn chưa có tài khoản?</a>
+              <a href="/dk" style="margin-left: 155px;" class="dnthave">Đăng kí</a></div>
+            <% } %>
         </div>
       
     </div>

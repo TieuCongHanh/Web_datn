@@ -15,6 +15,7 @@ exports.home = async (req, res, next) => {
 }
 exports.Login = async (req, res, next) => {
     let msg = '';
+    const adminUser = await md.userModel.findOne({ role: 'Admin' });
     if (req.method == 'POST') {
         try {
             const { username, password } = req.body;
@@ -46,12 +47,16 @@ exports.Login = async (req, res, next) => {
             res.status(500).json({ message: 'Server error' });
         }
     }
-    return res.render('home/dn', { msg: msg, req: req });
+    return res.render('home/dn', { msg: msg, req: req , adminUser : adminUser});
 };
 
 const vietnamesePhoneNumberRegex = /(0[1-9][0-9]{8})\b/;
 exports.Reg = async (req, res, next) => {
     let msg = '';
+    const adminUser = await md.userModel.findOne({ role: 'Admin' });
+    if (adminUser) {
+        return res.redirect('/');
+    }
     const existingUser = await md.userModel.findOne({ username: req.body.username });
     let countUser = await md.userModel.countDocuments({});
     if (req.method === 'POST') {
