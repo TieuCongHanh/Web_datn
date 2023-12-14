@@ -160,7 +160,7 @@ exports.add = async (req, res, next) => {
             objSP.describe = req.body.describe;
             objSP.image = url_file;
 
-            const objloai = await objSP.save();
+            await objSP.save();
             msg = "Thêm thành công";
         } catch (err) {
             console.log(err);
