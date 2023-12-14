@@ -21,21 +21,21 @@ exports.Login = async (req, res, next) => {
             const { username, password } = req.body;
             const user1 = await md.userModel.findOne({ username });
             if (!user1) {
-                return res.render('home/dn', { msg: 'Tài khoản không đúng vui lòng đăng nhập lại.', req: req });
+                return res.render('home/dn', { msg: 'Tài khoản không đúng vui lòng đăng nhập lại.', req: req , adminUser : adminUser});
             } else {
                 // Kiểm tra trường isActive của người dùng
                 if (!user1.isActive) {
-                    return res.render('home/dn', { msg: 'Tài khoản của bạn đã bị vô hiệu hóa.', req: req });
+                    return res.render('home/dn', { msg: 'Tài khoản của bạn đã bị vô hiệu hóa.', req: req , adminUser : adminUser});
                 }
 
                 // So sánh mật khẩu đã băm
                 const passwordMatch = await bcrypt.compare(password, user1.password);
                 if (!passwordMatch) {
-                    return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req });
+                    return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req , adminUser : adminUser});
                 } else {
                     // Kiểm tra vaitro của người dùng
                     if (user1.role !== 'Admin') {
-                        return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req });
+                        return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req , adminUser : adminUser});
                     }
 
                     req.session.userLogin = user1;
