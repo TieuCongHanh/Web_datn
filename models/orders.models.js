@@ -12,6 +12,7 @@ const ordersSchema = new db.mongoose.Schema(
     pay_status: { type: Boolean, require: true },
     id_address: { type: db.mongoose.Schema.Types.String, ref: "addressModel" },
     address: {type: String, require: true},
+    phone: {type: String, require: true},
     date: { type: Date, require: true },
   },
   {
@@ -42,6 +43,7 @@ ordersSchema.pre("save", function (next) {
         const address = await addressModal.addressModel.findById(this.id_address);
         if (address) {
           this.address = address.address;
+          this.phone = address.phone;
         }else{
           this.address = "";
         }
