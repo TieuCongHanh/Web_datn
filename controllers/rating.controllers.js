@@ -12,7 +12,7 @@ exports.listRating = async (req, res, next) => {
     let totalRating = await rM.ratingModel.find().countDocuments();
     const by = req.query.by || 'price'; // Sắp xếp theo price nếu không có giá trị by
     const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
-    let list = await rM.ratingModel.find().populate('id_user', 'id_product');
+    let list = await rM.ratingModel.find().populate('id_user').populate('id_product');
     let count = list.length / perPage;
     let start=( page - 1 )*perPage;
     let currentPageTotal = start + list.length;

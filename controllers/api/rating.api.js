@@ -2,7 +2,7 @@ const myMD = require('../../models/rating.models');
 
 exports.list = async(req, res, next) => {
     try {
-        let list = await myMD.ratingModel.find().populate('id_user', 'id_product');
+        let list = await myMD.ratingModel.find().populate('id_user').populate('id_product');
         res.send(list);
     } catch (err) {
         console.log(err);
