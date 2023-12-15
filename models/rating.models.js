@@ -5,8 +5,8 @@ const ratingSchema = new db.mongoose.Schema(
         id_user: {type: db.mongoose.Schema.Types.String, ref: 'userModel'},
         user_username: {type: String, require: true},
         user_name: {type: String, require: true},
-        id_item: {type: db.mongoose.Schema.Types.String, ref: 'sanphamModel'},
-        item_name: {type: String, require: true},
+        id_product: {type: db.mongoose.Schema.Types.String, ref: 'sanphamModel'},
+        product_name: {type: String, require: true},
         rating: {type: String, require: false}
     },
     {
