@@ -240,11 +240,14 @@ exports.updateStatus = async (req, res, next) => {
     const newStatus = req.body.newStatus;
     const deliveryPerson = req.body.deliveryPerson;
 
-    const updatedOrder = await OrderModel.ordersModel.findOneAndUpdate(
-      { _id: id_order },
-      { delivery_status: newStatus, id_staff: deliveryPerson },
-      { new: true }
-    );
+    const updatedOrder = await OrderModel.ordersModel.findById(id_order)
+      
+    updatedOrder.delivery_status = newStatus;
+    updatedOrder.id_staff = deliveryPerson;
+    if(newStatus == "Đã giao"){
+      updatedOrder.pay_status = true;
+    }
+    await updatedOrder.save();
 
     res.json({ msg: 'Thông tin trạng thái đã được cập nhật' });
   } catch (err) {
