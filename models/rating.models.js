@@ -7,6 +7,7 @@ const ratingSchema = new db.mongoose.Schema(
         user_name: {type: String, require: true},
         id_product: {type: db.mongoose.Schema.Types.String, ref: 'sanphamModel'},
         product_name: {type: String, require: true},
+        product_test: {type: String, require: false},
         rating: {type: String, require: false}
     },
     {

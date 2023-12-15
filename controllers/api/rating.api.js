@@ -19,7 +19,7 @@ exports.add = async(req, res, next) => {
             objRating.user_name = req.body.user_name;
             objRating.id_product = req.body.id_product;
             objRating.product_name = req.body.product_name;
-            await objRating.save();
+            // await objRating.save();
         } catch (err){
             console.log(err);
         }
