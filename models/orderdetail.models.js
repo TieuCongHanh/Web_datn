@@ -52,6 +52,8 @@ orderDetailSchema.pre("save", async function (next) {
       const total_price = doc.quantity * doc.price;
 
       doc.total_price = total_price;
+      product.quantity -= this.quantity;
+      await product.save();
     } catch (error) {
       return next(error);
     }
