@@ -15,9 +15,9 @@ exports.add = async(req, res, next) => {
         try{
             objRating.rating = req.body.rating;
             objRating.id_user = req.body.id_user;
-            objRating.id_product = req.body.id_product;
             objRating.user_username = req.body.user_username;
             objRating.user_name = req.body.user_name;
+            objRating.id_product = req.body.id_product;
             objRating.product_name = req.body.product_name;
             await objRating.save();
         } catch (err){
