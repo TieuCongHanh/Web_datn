@@ -2,7 +2,7 @@ const myMD = require('../../models/rating.models');
 
 exports.list = async(req, res, next) => {
     try {
-        let list = await myMD.ratingModel.find().populate('id_user', 'id_item');
+        let list = await myMD.ratingModel.find().populate('id_user', 'id_product');
         res.send(list);
     } catch (err) {
         console.log(err);
@@ -15,10 +15,11 @@ exports.add = async(req, res, next) => {
         try{
             objRating.rating = req.body.rating;
             objRating.id_user = req.body.id_user;
-            objRating.id_item = req.body.id_item;
             objRating.user_username = req.body.user_username;
             objRating.user_name = req.body.user_name;
-            objRating.item_name = req.body.item_name;
+            objRating.id_product = req.body.id_product;
+            objRating.product_name = req.body.product_name;
+            // objRating.product_test = req.body.product_test;
             await objRating.save();
         } catch (err){
             console.log(err);
