@@ -8,6 +8,7 @@ var addressApi = require('../controllers/api/address.api');
 var ratingApi = require('../controllers/api/rating.api');
 
 // user
+router.get('/user/list', user_api.list);
 router.post('/user/login', user_api.Login);
 router.post('/user/logup', user_api.Reg);
 router.post('/user/changePassword', user_api.changePassword);

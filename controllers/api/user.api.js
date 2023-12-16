@@ -143,3 +143,13 @@ exports.edit = async (req, res, next) => {
         res.json("Phương thức không hợp lệ");
     }
 };
+
+exports.list = async(req, res, next){
+    try{
+        let list = await md.userModel.find();
+        res.send(list);
+    } catch (err){
+        console.log(err);
+    }
+
+}
