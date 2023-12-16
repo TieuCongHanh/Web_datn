@@ -11,6 +11,7 @@ const sanphamSchema = new db.mongoose.Schema(
         image: {type: String, require: false},
         imageDetail: {type: [String], require: true},
         quantity: {type : Number, require : true},
+        display: {type : Boolean, require: true},
         importHistory: [
             {
                 date: { type: Date, default: Date.now },
@@ -34,7 +35,7 @@ sanphamSchema.pre('save', function (next) {
 
                 const previousQuantity = doc.quantity; // Lưu giá trị quantity trước khi import
                 doc.quantity = previousQuantity + doc.quantity; // Cộng số lượng quantity của sanpham
-
+                doc.display = false;
                 doc.importHistory.push({
                     date: new Date(),
                     quantity: doc.quantity - previousQuantity // Lưu giá trị số lượng đã import

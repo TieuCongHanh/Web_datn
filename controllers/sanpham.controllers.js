@@ -321,3 +321,4 @@ exports.getProduct  = async (req, res) => {
     const endIndex = url.lastIndexOf('.');
     return url.substring(startIndex, endIndex);
 }
+
