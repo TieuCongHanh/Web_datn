@@ -1,10 +1,10 @@
-const { log } = require('console');
 var myMD = require('../models/sanpham.models');
 var categoryMD = require('../models/category.models');
 const excelJs = require("exceljs");
 var fs = require('fs');
-const bcrypt = require('bcrypt');
 var msg = '';
+const cloudinary = require('cloudinary').v2;
+
 
 exports.list = async (req, res, next) => {
     let page = parseInt(req.params.i);
@@ -26,8 +26,8 @@ exports.list = async (req, res, next) => {
   }
     let start=( page - 1 )*perPage; // vị trí 0
    
-    const by = req.query.by || '_id name price'; // Sắp xếp theo price nếu không có giá trị by
-    const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
+    const by = req.query.by || '_id'; // Sắp xếp theo price nếu không có giá trị by
+    const order = req.query.order || 'desc'; // Sắp xếp tăng dần nếu không có giá trị order
 
     let list = await myMD.sanphamModel.find(productSearch).skip(start).limit(perPage).sort({ [by] :order }).populate('id_category');
     let totalSP = await myMD.sanphamModel.find(productSearch).countDocuments();
@@ -37,7 +37,6 @@ exports.list = async (req, res, next) => {
     let count = countlist.length / perPage;
     count = Math.ceil(count);
 
-    console.log(list);
     res.render('sanpham/list', {perPage : perPage,  start : start, listL: list, countPage: count , req: req , msg: msg,by : by, order :order,totalSP: totalSP,currentPageTotal:currentPageTotal});
 }
 
@@ -147,8 +146,7 @@ exports.add = async (req, res, next) => {
 
             let url_file = '';
             if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                url_file = '/uploads/' + req.file.originalname;
+                url_file = req.file.path;
             } else {
                 res.render('sanpham/add', { req: req, listCategory :listCategory, msg: "Vui lòng chọn một tệp hình ảnh" });
                 return;
@@ -162,9 +160,8 @@ exports.add = async (req, res, next) => {
             objSP.describe = req.body.describe;
             objSP.image = url_file;
 
-            const objloai = await objSP.save();
+            await objSP.save();
             msg = "Thêm thành công";
-            console.log(objloai);
         } catch (err) {
             console.log(err);
         }
@@ -211,9 +208,15 @@ exports.edit = async (req, res, next) => {
             objSP.describe = req.body.describe;
 
             if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                let url_file = '/uploads/' + req.file.originalname;
-                objSP.image = url_file;
+                const publicId = getPublicIdFromUrl(objSP.image);
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                  if (error) {
+                      console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                  } else {
+                      console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                  }
+              });
+              objSP.image = req.file.path;
             } else {
                 objSP.image = objSP.image;
             }
@@ -281,3 +284,9 @@ exports.getProduct  = async (req, res) => {
       res.status(500).json({ error: "Server error" });
     }
   };
+
+  function getPublicIdFromUrl(url) {
+    const startIndex = url.lastIndexOf('/') + 1;
+    const endIndex = url.lastIndexOf('.');
+    return url.substring(startIndex, endIndex);
+}

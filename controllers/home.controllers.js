@@ -5,42 +5,39 @@ const bcrypt = require('bcrypt');
 var msg = '';
 exports.home = async (req, res, next) => {
     let countUser = await md.userModel.countDocuments({});
-    console.log(`Tổng số user: ${countUser}`);
     let countProduct = await md1.sanphamModel.countDocuments({});
-    console.log(`Tổng số product: ${countProduct}`);
     let totalQuantitySold = 0;
-    let dthuproduct = await md2.ordersModel.find();
+    let dthuproduct = await md2.ordersModel.find({pay_status : true});
     dthuproduct.forEach((order) => {
         totalQuantitySold += order.total_price;
     });
-    console.log(`Tổng số doanh thu: ${totalQuantitySold}`);
     res.render('home/home', {req : req , msg: msg, countProduct: countProduct, countUser:countUser, totalQuantitySold:totalQuantitySold});
 }
 exports.Login = async (req, res, next) => {
     let msg = '';
+    const adminUser = await md.userModel.findOne({ role: 'Admin' });
     if (req.method == 'POST') {
         try {
             const { username, password } = req.body;
             const user1 = await md.userModel.findOne({ username });
             if (!user1) {
-                return res.render('home/dn', { msg: 'Tài khoản không đúng vui lòng đăng nhập lại.', req: req });
+                return res.render('home/dn', { msg: 'Tài khoản không đúng vui lòng đăng nhập lại.', req: req , adminUser : adminUser});
             } else {
                 // Kiểm tra trường isActive của người dùng
                 if (!user1.isActive) {
-                    return res.render('home/dn', { msg: 'Tài khoản của bạn đã bị vô hiệu hóa.', req: req });
+                    return res.render('home/dn', { msg: 'Tài khoản của bạn đã bị vô hiệu hóa.', req: req , adminUser : adminUser});
                 }
 
                 // So sánh mật khẩu đã băm
                 const passwordMatch = await bcrypt.compare(password, user1.password);
                 if (!passwordMatch) {
-                    return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req });
+                    return res.render('home/dn', { msg: 'Bạn nhập sai mật khẩu vui lòng đăng nhập lại.', req: req , adminUser : adminUser});
                 } else {
                     // Kiểm tra vaitro của người dùng
                     if (user1.role !== 'Admin') {
-                        return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req });
+                        return res.render('home/dn', { msg: 'Bạn không có quyền đăng nhập.', req: req , adminUser : adminUser});
                     }
 
-                    console.log("Đăng nhập thành công.");
                     req.session.userLogin = user1;
                     return res.redirect('/');
                 }
@@ -50,16 +47,19 @@ exports.Login = async (req, res, next) => {
             res.status(500).json({ message: 'Server error' });
         }
     }
-    return res.render('home/dn', { msg: msg, req: req });
+    return res.render('home/dn', { msg: msg, req: req , adminUser : adminUser});
 };
 
 const vietnamesePhoneNumberRegex = /(0[1-9][0-9]{8})\b/;
 exports.Reg = async (req, res, next) => {
     let msg = '';
+    const adminUser = await md.userModel.findOne({ role: 'Admin' });
+    if (adminUser) {
+        return res.redirect('/');
+    }
     const existingUser = await md.userModel.findOne({ username: req.body.username });
     let countUser = await md.userModel.countDocuments({});
     if (req.method === 'POST') {
-        console.log(req.body);
 
        
         if (!req.body.username || !req.body.password || !req.body.passwd2 || !req.body.name || !req.body.userEmail || !req.body.phone) {

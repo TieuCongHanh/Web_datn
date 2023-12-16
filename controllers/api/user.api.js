@@ -1,6 +1,7 @@
 const md = require('../../models/user.models');
 const bcrypt = require('bcrypt');
 var fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 
 exports.Login = async (req, res, next) => {
    
@@ -120,29 +121,40 @@ exports.edit = async (req, res, next) => {
             return res.json("Vui lòng điền đầy đủ thông tin.");
         }
         try {
-           
             objUser.userEmail = req.body.userEmail;
-
-            if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                let url_file = '/uploads/' + req.file.originalname;
-                objUser.image = url_file;
-            } else {
-                objUser.image = objUser.image;
-            }
             objUser.name = req.body.name;
             objUser.phone = req.body.phone;
+
+            if (req.file !== undefined) {
+                const publicId = getPublicIdFromUrl(objUser.image);
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                    if (error) {
+                        console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                    } else {
+                        console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                    }
+                });
+
+                objUser.image = req.file.path;
+            }
 
             await objUser.save();
             res.json(objUser);
 
         } catch (error) {
-            res.json( 'Lỗi Ghi CSDL: ' + error.message);
+            res.json('Lỗi Ghi CSDL: ' + error.message);
         }
     } else {
         res.json("Phương thức không hợp lệ");
     }
 };
+
+
+function getPublicIdFromUrl(url) {
+    const startIndex = url.lastIndexOf('/') + 1;
+    const endIndex = url.lastIndexOf('.');
+    return url.substring(startIndex, endIndex);
+}
 
 exports.list = async(req, res, next){
     try{
@@ -151,5 +163,4 @@ exports.list = async(req, res, next){
     } catch (err){
         console.log(err);
     }
-
 }

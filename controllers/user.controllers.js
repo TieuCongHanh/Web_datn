@@ -5,6 +5,7 @@ const excelJs = require("exceljs");
 var fs = require('fs');
 const bcrypt = require('bcrypt');
 var msg = '';
+const cloudinary = require('cloudinary').v2;
 
 exports.list = async (req, res, next) => {
     let page = parseInt(req.params.i);
@@ -15,22 +16,28 @@ exports.list = async (req, res, next) => {
     const regex = new RegExp(searchTerm, 'i');
   
     if (searchTerm !== '') {
-      searchUser = {
-        $or: [
-          { name: { $regex: regex } },
-          { username: { $regex: regex } },
-          { userEmail: { $regex: regex } },
-          { _id: { $regex: regex } },
-          { role: { $regex: regex } },
-          { phone: { $regex: regex } }
-        ]
-      };
+        searchUser = {
+            $and: [
+              {
+                $or: [
+                  { name: { $regex: regex } },
+                  { username: { $regex: regex } },
+                  { userEmail: { $regex: regex } },
+                  { _id: { $regex: regex } },
+                  { phone: { $regex: regex } }
+                ]
+              },
+              { role: 'User' }
+            ]
+          };
+    }else {
+        searchUser = { role: 'User' };
     }
   
     let start = (page - 1) * perPage;
   
-    const by = req.query.by || '_id username name';
-    const order = req.query.order || 'asc';
+    const by = req.query.by || '_id';
+    const order = req.query.order || 'desc';
   
     let list = await myMD.userModel
       .find(searchUser)
@@ -38,7 +45,6 @@ exports.list = async (req, res, next) => {
       .limit(perPage)
       .sort({ [by]: order });
   
-    // Lấy thông tin về địa chỉ cho mỗi người dùng
     list = await Promise.all(
       list.map(async (user) => {
         const addressList = await addressModel.addressModel.find({ id_user: user._id });
@@ -53,7 +59,6 @@ exports.list = async (req, res, next) => {
     let count = countlist.length / perPage;
     count = Math.ceil(count);
   
-    console.log(list);
     res.render('user/list', {
       perPage: perPage,
       start: start,
@@ -167,8 +172,7 @@ exports.add = async (req, res, next) => {
             try {
                 let url_file = ''; 
                 if (req.file != undefined) {
-                    fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                    url_file = '/uploads/' + req.file.originalname;
+                    url_file = req.file.path;
                 }
 
                 const objUS = new myMD.userModel();
@@ -186,7 +190,6 @@ exports.add = async (req, res, next) => {
 
                 const new_product = await objUS.save();
                 msg = "Thêm thành công";
-                console.log(new_product);
             } catch (err) {
                 console.log(err);
             }
@@ -199,7 +202,7 @@ exports.add = async (req, res, next) => {
 exports.edit = async (req, res, next) => {
     let msg = '';
     let iduser = req.params.id;
-    let objUser = await myMD.userModel.findById(iduser);
+    let objUS = await myMD.userModel.findById(iduser);
 
     if (req.method === 'PUT') {
         if ( !req.body.name || !req.body.phone) {
@@ -207,25 +210,30 @@ exports.edit = async (req, res, next) => {
             return res.render('user/edit', { msg: msg, objUS: objUser, req: req });
         }
         try {
-            let objUS = new myMD.userModel();
             objUS.username = req.body.username;
             objUS.userEmail = req.body.userEmail;
 
-            objUS.isActive = objUser.isActive;
+            objUS.isActive = objUS.isActive;
 
             if (req.body.password) {
                 const salt = await bcrypt.genSalt(10);
                 objUS.password = await bcrypt.hash(req.body.password, salt);
             } else {
-                objUS.password = objUser.password;
+                objUS.password = objUS.password;
             }
 
             if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                let url_file = '/uploads/' + req.file.originalname;
-                objUS.image = url_file;
+                const publicId = getPublicIdFromUrl(objUS.image);
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                  if (error) {
+                      console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                  } else {
+                      console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                  }
+              });
+              objUS.image = req.file.path;
             } else {
-                objUS.image = objUser.image;
+                objUS.image = objUS.image;
             }
           
                 objUS.role = req.body.role;
@@ -270,6 +278,10 @@ exports.deleteUser = async (req, res, next) => {
 
 };
 
-
+function getPublicIdFromUrl(url) {
+    const startIndex = url.lastIndexOf('/') + 1;
+    const endIndex = url.lastIndexOf('.');
+    return url.substring(startIndex, endIndex);
+}
 
 

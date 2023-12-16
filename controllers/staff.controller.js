@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 var msg = '';
 const PDFDocument = require("pdfkit");
 const { isPhoneNumber, isValidEmail } = require('../public/js/validation');
+const cloudinary = require('cloudinary').v2;
 
 exports.list = async (req, res, next) => {
   let page = parseInt(req.params.i);
@@ -27,8 +28,8 @@ exports.list = async (req, res, next) => {
 
   let start = (page - 1) * perPage;
 
-  const by = req.query.by || '_id name';
-  const order = req.query.order || 'asc';
+  const by = req.query.by || '_id';
+  const order = req.query.order || 'desc';
 
   let list = await myMD.staffModel.find(searchStaff).skip(start).limit(perPage).sort({ [by]: order });
   let totalStaff = await myMD.staffModel.find(searchStaff).countDocuments();
@@ -38,7 +39,6 @@ exports.list = async (req, res, next) => {
   let count = countlist.length / perPage;
   count = Math.ceil(count);
 
-  console.log(list);
   res.render('staff/list', { perPage: perPage, listStaff: list, countPage: count, req: req, msg: msg, by: by, order: order, totalStaff: totalStaff, currentPageTotal: currentPageTotal, start: start });
 };
 
@@ -199,8 +199,7 @@ exports.add = async (req, res, next) => {
             try {
                 let url_file = ''; 
                 if (req.file != undefined) {
-                    fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                    url_file = '/uploads/' + req.file.originalname;
+                    url_file = req.file.path;
                 }
 
                 const objStaff = new myMD.staffModel();
@@ -215,7 +214,6 @@ exports.add = async (req, res, next) => {
 
                 const new_staff = await objStaff.save();
                 msg = "Thêm thành công";
-                console.log(new_staff);
             } catch (err) {
                 console.log(err);
             }
@@ -248,8 +246,7 @@ exports.edit = async (req, res, next) => {
         }
 
         try {
-            let objStaff = new myMD.staffModel();
-            objStaff.name = req.body.nameStaff;
+              objStaff.name = req.body.nameStaff;
                 objStaff.role = req.body.role;
                 objStaff.address = req.body.address;
                 objStaff.phone = req.body.phone;
@@ -257,14 +254,19 @@ exports.edit = async (req, res, next) => {
                 objStaff.gender = req.body.gender;
                 objStaff.email = req.body.email;
 
-            if (req.file != undefined) {
-                fs.renameSync(req.file.path, "./public/uploads/" + req.file.originalname);
-                let url_file = '/uploads/' + req.file.originalname;
-                objStaff.image = url_file;
-            } else {
-                objStaff.image = objStaff.image;
-            }
-
+                if (req.file != undefined) {
+                      const publicId = getPublicIdFromUrl(objStaff.image);
+                      cloudinary.uploader.destroy(publicId, (error, result) => {
+                        if (error) {
+                            console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                        } else {
+                            console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                        }
+                    });
+                    objStaff.image = req.file.path;
+                }else{
+                  objStaff.image = objStaff.image;
+                }
             await myMD.staffModel.findByIdAndUpdate(idStaff, objStaff);
             msg = 'Cập Nhật Thành Công';
         } catch (error) {
@@ -288,6 +290,12 @@ exports.deleteStaff = async (req, res, next) => {
       res.status(500).json({ message: 'Lỗi server' });
     }
   };
+
+  function getPublicIdFromUrl(url) {
+    const startIndex = url.lastIndexOf('/') + 1;
+    const endIndex = url.lastIndexOf('.');
+    return url.substring(startIndex, endIndex);
+}
 
 
 

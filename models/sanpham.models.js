@@ -8,7 +8,8 @@ const sanphamSchema = new db.mongoose.Schema(
         name: {type: String, require: true},
         price: {type: Number, require: true},
         describe: {type: String, require: true},
-        image: {type: String, require: true},
+        image: {type: String, require: false},
+        imageDetail: {type: [String], require: true},
         quantity: {type : Number, require : true},
         importHistory: [
             {

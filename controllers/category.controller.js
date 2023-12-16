@@ -24,8 +24,8 @@ exports.list = async (req, res, next) => {
   }
     let start=( page - 1 )*perPage; // vị trí 0
    
-    const by = req.query.by || '_id name'; // Sắp xếp theo price nếu không có giá trị by
-    const order = req.query.order || 'asc'; // Sắp xếp tăng dần nếu không có giá trị order
+    const by = req.query.by || '_id'; // Sắp xếp theo price nếu không có giá trị by
+    const order = req.query.order || 'desc'; // Sắp xếp tăng dần nếu không có giá trị order
 
     let list = await categoryMD.categoryModel.find(categorySearch).skip(start).limit(perPage).sort({ [by] :order });
     let totalSP = await categoryMD.categoryModel.find(categorySearch).countDocuments();

@@ -187,7 +187,7 @@
 
                                         <td style="vertical-align: middle; text-align: center; padding: 7px;">
                                             
-                                            <%= order.id_address.address%>
+                                            <%= order.address%>
                                         </td>
 
                                         <td style="vertical-align: middle; text-align: center; padding: 7px;">
@@ -420,9 +420,7 @@
     <!-- Page specific javascripts-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <!-- Data table plugin-->
-    <script type="text/javascript" src="js/plugins/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
-    
+ 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -489,7 +487,7 @@
     function changePerPage(selectElement) {
     const perPage = parseInt(selectElement.value);
     const currentPage = parseInt('<%= req.params.i %>'); // Lấy trang hiện tại từ dữ liệu động
-    const url = `/order/${currentPage}?data_tables_leght=${perPage}`;
+    const url = `/order/${1}?data_tables_leght=${perPage}`;
 
     window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
     }
@@ -641,7 +639,7 @@
             $('#detailModal').find('span[name="name"]').eq(0).text(order.id_user.name);
             $('#detailModal').find('span[name="phone"]').eq(0).text(order.id_user.phone);
             $('#detailModal').find('span[name="userEmail"]').eq(0).text(order.id_user.userEmail);
-            $('#detailModal').find('span[name="address"]').eq(0).text(order.id_address.address);
+            $('#detailModal').find('span[name="address"]').eq(0).text(order.address);
 
             var staff = order.id_staff;
 

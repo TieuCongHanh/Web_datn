@@ -13604,7 +13604,7 @@ be a descendant of the grid when it is being dragged.
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  background-color: rgb(0, 28, 64);
+  background-color: rgb(18, 69, 25);
   z-index: 1;
   padding-right: 15px;
   padding-left: 15px;
@@ -13855,7 +13855,7 @@ be a descendant of the grid when it is being dragged.
   padding-right: 10px;
   overflow: auto;
   z-index: 10;
-  background: rgb(0, 28, 64);
+  background-color: rgb(18, 69, 25);
   /* box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); */
   /* border-bottom-right-radius: 50px; */
 }
