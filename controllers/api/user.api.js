@@ -161,6 +161,6 @@ exports.list = async(req, res, next) => {
         let list = await md.userModel.find();
         res.send(list);
     } catch (err){
-        console.log(err);
+        console.log('Lỗi');
     }
 }
