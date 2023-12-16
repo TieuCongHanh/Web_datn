@@ -224,7 +224,7 @@ exports.edit = async (req, res, next) => {
             objSP.quantity = req.body.quantity;
             objSP.describe = req.body.describe;
 
-            if (req.files != undefined) {
+            if (req.files != undefined || req.file != undefined ) {
                 objSP.imageDetail.map(url => {
                     const publicId = getPublicIdFromUrl(url)
                     cloudinary.uploader.destroy(publicId), (error, result) => {
