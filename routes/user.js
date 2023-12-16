@@ -28,5 +28,7 @@ router.post('/edit/:id',uploadCloud.single("productImage"),check_login.yeu_cau_d
 router.post('/delete',userCtrl.deleteUser);
 router.get('/:user',check_login.yeu_cau_dang_nhap, userCtrl.list)
 
+router.get('/1/setting',uploadCloud.single("productImage"),check_login.yeu_cau_dang_nhap, userCtrl.setting);
+router.post('/1/setting',uploadCloud.single("productImage"),check_login.yeu_cau_dang_nhap, userCtrl.setting);
 
 module.exports = router;

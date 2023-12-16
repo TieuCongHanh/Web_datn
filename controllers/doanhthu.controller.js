@@ -32,6 +32,7 @@ exports.list = async (req, res, next) => {
     let matchCondition = {
       "order._id": { $exists: true },
       "order.pay_status": true,
+      "order.delivery_status": { $ne: "Hủy" },
       $expr: { $eq: ["$id_order", { $arrayElemAt: ["$order._id", 0] }] }
     };
     

@@ -10,10 +10,6 @@ const upload = multer({ dest: './tmp' })
 router.use(bodyParser.urlencoded({extended:false}));
 router.get('/:i',check_login.yeu_cau_dang_nhap, ratingCtrl.listRating);
 router.get('/',check_login.yeu_cau_dang_nhap, ratingCtrl.listRating);
-router.get('/:i/in',check_login.yeu_cau_dang_nhap, ratingCtrl.in);
-router.post('/:i/in', check_login.yeu_cau_dang_nhap, ratingCtrl.in);
-router.get('/:i/print',check_login.yeu_cau_dang_nhap, ratingCtrl.print);
-router.post('/:i/print', check_login.yeu_cau_dang_nhap, ratingCtrl.print);
 
 
 module.exports = router;

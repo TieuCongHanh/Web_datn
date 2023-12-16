@@ -38,10 +38,37 @@
             <span><%= msg %></span>
             <div id="clock"></div>
         </div>
-        <img src="<%= objL.image %>" id="displayImage" alt="anh" style="width: 150px; height: 150px;border-radius: 30px; ">
-        
+        <div class="row">
+            <div class="col d-flex justify-content-center" id="imageList" style="align-items: center; justify-content: center;">
+                <% if (currenImage === 0) { %>
+                    <a href="?left=<%= currenImage - 1 %>" style="color: black; visibility: hidden;"><i class='bx bxs-left-arrow-square'></i></a>
+                <% } else { %>
+                    <a href="?left=<%= currenImage - 1 %>" style="color: black;"><i class='bx bxs-left-arrow-square'></i></a>
+                <% } %>
+                <img id="productImage" class="imagedetail" src="<%= objL.imageDetail[currenImage] %>" alt="hình ảnh" style="width: 150px; height: 150px; border-radius: 30px;">
+                <% if (currenImage === lengthImage) { %>
+                    <a href="?right=<%= currenImage + 1 %>" style="color: black; visibility: hidden;"><i class='bx bxs-right-arrow-square'></i></a>
+                <% } else { %>
+                    <a href="?right=<%= currenImage + 1 %>" style="color: black;"><i class='bx bxs-right-arrow-square'></i></a>
+                <% } %>
+            </div>
+        </div>
        
-        <form action="" method="post" enctype="multipart/form-data" style="margin-top: 20px;">          
+        <form action="" method="post" enctype="multipart/form-data" style="margin-top: 20px;"> 
+            <script>
+                function checkFileCount(input) {
+                    const maxFiles = 4;
+
+                    if (input.files && input.files.length > maxFiles) {
+                        alert(`Vui lòng chọn tối đa ${maxFiles} ảnh.`);
+                        input.value = "";
+                    }
+                }
+                function validatePrice(input) {
+                    const sanitizedValue = input.value.replace(/[^\d]/g, "");
+                    input.value = sanitizedValue;
+                }
+            </script>        
             <div class="row">
                 <div class="form-group col-md-6" >
                     <label class="control-label">Tên sản phẩm</label>
@@ -71,7 +98,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label class="control-label">Hình ảnh</label>
-                    <input class="form-control" id="newImage" type="file" name="productImage" >
+                    <input class="form-control" id="newImage" type="file" name="productImage" multiple  accept="image/*" onchange="checkFileCount(this)">
                 </div>
             </div>
             <BR>
@@ -176,17 +203,51 @@
         });
     </script>
     <script>
-        document.getElementById('newImage').addEventListener('change', function (event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const displayImage = document.getElementById('displayImage');
-            displayImage.src = e.target.result;
+        const objL = {
+            imageDetail: []
         };
-        reader.readAsDataURL(file);
-    }
-});
+    
+        function addImageToObjL(imageUrl) {
+            objL.imageDetail.push(imageUrl);
+        }
+    
+        document.getElementById('newImage').addEventListener('change', function (event) {
+            const files = event.target.files;
+            const imageList = document.getElementById('imageList');
+    
+            // Ẩn các hình ảnh cũ
+            const oldImages = imageList.querySelectorAll('img.imagedetail');
+            oldImages.forEach(function (oldImage) {
+                oldImage.style.display = 'none';
+            });
+    
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+    
+                reader.onload = function (e) {
+                    const imageUrl = e.target.result;
+                    addImageToObjL(imageUrl);
+    
+                    const image = document.createElement('img');
+                    image.src = imageUrl;
+                    image.className = 'imagedetail';
+                    image.style.width = '150px';
+                    image.style.height = '150px';
+                    image.style.borderRadius = '30px';
+    
+                    imageList.appendChild(image);
+                };
+    
+                reader.readAsDataURL(file);
+            }
+    
+            // Ẩn chức năng khi chọn ảnh
+            const leftArrow = document.querySelector('#imageList a[href^="?left"]');
+            const rightArrow = document.querySelector('#imageList a[href^="?right"]');
+            leftArrow.style.visibility = 'hidden';
+            rightArrow.style.visibility = 'hidden';
+        });
     </script>
 
 </body>

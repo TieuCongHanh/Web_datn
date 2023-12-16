@@ -284,4 +284,60 @@ function getPublicIdFromUrl(url) {
     return url.substring(startIndex, endIndex);
 }
 
+exports.setting = async (req, res, next) => {
+    let msg = '';
+    let iduser = req.session.userLogin._id;
+    let objUS = await myMD.userModel.findById(iduser);
 
+    if (req.method === 'POST') {
+        if ( !req.body.name || !req.body.phone || !req.body.userEmail) {
+            msg = "Vui lòng điền đầy đủ thông tin.";
+            return res.render('user/setting', { msg: msg, objUS: objUS, req: req });
+        }
+        try {
+            objUS.username = req.body.username;
+            objUS.userEmail = req.body.userEmail;
+
+            if (req.body.password) {
+                if(req.body.password != req.body.checkpassword){
+                    msg = "Mật khẩu không trùng khớp.";
+                    return res.render('user/setting', { msg: msg, objUS: objUS, req: req });
+                }
+                const salt = await bcrypt.genSalt(10);
+                objUS.password = await bcrypt.hash(req.body.password, salt);
+            } else {
+                objUS.password = objUS.password;
+            }
+
+            if (req.file != undefined) {
+                const publicId = getPublicIdFromUrl(objUS.image);
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                  if (error) {
+                      console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                  } else {
+                      console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                  }
+              });
+              objUS.image = req.file.path;
+            } else {
+                objUS.image = objUS.image;
+            }
+            objUS.name = req.body.name;
+            objUS.phone = req.body.phone;
+
+            await objUS.save();
+            msg = 'Cập Nhật Thành Công';
+            console.log(objUS);
+        } catch (error) {
+            msg = 'Lỗi Ghi CSDL: ' + error.message;
+            console.log(error);
+        }
+    }
+
+    res.render('user/setting', { msg: msg, objUS: objUS, req: req });
+};
+function getPublicIdFromUrl(url) {
+    const startIndex = url.lastIndexOf('/') + 1;
+    const endIndex = url.lastIndexOf('.');
+    return url.substring(startIndex, endIndex);
+}

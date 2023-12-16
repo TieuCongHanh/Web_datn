@@ -290,12 +290,13 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="submit" class="btn btn-danger">Cập nhật</button>
+                <button type="submit" id="statusSubmitButton" class="btn btn-danger">Cập nhật</button>
               </div>
             </form>
           </div>
         </div>
       </div>
+
 
     <!-- modal detail -->
     <!-- form detail -->
@@ -328,12 +329,12 @@
                                         <span type="text" name="name"></span>
                                     </div>
                                     <div>
-                                        <label style="width: 20%;" class="control-label">SĐT</label>
-                                        <span type="phone" name="phone"></span>
-                                    </div>
-                                    <div>
                                         <label style="width: 20%;" class="control-label">Email</label>
                                         <span type="text" name="userEmail"></span>
+                                    </div>
+                                    <div>
+                                        <label style="width: 20%;" class="control-label">SĐT nhận</label>
+                                        <span type="phone" name="phone"></span>
                                     </div>
                                     <div>
                                         <label style="width: 20%;" class="control-label">Địa chỉ</label>
@@ -390,7 +391,7 @@
                             <div style="margin-left: 20px;">
                                 <div>
                                     <label style="width: 20%;" class="control-label">Phương thức thanh toán</label>
-                                    <span type="phone" name="method"></span>
+                                    <span type="text" name="method"></span>
                                 </div>
                                 <div>
                                     <label style="width: 20%;" class="control-label">Số tiền</label>
@@ -540,13 +541,13 @@
                         });
 
                         if (staff._id === selectedStaffId) {
-                            option.prop('selected', true); // Chọn người giao đã được lưu trữ
+                            option.prop('selected', true);
                         }
 
                         staffSelect.append(option);
                     });
 
-                    $('#deliveryPersonSelect').show(); // Hiển thị menu dropdown người giao
+                    $('#deliveryPersonSelect').show();
                 },
                 error: function (error) {
                     console.error(error);
@@ -558,31 +559,46 @@
             var button = $(event.relatedTarget);
             var orderId = button.data('order-id');
             var currentStatus = button.data('current-status');
-            
 
             $('#id_order').text(orderId);
             $('#statusSelect').val(currentStatus);
-
+            if (currentStatus === 'Đã giao' || currentStatus === 'Hủy') {
+                $('#UpdateStatusModal').modal('hide'); 
+                alert('Không thể thay đổi trạng thái khi đã là "Đã giao" hoặc "Hủy"');
+                $('#statusSelect').prop('disabled', true);
+                $('#statusSubmitButton').prop('disabled', true);
+                return;
+            }else{
+                $('#statusSelect').prop('disabled', false);
+                $('#statusSubmitButton').prop('disabled', false);
+            }   
             if (currentStatus === 'Đang giao') {
                 populateStaffOptions("");
             } else {
-                $('#deliveryPersonSelect').hide(); // Ẩn menu dropdown người giao
+                $('#deliveryPersonSelect').hide(); 
             }
         });
 
         $('#statusSelect').change(function () {
             var selectedStatus = $(this).val();
+
+            if (selectedStatus === 'Đã giao' || selectedStatus === 'Hủy') {
+                $('#statusSelect').prop('disabled', true);
+            } else {
+                $('#statusSelect').prop('disabled', false);
+            }
+            
             if (selectedStatus === 'Đang giao') {
                 populateStaffOptions('');
             } else {
-                $('#deliveryPersonSelect').hide(); // Ẩn menu dropdown người giao
+                $('#deliveryPersonSelect').hide();
             }
-                var deliveryPersonSelect = $('#deliveryPerson');
-                if (selectedStatus !== 'Đang giao') {
+            var deliveryPersonSelect = $('#deliveryPerson');
+            if (selectedStatus !== 'Đang giao') {
                 deliveryPersonSelect.removeAttr('required'); // Xóa thuộc tính required
-                } else {
+            } else {
                 deliveryPersonSelect.attr('required', 'required'); // Thêm thuộc tính required
-                }
+            }
         });
 
         $('#status').submit(function (event) {
@@ -591,8 +607,24 @@
             var orderId = $('#id_order').text();
             var status = $('#statusSelect').val();
             var deliveryPerson = $('#deliveryPerson').val();
-            
-            
+            if (status === 'Đã giao') {
+                var confirmation = confirm('Bạn có chắc chắn muốn đánh dấu đơn hàng này là Đã giao?');
+                if (confirmation) {
+                    updateOrderStatus(orderId, status, deliveryPerson);
+                }
+            }else if (status === 'Hủy') {
+                var confirmation = confirm('Bạn có chắc chắn muốn hủy đơn hàng?');
+
+                if (confirmation) {
+                    updateOrderStatus(orderId, status, deliveryPerson);
+                }
+            }else{
+                updateOrderStatus(orderId, status, deliveryPerson);
+            }
+
+        });
+
+        function updateOrderStatus(orderId, status, deliveryPerson) {
             $.ajax({
                 url: '/order/updateStatus',
                 method: 'POST',
@@ -619,9 +651,9 @@
                     console.error(error);
                 }
             });
-        });
+        }
 
-         $(document).on('click', '.edit', function () {
+        $(document).on('click', '.edit', function () {
         var orderId = $(this).data('order-id');
 
         var imgUserUrl = $(this).data('img-url-user');
@@ -638,7 +670,7 @@
             var listOrderDetail = response.listOrderDetail;
 
             $('#detailModal').find('span[name="name"]').eq(0).text(order.id_user.name);
-            $('#detailModal').find('span[name="phone"]').eq(0).text(order.id_user.phone);
+            $('#detailModal').find('span[name="phone"]').eq(0).text(order.phone);
             $('#detailModal').find('span[name="userEmail"]').eq(0).text(order.id_user.userEmail);
             $('#detailModal').find('span[name="address"]').eq(0).text(order.address);
 
@@ -688,9 +720,7 @@
             }
         });
     });
-    });
-
-   
+});
 </script>
 </body>
 

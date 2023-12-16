@@ -47,49 +47,67 @@
                 <div class="tile">
                     <div class="tile-body">
                         <!-- thanh chức năng đầu tiên -->
-                        <div class="row element-button">
-                            <div class="col-sm-2" id="btnExport">
-                                <a class="btn btn-excel btn-sm" href="/user/countPage/in"  title="In"><i class="fas fa-file-excel"></i>
-                                    Xuất Excel</a>
-                            </div>
-                            <div class="col-sm-2">
-                                <a class="btn btn-delete btn-sm print-file" href="/user/countPage/print"  type="button" title="In"
-                                    ><i class="fas fa-print"></i> In dữ liệu</a>
-                            </div>
-                        </div>
                         <!-- thanh tìm kiếm -->
-                        <form role="search" style=" margin-top: 20px; margin-bottom: 30px; display: flex; float: right;">
-                            <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm tên món ăn..." aria-label="Search" name="item_name">
-                            <button class="btn btn-outline-info"  style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
-                        </form>
+                        <div class="d-flex justify-content-between" style="margin-top: 20px; margin-bottom: 30px;">
+                            <div class="dataTables_length d-flex align-items-center">
+                                <label class="mr-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px;">Xem</label>
+                                <select name="data_tables_leght" style="width: 60px;" aria-controls="DataTables_Table_0" class="custom-select custom-select-sm form-control form-control-sm" onchange="changePerPage(this)">
+                                    <option value="5" <%= perPage === 5 ? 'selected' : '' %>>5</option>
+                                    <option value="10" <%= perPage === 10 ? 'selected' : '' %>>10</option>
+                                    <option value="25" <%= perPage === 25 ? 'selected' : '' %>>25</option>
+                                    <option value="50" <%= perPage === 50 ? 'selected' : '' %>>50</option>
+                                    <option value="100" <%= perPage === 100 ? 'selected' : '' %>>100</option>
+                                </select>
+                                <label class="ml-2" style="vertical-align: middle; text-align: center; margin-bottom: 0px">mục</label>
+                            </div>
+                            <form role="search" class="d-flex" style="margin-left: auto;">
+                                <input class="form-control col-6 col-sm-6 col-md-9" type="search" placeholder="Tìm kiếm..." aria-label="Search" name="ratingSearch" value="<%= req.query.ratingSearch || '' %>">
+                                <button class="btn btn-outline-info" style="margin: 0px;" type="submit"><i style="height: 20px; padding-top: 6px; " class=' bx bx-search-alt-2'></i></button>
+                            </form>
+                        </div>
                         <!-- thay đỏi -->
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                    <th scope="col" style="text-align: center; width: 13%">ID</th>
-                                    <th scope="col" style="text-align: center; width: 15%"><a  href="/user?by=user&order=<%= (order === 'asc' ? 'desc' : 'asc') %>">Tên tài khoản</a></th>
-                                    <th scope="col" style="text-align: center; width: 15%">Họ và tên</th>
-                                    <th scope="col" style="text-align: center; width: 15%">Tên món ăn</th>
-                                    <th scope="col" style="text-align: center; width: 10%">Đánh giá</th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ; padding: 7px;">
+                                        <a class="d-flex" href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">
+                                          <div class="th-link">
+                                            Mã
+                                          </div>
+                                        </a>
+                                    </th>
+                                    <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">
+                                        <a class="d-flex" href="<%= req.params.i %>?by=user_username&order=<%= (by === 'user_username' && order === 'asc') ? 'desc' : 'asc' %>">
+                                          <div class="th-link">
+                                            Tên tài khoản
+                                          </div>
+                                        </a>
+                                    </th>
+                                      <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">Họ và tên</th>
+
+                                      <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">Tên sản phẩm</th>
+
+                                      <th scope="col" style="vertical-align: middle; text-align: center; width: 45%; padding: 7px;">Đánh giá</th>
+
                                 </tr>
                             </thead>
                             <tbody>
                                 <% list.forEach((rating)=> { %>
                                     <tr>
                                     <tr>
-                                        <td style="width: 200px;">
+                                        <td style="text-align: center; vertical-align: middle; padding: 7px;">
                                             <%= rating._id %>
                                         </td>
-                                        <td style="text-align: center; vertical-align: middle;max-width: 100px;">
+                                        <td style="text-align: center; vertical-align: middle; padding: 7px;">
                                            <%= rating.user_username %>
                                         </td>
-                                        <td style="text-align: center;">
+                                        <td style="text-align: center; vertical-align: middle; padding: 7px;">
                                             <%= rating.user_name %>
                                         </td>
-                                        <td style="text-align: center;">
+                                        <td style="text-align: center; vertical-align: middle; padding: 7px;">
                                             <%= rating.product_name %>
                                         </td>
-                                        <td style="text-align: center;">
+                                        <td style="text-align: center; vertical-align: middle; padding: 7px;">
                                             <%= rating.rating %>
                                         </td>
 
@@ -100,114 +118,45 @@
 
                             </tbody>
                         </table>
-                        <!-- hết bảng -->
-                        <div>
-                            Bạn đang xem <%= currentPageTotal %> trong tổng số <%= totalRating %> đánh giá
-                        </div>
-                        <div class="row justify-content-end">
+                         <!-- hết bảng -->
+                         <div class="row justify-content-between" style="vertical-align: middle; align-items: center">
+                            <div class="col-auto">
+                              Bạn đang xem <%=(list.length == 0) ? start : start + 1 %> đến <%= start + list.length %> trong tổng số <%= totalSP %> đánh giá
+                            </div>
                             <div class="col-auto">
                               <nav aria-label="Page navigation">
                                 <ul class="pagination justify-content-end">
                                   <% for (let i = 1; i <= countPage; i++) { %>
                                     <li class="page-item<%= (i == req.params.i) ? ' active' : '' %>">
-                                      <a class="page-link" href="/user/<%= i %>"><%= i %></a>
+                                      <a class="page-link" href="/danhgia/<%= i %>"><%= i %></a>
                                     </li>
                                   <% } %>
                                 </ul>
                               </nav>
                             </div>
-                          </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
-    <!-- modal delete -->
-    <!-- form xoá -->
-    <!-- <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xoá User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="/user/delete" method="POST" id="formDelete">
-                    <input type="hidden" name="IdDelete" id="IdDelete">
-                        <div class="modal-body">
-                            Bạn có chắc muốn thay đổi trang thái User này không?
-                        </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Ok</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div> -->
-
    
 
-    <!-- Essential javascripts for application to work-->
-    <script src="/bootstrap-5.2.3-dist/js copy/jquery-3.2.1.min.js"></script>
-    <script src="/bootstrap-5.2.3-dist/js copy/popper.min.js"></script>
-    <script src="/bootstrap-5.2.3-dist/js copy/bootstrap.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="/bootstrap-5.2.3-dist/js copy/main.js"></script>
-    <!-- The javascript plugin to display page loading on top-->
-    <script src="/bootstrap-5.2.3-dist/js copy/plugins/pace.min.js"></script>
-    <!-- Page specific javascripts-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-    <!-- Data table plugin-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
-<!-- <script type="text/javascript">
-    $(function(){
-        $('#btnExport').click(function(){
-      exportExcel("tableorder","","");
-        });
-    });
-    function exportExcel(tableName, headercolor, filename){
-        if(tableName.trim() === " "){
-            alert(" khoog có bảng");
-            return;
-        }
-        if(headercolor.trim() === ""){
-            headercolor ="#87AFC6";
-        }
-        if(filename.trim() === ""){
-            filename = "ExportData";
-        }
-        var export_data = "";
-        arrTableName = tableName.split(" | ");
-        if(arrTableName.length > 0){
-            // duyệt từng bagnr
-            for(var i = 0; i< arrTableName.length; i++){
-                export_data += "<table border ='2px'> <tr bgcolor='" +headercolor + "'>";
-                    var objectTable = document.getElementById(arrTableName[i]); // lấy id bảng thứ i
-                    if(objectTable === undefined){
-                        alert("bảng không tìm thấy");
-                        return;
-                    }
-                    // duyệt từng dòng lưu vào export_data
-                    for(var j =0; j < objectTable.rows.length; j++){
-                        export_data += objectTable.rows[j].innerHTML + "</tr>";
-                    }
-                    export_data += "</table>"
-            }
-            // kiểm tra trình duyệt là IE thì
-            if(window.navigator.userAgent.indexOf("MSIE") > 0 || !!window.navigator.userAgent.match(/Trient.*rv\:11\./)){
-                exportIF.document.open("txt/html", "replace");
-                exportIF.document.write(export_data);
-                exportIF.document.close();
-                exportIF.focus();
-                sa = exportIF.document.execCommand("SaveAs", true, filename + ".xls");
-            }else{ // các trình duyệt khác
-                sa = window.open("data:application/vnd.ms-excel,"+ encodeURIComponent(export_data))
-            }
-        }
-    }
-</script> -->
+     <!-- Essential javascripts for application to work-->
+     <script src="/bootstrap-5.2.3-dist/js copy/jquery-3.2.1.min.js"></script>
+     <script src="/bootstrap-5.2.3-dist/js copy/popper.min.js"></script>
+     <script src="/bootstrap-5.2.3-dist/js copy/bootstrap.min.js"></script>
+     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+     <script src="/bootstrap-5.2.3-dist/js copy/main.js"></script>
+     <!-- The javascript plugin to display page loading on top-->
+     <script src="/bootstrap-5.2.3-dist/js copy/plugins/pace.min.js"></script>
+     <!-- Page specific javascripts-->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+     <!-- Data table plugin-->
+ 
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+
 
     <script type="text/javascript">
         $('#sampleTable').DataTable();
@@ -253,6 +202,15 @@
         }
 
     </script>
+     <script>
+        function changePerPage(selectElement) {
+        const perPage = parseInt(selectElement.value);
+        const currentPage = parseInt('<%= req.params.i %>'); // Lấy trang hiện tại từ dữ liệu động
+        const url = `/danhgia/${1}?data_tables_leght=${perPage}`;
+
+        window.location.href = url; // Chuyển hướng đến URL mới với số lượng bản ghi được thay đổi
+        }
+      </script>
     <script>
         $('#deleteModal').on('show.bs.modal', function (event) {
           var button = $(event.relatedTarget) // Nút mở modal

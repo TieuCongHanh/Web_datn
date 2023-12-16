@@ -258,7 +258,6 @@ exports.updateStatus = async (req, res, next) => {
 exports.listStaff = async (req, res, next) => {
   try {
     const staffList = await staffModel.staffModel.find();
-    console.log(staffList);
     res.json(staffList);
   } catch (err) {
     console.error(err);

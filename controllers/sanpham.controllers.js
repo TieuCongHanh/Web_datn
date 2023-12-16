@@ -144,9 +144,13 @@ exports.add = async (req, res, next) => {
                 return;
             }
 
-            let url_file = '';
-            if (req.file != undefined) {
-                url_file = req.file.path;
+            const image = [];
+            
+            if (req.files != undefined) {
+                const fileData = req.files
+                fileData.forEach(item => {
+                    image.push(item.path)
+                });
             } else {
                 res.render('sanpham/add', { req: req, listCategory :listCategory, msg: "Vui lòng chọn một tệp hình ảnh" });
                 return;
@@ -158,8 +162,8 @@ exports.add = async (req, res, next) => {
             objSP.price = req.body.price;
             objSP.quantity = req.body.quantity;
             objSP.describe = req.body.describe;
-            objSP.image = url_file;
-
+            objSP.image = image[0];
+            objSP.imageDetail = image;
             await objSP.save();
             msg = "Thêm thành công";
         } catch (err) {
@@ -174,27 +178,40 @@ exports.edit = async (req, res, next) => {
     let idsp = req.params.id;
     let objSP = await myMD.sanphamModel.findById(idsp).populate('id_category');
     const listCategory = await categoryMD.categoryModel.find();
+    const query = req.query;
+    let currenImage = Number(query.left) || Number(query.right) || 0;
+    let lengthImage = objSP.imageDetail.length
 
     if (req.method === 'POST') {
         try {
+
+
             if (!req.body.name || !req.body.price) {
-                res.render('sanpham/edit', { req: req, listCategory: listCategory, objL: objSP, msg: "Vui lòng điền đầy đủ thông tin sản phẩm." });
+                res.render('sanpham/edit', { req: req,
+                     listCategory: listCategory,
+                      objL: objSP,
+                       msg: "Vui lòng điền đầy đủ thông tin sản phẩm." ,
+                       lengthImage: lengthImage - 1,
+                       currenImage: currenImage,});
                 return;
             }
 
             const price = parseFloat(req.body.price);
             if (isNaN(price) || price <= 0) {
-                res.render('sanpham/edit', { req: req, listCategory: listCategory, objL: objSP, msg: "Giá sản phẩm phải là một số dương." });
+                res.render('sanpham/edit', { req: req, listCategory: listCategory, objL: objSP, msg: "Giá sản phẩm phải là một số dương."  ,
+                lengthImage: lengthImage - 1,
+                currenImage: currenImage,});
                 return;
             }
 
             const quantity = parseFloat(req.body.quantity);
             if (isNaN(quantity) || quantity <= 0) {
-                res.render('sanpham/edit', { req: req, listCategory: listCategory, objL: objSP, msg: "Số lượng sản phẩm phải là một số dương." });
+                res.render('sanpham/edit', { req: req, listCategory: listCategory, objL: objSP, msg: "Số lượng sản phẩm phải là một số dương."  ,
+                lengthImage: lengthImage - 1,
+                currenImage: currenImage,});
                 return;
             }
 
-            // Sử dụng cùng một biến `objSP` để cập nhật thông tin sản phẩm
             objSP.name = req.body.name;
             objSP.id_category = req.body.category;
             if (req.body.category) {
@@ -207,18 +224,29 @@ exports.edit = async (req, res, next) => {
             objSP.quantity = req.body.quantity;
             objSP.describe = req.body.describe;
 
-            if (req.file != undefined) {
-                const publicId = getPublicIdFromUrl(objSP.image);
-                cloudinary.uploader.destroy(publicId, (error, result) => {
-                  if (error) {
-                      console.log("Xóa ảnh khỏi Cloudinary không thành công!");
-                  } else {
-                      console.log("Xóa ảnh khỏi Cloudinary thành công!");
-                  }
-              });
-              objSP.image = req.file.path;
+            if (req.files != undefined) {
+                objSP.imageDetail.map(url => {
+                    const publicId = getPublicIdFromUrl(url)
+                    cloudinary.uploader.destroy(publicId), (error, result) => {
+                        if (error) {
+                            console.log("Update Product xóa ảnh khỏi cloud không thành công !!");
+                        } else {
+                            console.log("Update Product xóa ảnh khỏi cloud  thành công !!");
+    
+                        }
+                    }
+                });
+                var image = [];
+                const fileData = req.files
+                fileData.forEach(item => {
+                    image.push(item.path)
+                });
+              objSP.image = image[0];
+              objSP.imageDetail = image;
+
             } else {
-                objSP.image = objSP.image;
+                objSP.image = objSP.image; 
+                objSP.imageDetail =  objSP.imageDetail;
             }
 
             await objSP.save(); // Sử dụng .save() để lưu thông tin sản phẩm
@@ -230,7 +258,9 @@ exports.edit = async (req, res, next) => {
         }
     }
 
-    res.render('sanpham/edit', { msg: msg, objL: objSP, listCategory: listCategory, req: req });
+    res.render('sanpham/edit', { msg: msg, objL: objSP, listCategory: listCategory, req: req  ,
+        lengthImage: lengthImage - 1,
+        currenImage: currenImage,});
 };
 
 

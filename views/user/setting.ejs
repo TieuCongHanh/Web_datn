@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Trang thêm Sản Phẩm</title>
+    <title>Cài đặt</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,12 +19,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
- <style>
-    #displayImage {
+<style>
+       #displayImage {
   display: block;
   margin: 0 auto;
 }
- </style>
+</style>
 </head>
 
 <body onload="time()" class="app sidebar-mini rtl">
@@ -32,67 +32,53 @@
     <main class="app-content">
         <div class="app-title">
             <ul class="app-breadcrumb breadcrumb side">
-                <li class="breadcrumb-item active"><a href="#"><b>Thêm sản phẩm</b></a></li>
+                <li class="breadcrumb-item active"><a href="#"><b>Cập nhật tài khoản</b></a></li>
             </ul>
-            <span id="message"><%= msg %></span>
+            <span><%= msg %></span>
             <div id="clock"></div>
         </div>
-        <!--MODAL add-->
-        <div class="col d-flex justify-content-center" id="imageList"> <img src="/images/logo_app.png" id="image" alt="anh" style="width: 150px; height: 150px;border-radius: 30px;"></div>
-        <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 20px;" multiple>
-            <script>
-                function checkFileCount(input) {
-                    const maxFiles = 4;
-
-                    if (input.files && input.files.length > maxFiles) {
-                        alert(`Vui lòng chọn tối đa ${maxFiles} ảnh.`);
-                        input.value = "";
-                    }
-                }
-                function validatePrice(input) {
-                    const sanitizedValue = input.value.replace(/[^\d]/g, "");
-                    input.value = sanitizedValue;
-                }
-            </script>
+        <img src="<%= objUS.image %>" id="displayImage" alt="anh" style="width: 100px; height: 100px;border-radius: 30px; ">
+       
+        <form action="" method="POST"  action="/user/setting" enctype="multipart/form-data" style="margin-top: 20px;margin-bottom: 100px;">          
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label class="control-label">Tên sản phẩm </label>
-                    <input class="form-control" type="text" name="name" required>
+                    <label class="control-label">Tên đăng nhập</label>
+                    <input readonly class="form-control" type="text" name="username" value="<%= objUS.username %>">
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="control-label">Loại </label>
-                    <select class="form-control" name="category" required>
-                        <option value="" disabled selected ></option>
-                        <% for(let i = 0; i < listCategory.length; i++) { %>
-                            <option value="<%= listCategory[i]._id %>"><%= listCategory[i].name %></option>
-                        <% } %>
-                    </select>
+                    <label class="control-label">Họ và tên</label>
+                    <input  class="form-control" type="text" name="name" value="<%= objUS.name %>">
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="control-label">Giá sản phẩm </label>
-                    <input class="form-control" type="number" name="price" required>
+                    <label class="control-label">Số điện thoại</label>
+                    <input  class="form-control" type="text" name="phone" value="<%= objUS.phone %>">
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="control-label">Số lượng</label>
-                    <input class="form-control" type="number" name="quantity" required>
+                    <label class="control-label">Email</label>
+                    <input  class="form-control" type="text" name="userEmail" value="<%= objUS.userEmail %>">
+                </div>
+                <div class="form-group  col-md-6">
+                    <label class="control-label">Mật khẩu</label>
+                    <input class="form-control" type="password" name="password" placeholder="Nhập mật khẩu mới ( nếu như không nhập giữ nguyên giá trị cũ )">
+                </div>
+                <div class="form-group  col-md-6">
+                    <label class="control-label">Xác nhận mật khẩu</label>
+                    <input class="form-control" type="password" name="checkpassword" placeholder="">
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="control-label">Mô tả sản phẩm </label>
-                    <input class="form-control" type="text" name="describe">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="productImage" class="control-label">Hình ảnh</label>
-                    <input type="file" class="form-control" accept="image/*" onchange="checkFileCount(this)" id="newImageDetail" name="productImage" multiple>
+                    <label class="control-label">Hình ảnh</label>
+                    <input class="form-control" type="file" id="newImage" name="productImage" >
                 </div>
             </div>
             <BR>
             <BR>
             <BR>
                 <div style="float:right;">
+                    
                     <!-- <a href="/user" class="btn btn-add" href="/user" type="submit">save</a> -->
-                    <a style=" width: 90px; height: 40px;" class="btn btn-cancel" data-dismiss="modal" href="/sanpham/1">Hủy bỏ</a>
-                    <button style=" width: 90px; height: 40px;" type="submit" action="/sanpham/add" class="btn btn-primary">Lưu</button>
-                </div>
+                    <a style=" width: 90px; height: 40px;" class="btn btn-cancel" data-dismiss="modal" href="/user/1">Hủy bỏ</a>
+                    <button style=" width: 90px; height: 40px;" type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
         </form>
     </main>
 
@@ -113,6 +99,8 @@
     <!-- Page specific javascripts-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <!-- Data table plugin-->
+    <script type="text/javascript" src="js/plugins/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
 
     <script type="text/javascript">
         $('#sampleTable').DataTable();
@@ -184,45 +172,22 @@
             e.stopImmediatePropagation();
         });
     </script>
-     <script>
-        // Lấy phần tử span chứa thông báo
-        const messageElement = document.getElementById('message');
-      
-        // Kiểm tra xem có thông báo hay không
-        if (messageElement.innerText) {
-          // Đợi 2 giây sau khi có thay đổi rồi ẩn thông báo
-          setTimeout(function () {
-            messageElement.style.display = 'none';
-          }, 2000); // 2 giây
-        }
-
       </script>
-      
+         
       <script>
-        document.getElementById('newImageDetail').addEventListener('change', function (event) {
-            const files = event.target.files;
-            const imageList = document.getElementById('imageList');
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    const image = document.createElement('img');
-                    image.src = e.target.result;
-                    image.style.width = '150px';
-                    image.style.height = '150px';
-                    image.style.borderRadius = '30px';
-
-                    imageList.appendChild(image);
-                };
-
-                reader.readAsDataURL(file);
-            }
-            const image = document.getElementById('image');
-            image.style.visibility = 'hidden';
-        });
-    </script>
+         //bấm là ra ảnh
+         document.getElementById('newImage').addEventListener('change', function (event) {
+     const file = event.target.files[0];
+     if (file) {
+         const reader = new FileReader();
+         reader.onload = function (e) {
+             const displayImage = document.getElementById('displayImage');
+             displayImage.src = e.target.result;
+         };
+         reader.readAsDataURL(file);
+     }
+ });
+     </script>
 </body>
 
 </html>
