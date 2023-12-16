@@ -223,8 +223,11 @@ exports.edit = async (req, res, next) => {
             objSP.price = req.body.price;
             objSP.quantity = req.body.quantity;
             objSP.describe = req.body.describe;
+            var image = [];
+            const fileData = req.files
 
-            if (req.files != undefined || req.file != undefined ) {
+            if (fileData != undefined && fileData.length > 0) {
+                console.log(fileData);
                 objSP.imageDetail.map(url => {
                     const publicId = getPublicIdFromUrl(url)
                     cloudinary.uploader.destroy(publicId), (error, result) => {
@@ -236,8 +239,6 @@ exports.edit = async (req, res, next) => {
                         }
                     }
                 });
-                var image = [];
-                const fileData = req.files
                 fileData.forEach(item => {
                     image.push(item.path)
                 });
