@@ -307,7 +307,7 @@ function generateToken(userId) {
   const payload = {
     id: userId,
   };
-  const token = jwt.sign(payload, secretKey, { expiresIn: '1h' }); 
+  const token = jwt.sign(payload, secretKey);
 
   return token;
 }
