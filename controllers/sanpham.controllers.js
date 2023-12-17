@@ -321,4 +321,20 @@ exports.getProduct  = async (req, res) => {
     const endIndex = url.lastIndexOf('.');
     return url.substring(startIndex, endIndex);
 }
+exports.updateDislay = async (req, res, next) => {
+    try {
+      const _id = req.body._id;
+      const display = req.body.display;
+  
+      const updatedOrder = await myMD.sanphamModel.findById(_id)
+        
+      updatedOrder.display = display;
 
+      await updatedOrder.save();
+  
+      res.json({ msg: 'Thông tin trạng thái hiển thị được cập nhật' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ msg: 'Lỗi khi cập nhật thông tin trạng thái hiển thị' });
+    }
+  };

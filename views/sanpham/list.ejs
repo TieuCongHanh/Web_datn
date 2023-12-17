@@ -95,7 +95,7 @@
                         <table class="table table-bordered col" id="tableorder">
                             <thead style="width: auto;">
                                 <tr>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10% ; padding: 7px;">
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 6% ; padding: 7px;">
                                     <a class="d-flex" href="<%= req.params.i %>?by=_id&order=<%= (by === '_id' && order === 'asc') ? 'desc' : 'asc' %>">
                                       <div class="th-link">
                                         Mã
@@ -112,7 +112,7 @@
                                       </div>
                                     </a>
                                   </th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">Loại</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Loại</th>
                                   <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">
                                     <a class="d-flex" href="<%= req.params.i %>?by=price&order=<%= (by === 'price' && order === 'asc') ? 'desc' : 'asc' %>">
                                       <div class="th-link">
@@ -120,9 +120,10 @@
                                       </div>
                                     </a>
                                   </th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">Số lượng</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 25%; padding: 7px;">Mô tả sản phẩm</th>
-                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 10%; padding: 7px;">Chức năng</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Số lượng</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 23%; padding: 7px;">Mô tả sản phẩm</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 7%; padding: 7px;">Hiển thị</th>
+                                  <th scope="col" style="vertical-align: middle; text-align: center; width: 15%; padding: 7px;">Chức năng</th>
                                 </tr>
                               </thead>
                             <tbody>
@@ -155,7 +156,11 @@
                                             
                                             <%= sanpham.describe%>
                                         </td>
-                                        <td style="vertical-align: middle; text-align: center; width: 150px; padding: 7px;">   
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">
+                                            
+                                            <%= sanpham.display%>
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center; padding: 7px;">   
                                             <a href="/sanpham/edit/<%= sanpham._id %>">         
                                             <button class="btn bg-warning-subtle btn-sm edit" style="font-size: 12px;" type="button" title="Sửa" id="show-emp">
                                                 <i class="fas fa-edit"></i>
@@ -165,13 +170,17 @@
                                                 <i class="fa fa-cart-plus" style="font-size: 12px;"></i>
                                            </button>
 
-                                    
-
+                                           <button class="btn bg-warning-subtle btn-sm" style="font-size: 12px;" title="Hiển thị" type="button" onclick="showConfirmation('<%= sanpham._id %>', '<%= !sanpham.display %>')">
+                                            <% if (sanpham.display) { %>
+                                                <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                            <% } else { %>
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            <% } %>
+                                        </button>
                                         </td>
                                     </tr>
                                     </tr>
                                     <% }); %>
-
 
                             </tbody>
                         </table>
@@ -403,6 +412,38 @@
 
 
         <script>
+            function showConfirmation(_id, display) {
+                var confirmation = confirm('Bạn muốn thay đổi trạng thái hiện thị ở bên Ứng dụng');
+                if(confirmation){
+                        $.ajax({
+                        url: '/sanpham/updateDislay',
+                        method: 'POST',
+                        data: {
+                            _id: _id,
+                            display: display,
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công',
+                                text: response.msg
+                            }).then(function () {
+                                location.reload();
+                            });
+                        },
+                        error: function (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: 'Đã xảy ra lỗi khi thực hiện yêu cầu'
+                            });
+                            console.error(error);
+                        }
+                    });
+                }
+            }
+
+           
             $(document).ready(function() {
                 var currentDate = new Date().toISOString().split('T')[0];
                 $('#importDate').val(currentDate);
@@ -411,26 +452,26 @@
 
         <script>
             $('#ImportModal').on('show.bs.modal', function(event) {
-    var button = $(event.relatedTarget);
-    var productId = button.data('user-id');
+            var button = $(event.relatedTarget);
+            var productId = button.data('user-id');
 
-    // Gán productId vào trường ẩn trong modal
-    $('#importProductId').val(productId);
+            // Gán productId vào trường ẩn trong modal
+            $('#importProductId').val(productId);
 
-    // Lấy thông tin sản phẩm từ server
-    $.ajax({
-        url: '/sanpham/detail/' + productId,
-        method: 'GET',
-        success: function(response) {
+            // Lấy thông tin sản phẩm từ server
+            $.ajax({
+                url: '/sanpham/detail/' + productId,
+                method: 'GET',
+                success: function(response) {
 
-            $('#productCode').text(response._id);
-            $('#productName').text(response.name);
-        },
-        error: function(error) {
-            console.error(error);
-        }
-    });
-});
+                    $('#productCode').text(response._id);
+                    $('#productName').text(response.name);
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+        });
         </script>
 
 </body>

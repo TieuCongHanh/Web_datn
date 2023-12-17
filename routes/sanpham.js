@@ -30,5 +30,6 @@ router.get('/:loaisp',check_login.yeu_cau_dang_nhap, loaispCtrl.list)
 router.post('/import',check_login.yeu_cau_dang_nhap, loaispCtrl.import)
 router.get('/detail/:productId',check_login.yeu_cau_dang_nhap, loaispCtrl.getProduct)
 
+router.post('/updateDislay',check_login.yeu_cau_dang_nhap , loaispCtrl.updateDislay);
 
 module.exports = router;
