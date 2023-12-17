@@ -1,10 +1,20 @@
 const OrderModel = require("../models/orders.models");
 const paymentModel = require("../models/payment.models");
+const userModel = require("../models/user.models");
 const staffModel = require("../models/staffs.models")
 const detailModel = require("../models/orderdetail.models");
 const excelJs = require("exceljs");
 const PDFDocument = require("pdfkit");
+const jwt = require('jsonwebtoken');
+const admin = require('firebase-admin');
+var serviceAccount = require("../labfirebase-ph21007-2824b-firebase-adminsdk-iknbr-b0ef3c2e65.json");
+const secretKey = process.env.SECRETKEY;
 
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const firebaseMessaging = admin.messaging();
 var msg = "";
 
 exports.list = async (req, res) => {
@@ -264,3 +274,63 @@ exports.listStaff = async (req, res, next) => {
     res.status(500).json({ msg: 'Lỗi khi cập nhật thông tin trạng thái' });
   }
 };
+
+exports.updateStatus = async (req, res, next) => {
+  try {
+    const id_order = req.body.id_order;
+    const newStatus = req.body.newStatus;
+    const deliveryPerson = req.body.deliveryPerson;
+
+    const updatedOrder = await OrderModel.ordersModel.findById(id_order);
+      
+    updatedOrder.delivery_status = newStatus;
+    updatedOrder.id_staff = deliveryPerson;
+    if (newStatus === "Đã giao") {
+      updatedOrder.pay_status = true;
+    }
+    await updatedOrder.save();
+
+    const userId = updatedOrder.id_user;
+
+    const token = generateToken(userId);
+
+    sendNotification(userId, 'Đơn hàng của bạn được cập nhật trạng thái', token);
+
+    res.json({ msg: 'Thông tin trạng thái đã được cập nhật' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Lỗi khi cập nhật thông tin trạng thái' });
+  }
+};
+
+function generateToken(userId) {
+  const payload = {
+    id: userId,
+  };
+  const token = jwt.sign(payload, secretKey, { expiresIn: '1h' }); 
+
+  return token;
+}
+
+  async function sendNotification(userId, message, token) {
+    const user = await userModel.userModel.findById(userId);
+    console.log(user);
+    const notification = {
+      token: user.deviceToken,
+      notification: {
+        title: 'Thông báo',
+        body: message
+      },
+      data: {
+        token: token
+      }
+    };
+
+    firebaseMessaging.send(notification)
+      .then((response) => {
+        console.log('Thông báo đã được gửi thành công:', response);
+      })
+      .catch((error) => {
+        console.error('Lỗi khi gửi thông báo:', error);
+      });
+}

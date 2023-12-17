@@ -10,6 +10,7 @@ const userSchema = new db.mongoose.Schema(
         image: {type: String, require: false},
         phone: {type: String, require: true},
         isActive: { type: Boolean, default: true },
+        deviceToken: { type: String, require: false }
     },
     {
         collection: 'user'

@@ -4,24 +4,28 @@ var fs = require('fs');
 const cloudinary = require('cloudinary').v2;
 
 exports.Login = async (req, res, next) => {
-   
     if (req.method == 'POST') {
         try {
-            const { username, password } = req.body;
+            const { username, password, deviceToken } = req.body; 
             const user1 = await md.userModel.findOne({ username });
             if (!user1) {
-                return res.status(400).json({msg: "Sai thông tin đăng nhập"});
+                return res.status(400).json({ msg: "Sai thông tin đăng nhập" });
             } else {
                 // So sánh mật khẩu đã băm
                 const passwordMatch = await bcrypt.compare(password, user1.password);
                 if (!passwordMatch) {
-                    return res.status(401).json({msg : "Sai mật khẩu"});
+                    return res.status(401).json({ msg: "Sai mật khẩu" });
                 }
                 if (!user1.isActive) {
-                    return res.status(403).json({msg: "Tài khoản của bạn đã bị khóa"});
-                } 
-                else {
-                   return res.status(200).json({user : user1 , msg: "Đăng nhập thành công."});
+                    return res.status(403).json({ msg: "Tài khoản của bạn đã bị khóa" });
+                } else {
+                    // Lưu trữ token thiết bị
+                    if(deviceToken){
+                        user1.deviceToken = deviceToken;
+                    }
+                    await user1.save();
+
+                    return res.status(200).json({ user: user1, msg: "Đăng nhập thành công." });
                 }
             }
         } catch (error) {
@@ -30,6 +34,7 @@ exports.Login = async (req, res, next) => {
         }
     }
 };
+
 const vietnamesePhoneNumberRegex = /(0[1-9][0-9]{8})\b/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 exports.Reg = async (req, res, next) => {
@@ -46,40 +51,42 @@ exports.Reg = async (req, res, next) => {
 
         if (req.body.password !== req.body.passwd2) {
             return res.status(403).json("Xác nhận mật khẩu không trùng khớp");
-        }  
+        }
         if (!vietnamesePhoneNumberRegex.test(req.body.phone)) {
             return res.status(404).json("Số điện thoại không hợp lệ. Vui lòng kiểm tra lại");
         }
         if (!emailRegex.test(req.body.userEmail)) {
             return res.status(404).json("Email không hợp lệ. Vui lòng kiểm tra lại");
         }
-            try {
-                let objU = new md.userModel();
-                objU.username = req.body.username;
-                objU.password = req.body.password;
-            
-                objU.role = 'User';
-                objU.userEmail = req.body.userEmail;
-                
-                const salt = await bcrypt.genSalt(10);
-                objU.password = await bcrypt.hash(req.body.password, salt);
-                objU.name = req.body.name;
-                
-                objU.phone = req.body.phone;
-                objU.isActive = true;
+        try {
+            let objU = new md.userModel();
+            objU.username = req.body.username;
+            objU.password = req.body.password;
 
-                await objU.save();
+            objU.role = 'User';
+            objU.userEmail = req.body.userEmail;
+
+            const salt = await bcrypt.genSalt(10);
+            objU.password = await bcrypt.hash(req.body.password, salt);
+            objU.name = req.body.name;
+
+            objU.phone = req.body.phone;
+            objU.isActive = true;
+            if(req.body.deviceToken){
+                objU.deviceToken = req.body.deviceToken;
+            }
+
+            await objU.save();
             return res.status(200).json("Đăng ký thành công");
 
-            } catch (error) {
-                
-                return res.status(500).json("Lỗi");
-            }
+        } catch (error) {
+            return res.status(500).json("Lỗi");
         }
+    }
 };
 
 exports.changePassword = async (req, res, next) => {
-    const { password, newPassword, userName } = req.body;
+    const { password, newPassword, userName, deviceToken } = req.body; // Thêm deviceToken
 
     if (req.method === 'POST') {
         try {
@@ -94,21 +101,25 @@ exports.changePassword = async (req, res, next) => {
             if (!newPassword) {
                 return res.json("Vui lòng cung cấp mật khẩu mới.");
             }
-            if(newPassword === password){
+            if (newPassword === password) {
                 return res.json("Vui lòng tạo mật khẩu khác mật khẩu cũ.");
             }
 
             const salt = await bcrypt.genSalt(10);
-            objUser.password = await bcrypt.hash(newPassword, salt);
+            const hashedNewPassword = await bcrypt.hash(newPassword, salt);
 
+            // Cập nhật mật khẩu mới và token thiết bị
+            objUser.password = hashedNewPassword;
+            if(deviceToken){
+                objUser.deviceToken = deviceToken;
+            }
             await objUser.save();
 
-            res.json(objUser);
+            return res.status(200).json("Đổi mật khẩu thành công.");
+
         } catch (error) {
-            res.json(error);
+            return res.status(500).json("Lỗi");
         }
-    } else {
-        res.json("Phương thức không hợp lệ");
     }
 };
 
@@ -138,6 +149,10 @@ exports.edit = async (req, res, next) => {
                 objUser.image = req.file.path;
             }
 
+            if(req.body.deviceToken){
+                objUser.deviceToken = req.body.deviceToken;
+            } 
+
             await objUser.save();
             res.json(objUser);
 
@@ -148,6 +163,7 @@ exports.edit = async (req, res, next) => {
         res.json("Phương thức không hợp lệ");
     }
 };
+
 function getPublicIdFromUrl(url) {
     const startIndex = url.lastIndexOf('/') + 1;
     const endIndex = url.lastIndexOf('.');
