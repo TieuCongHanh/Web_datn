@@ -115,7 +115,7 @@ exports.changePassword = async (req, res, next) => {
             }
             await objUser.save();
 
-            return res.status(200).json("Đổi mật khẩu thành công.");
+            return res.status(200).json(objUser);
 
         } catch (error) {
             return res.status(500).json("Lỗi");
