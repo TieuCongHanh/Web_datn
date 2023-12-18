@@ -310,15 +310,18 @@ exports.setting = async (req, res, next) => {
             }
 
             if (req.file != undefined) {
-                const publicId = getPublicIdFromUrl(objUS.image);
-                cloudinary.uploader.destroy(publicId, (error, result) => {
-                  if (error) {
-                      console.log("Xóa ảnh khỏi Cloudinary không thành công!");
-                  } else {
-                      console.log("Xóa ảnh khỏi Cloudinary thành công!");
-                  }
-              });
-              objUS.image = req.file.path;
+                if(objUS.image){
+                    const publicId = getPublicIdFromUrl(objUS.image);
+                    cloudinary.uploader.destroy(publicId, (error, result) => {
+                    if (error) {
+                        console.log("Xóa ảnh khỏi Cloudinary không thành công!");
+                    } else {
+                        console.log("Xóa ảnh khỏi Cloudinary thành công!");
+                    }
+                });
+             
+                }
+                objUS.image = req.file.path;
             } else {
                 objUS.image = objUS.image;
             }
