@@ -282,7 +282,7 @@ exports.updateStatus = async (req, res, next) => {
     const newStatus = req.body.newStatus;
     const deliveryPerson = req.body.deliveryPerson;
 
-    const updatedOrder = await OrderModel.ordersModel.findById(id_order);
+    const updatedOrder = await OrderModel.ordersModel.findById(id_order).populate('id_staff');
       
     updatedOrder.delivery_status = newStatus;
     updatedOrder.id_staff = deliveryPerson;
@@ -295,7 +295,14 @@ exports.updateStatus = async (req, res, next) => {
 
     const token = generateToken(userId);
 
-    sendNotification(userId, `Đơn hàng của bạn được cập nhật trạng thái ${newStatus}`, token);
+    let message =  `Đơn hàng ${updatedOrder._id} của bạn được cập nhật trạng thái ${newStatus}`;
+
+    if(updatedOrder.id_staff){
+      const staffs = await staffModel.staffModel.findById(updatedOrder.id_staff);
+      message += `\nNgười giao: ${staffs.name}\n Số điện thoại: ${staffs.phone}`;
+    }
+
+    sendNotification(userId, message, token);
 
     res.json({ msg: 'Thông tin trạng thái đã được cập nhật' });
   } catch (err) {
