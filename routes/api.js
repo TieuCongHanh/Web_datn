@@ -6,6 +6,7 @@ var orderApi = require('../controllers/api/order.api');
 var categoryApi = require('../controllers/api/category.api');
 var addressApi = require('../controllers/api/address.api');
 var ratingApi = require('../controllers/api/rating.api');
+var notifiApi = require('../controllers/api/notification.api');
 
 const uploadCloud = require('../middlewares/uploadImage');
 
@@ -36,5 +37,9 @@ router.delete('/address/delete/:id', addressApi.delete);
 router.get('/rating/list', ratingApi.list);
 router.post('/rating/add', ratingApi.add);
 router.delete('/rating/delete', ratingApi.delete);
+
+// notification
+router.get('/notification/list', notifiApi.getNotificationsByUserId);
+router.get('/notification/delete', notifiApi.delete);
 
 module.exports = router;

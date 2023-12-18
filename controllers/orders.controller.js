@@ -3,11 +3,12 @@ const paymentModel = require("../models/payment.models");
 const userModel = require("../models/user.models");
 const staffModel = require("../models/staffs.models")
 const detailModel = require("../models/orderdetail.models");
+const NotificationModel = require("../models/notificationModel.models");
 const excelJs = require("exceljs");
 const PDFDocument = require("pdfkit");
 const jwt = require('jsonwebtoken');
 const admin = require('firebase-admin');
-var serviceAccount = require("../labfirebase-ph21007-2824b-firebase-adminsdk-iknbr-b0ef3c2e65.json");
+var serviceAccount = require("../labfirebase-ph21007-2824b-firebase-adminsdk-iknbr-aa19e278a7.json");
 const secretKey = process.env.SECRETKEY;
 
 admin.initializeApp({
@@ -294,7 +295,7 @@ exports.updateStatus = async (req, res, next) => {
 
     const token = generateToken(userId);
 
-    sendNotification(userId, 'Đơn hàng của bạn được cập nhật trạng thái', token);
+    sendNotification(userId, `Đơn hàng của bạn được cập nhật trạng thái ${newStatus}`, token);
 
     res.json({ msg: 'Thông tin trạng thái đã được cập nhật' });
   } catch (err) {
@@ -312,25 +313,31 @@ function generateToken(userId) {
   return token;
 }
 
-  async function sendNotification(userId, message, token) {
-    const user = await userModel.userModel.findById(userId);
-    console.log(user);
-    const notification = {
-      token: user.deviceToken,
-      notification: {
-        title: 'Thông báo',
-        body: message
-      },
-      data: {
-        token: token
-      }
-    };
+async function sendNotification(userId, message, token) {
+  const user = await userModel.userModel.findById(userId);
+  console.log(user);
+  const notification = {
+    token: user.deviceToken,
+    notification: {
+      title: 'Thông báo',
+      body: message
+    },
+    data: {
+      token: token
+    }
+  };
 
-    firebaseMessaging.send(notification)
-      .then((response) => {
-        console.log('Thông báo đã được gửi thành công:', response);
-      })
-      .catch((error) => {
-        console.error('Lỗi khi gửi thông báo:', error);
+  firebaseMessaging.send(notification)
+    .then(async (response) => {
+      console.log('Thông báo đã được gửi thành công:', response);
+  
+      const newNotification = await new NotificationModel.notificationModel({
+        id_user: userId,
+        message: message
       });
+      newNotification.save();
+    })
+    .catch((error) => {
+      console.error('Lỗi khi gửi thông báo:', error);
+    });
 }
