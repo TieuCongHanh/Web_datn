@@ -33,7 +33,7 @@ sanphamSchema.pre('save', function (next) {
                 const formattedId = "SP" + String(nextId).padStart(3, '0');
                 doc._id = formattedId;
 
-                const previousQuantity = doc.quantity; // Lưu giá trị quantity trước khi import
+                const previousQuantity = 0; // Lưu giá trị quantity trước khi import
                 doc.quantity = previousQuantity + doc.quantity; // Cộng số lượng quantity của sanpham
                 doc.display = false;
                 doc.importHistory.push({
