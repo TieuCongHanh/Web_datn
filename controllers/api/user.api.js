@@ -169,3 +169,12 @@ function getPublicIdFromUrl(url) {
     const endIndex = url.lastIndexOf('.');
     return url.substring(startIndex, endIndex);
 }
+
+exports.list = async(req, res, next) => {
+    try{
+        let list = await md.userModel.find();
+        res.send(list);
+    } catch (err){
+        console.log('Lỗi');
+    }
+}

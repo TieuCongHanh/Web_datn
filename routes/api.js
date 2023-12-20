@@ -12,6 +12,7 @@ const uploadCloud = require('../middlewares/uploadImage');
 
 
 // user
+router.get('/user/list', user_api.list);
 router.post('/user/login', user_api.Login);
 router.post('/user/logup', user_api.Reg);
 router.post('/user/changePassword', user_api.changePassword);
